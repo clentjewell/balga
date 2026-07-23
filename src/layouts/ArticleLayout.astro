@@ -2,7 +2,6 @@
 import BaseLayout from "./BaseLayout.astro";
 import Breadcrumbs from "../components/Breadcrumbs.astro";
 import CTASection from "../components/CTASection.astro";
-import Acknowledgement from "../components/Acknowledgement.astro";
 import type { CollectionEntry } from "astro:content";
 
 export interface Props { post: CollectionEntry<"blog">; }
@@ -43,11 +42,10 @@ const jsonLd = {
     title="Meaningful Landscapes Start Here"
     image="/assets/blog/native-gardens.webp"
     buttons={[
-      { label: "Contact Us", href: "/contact/", variant: "btn--white" },
+      { label: "Contact Us", href: "/contact/", variant: "btn--outline-light" },
       { label: "Pricing List", href: "/pricing/", variant: "btn--outline-light" },
     ]}
   />
-  <Acknowledgement />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
 </BaseLayout>
 

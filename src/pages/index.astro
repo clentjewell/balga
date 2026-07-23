@@ -2,11 +2,9 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ServiceCard from "../components/ServiceCard.astro";
 import WhyChooseUs from "../components/WhyChooseUs.astro";
-import Counters from "../components/Counters.astro";
 import HowWeWork from "../components/HowWeWork.astro";
 import ProjectsPreview from "../components/ProjectsPreview.astro";
 import CTASection from "../components/CTASection.astro";
-import Acknowledgement from "../components/Acknowledgement.astro";
 import VideoModal from "../components/VideoModal.astro";
 import { services } from "../data/services";
 import { heroFeatures } from "../data/content";
@@ -66,7 +64,7 @@ import { heroFeatures } from "../data/content";
           <p>Balga Designs was founded with a simple yet profound mission: to create gardens that respect and enhance the natural environment. Our designs are inspired by the local landscape, focusing on native species and sustainable practices that support wildlife and promote biodiversity.</p>
           <p>We believe that every garden, no matter how small, can make a significant impact on our community, cities, and the planet. By choosing Balga Designs, you're not just enhancing your outdoor space—you're contributing to a greener, more sustainable world.</p>
         </div>
-        <a href="/about/" class="btn btn--outline home-about__btn">Read More</a>
+        <a href="/about/" class="btn btn--primary home-about__btn">Read More</a>
       </div>
       <div class="home-about__imgs reveal">
         <img src="/assets/home/feature-1.jpeg" alt="Native garden with a water feature and yellow wildflowers" width="1000" height="750" loading="lazy" />
@@ -88,12 +86,10 @@ import { heroFeatures } from "../data/content";
     </div>
   </section>
 
-  <Counters />
   <WhyChooseUs />
   <HowWeWork />
   <ProjectsPreview />
-  <CTASection title="Beautiful Landscapes Start Here" image="/assets/projects/project-01/after.jpg" />
-  <Acknowledgement />
+  <CTASection title="Beautiful Landscapes Start Here" />
   <VideoModal />
 </BaseLayout>
 
@@ -152,8 +148,9 @@ import { heroFeatures } from "../data/content";
 
   .feature-pair { padding-block: clamp(2.5rem, 1.5rem + 4vw, 4rem); }
   .feature-pair__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-  .feature-pair__card { background: var(--color-background); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 2.4rem 2rem; text-align: center; }
-  .feature-pair__card img { width: 84px; height: 84px; object-fit: contain; margin: 0 auto 1rem; }
+  .feature-pair__card { background: transparent; border: 1px solid rgba(255, 255, 255, 0.85); border-radius: var(--radius-md); padding: 2.8rem 2rem; text-align: center; transition: background var(--transition), box-shadow var(--transition); }
+  .feature-pair__card:hover { background: #fff; box-shadow: var(--shadow-soft); }
+  .feature-pair__card img { width: 120px; height: 120px; object-fit: contain; margin: 0 auto 1.2rem; }
   .feature-pair__card h3 { margin-bottom: 0.5rem; }
   .feature-pair__card p { color: var(--color-text); }
 
@@ -162,7 +159,7 @@ import { heroFeatures } from "../data/content";
   .home-about__text p { max-width: 74ch; }
   .home-about__btn { margin-top: 1.8rem; }
   .home-about__imgs { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 3rem; }
-  .home-about__imgs img { width: 100%; height: clamp(280px, 34vw, 460px); object-fit: cover; border-radius: var(--radius-md); }
+  .home-about__imgs img { width: 100%; height: clamp(420px, 44vw, 640px); object-fit: cover; border-radius: var(--radius-md); }
   @media (max-width: 760px) { .home-about__imgs { grid-template-columns: 1fr; } }
 
   .home-services__head { text-align: center; margin-bottom: 3rem; }

@@ -2,11 +2,9 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PageHero from "../components/PageHero.astro";
 import HowWeWork from "../components/HowWeWork.astro";
-import Counters from "../components/Counters.astro";
 import WhyChooseUs from "../components/WhyChooseUs.astro";
 import TestimonialSlider from "../components/TestimonialSlider.astro";
 import CTASection from "../components/CTASection.astro";
-import Acknowledgement from "../components/Acknowledgement.astro";
 import VideoModal from "../components/VideoModal.astro";
 ---
 <BaseLayout title="About" description="Balga Designs is more than garden design — passionate advocates for nature creating naturalistic havens that support local ecosystems.">
@@ -48,11 +46,9 @@ import VideoModal from "../components/VideoModal.astro";
     </div>
   </section>
 
-  <Counters />
   <WhyChooseUs />
   <TestimonialSlider count={5} />
   <CTASection title="Beautiful Landscapes Start Here" image="/assets/about/evening-view.jpg" />
-  <Acknowledgement />
   <VideoModal />
 </BaseLayout>
 

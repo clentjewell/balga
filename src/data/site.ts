@@ -16,8 +16,8 @@ export const site = {
     instagram: "https://www.instagram.com/",
   },
   video: {
-    youtubeId: "amTZybcbAGE",
-    embed: "https://www.youtube.com/embed/amTZybcbAGE?autoplay=1&rel=0",
+    youtubeId: "pY_lOt_Yogk",
+    embed: "https://www.youtube.com/embed/pY_lOt_Yogk?autoplay=1&rel=0",
   },
   developer: { name: "Jewell Projects", url: "https://jewellprojects.com/" },
   acknowledgement:

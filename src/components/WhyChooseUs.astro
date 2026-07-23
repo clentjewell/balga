@@ -2,10 +2,20 @@
 import { whyChooseUs } from "../data/content";
 export interface Props { showIntro?: boolean; }
 const { showIntro = true } = Astro.props;
+
+// Distinct icons per pillar (live uses ElementsKit license / consult / Leaf glyphs)
+const icons = [
+  // license / certificate
+  `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M8.5 12.5 7 22l5-3 5 3-1.5-9.5"/></svg>`,
+  // consult / conversation
+  `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-9 8.3 8.5 8.5 0 0 1-3.8-.9L3 20l1.1-4.2A8.38 8.38 0 0 1 3.2 12a8.5 8.5 0 0 1 8.3-8.5 8.38 8.38 0 0 1 9 8Z"/></svg>`,
+  // leaf / sustainability
+  `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/></svg>`,
+];
 ---
-<section class="section why">
+<section class="why">
   <div class="why__bg" aria-hidden="true"></div>
-  <div class="container why__inner">
+  <div class="why__grid">
     <div class="why__media reveal">
       <img src="/assets/home/margarida.jpg" alt="Margarida, the landscape designer behind Balga Designs, planting in a garden" width="600" height="800" loading="lazy" />
     </div>
@@ -14,11 +24,9 @@ const { showIntro = true } = Astro.props;
       <h2>{whyChooseUs.title}</h2>
       {showIntro && <p class="why__intro">{whyChooseUs.intro}</p>}
       <ul class="why__pillars">
-        {whyChooseUs.pillars.map((p) => (
+        {whyChooseUs.pillars.map((p, i) => (
           <li>
-            <span class="why__icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-            </span>
+            <span class="why__icon" aria-hidden="true" set:html={icons[i]} />
             <div>
               <h3>{p.title}</h3>
               <p>{p.text}</p>
@@ -32,18 +40,21 @@ const { showIntro = true } = Astro.props;
 <style>
   .why { position: relative; background: var(--color-secondary); color: #fff; isolation: isolate; overflow: hidden; }
   .why__bg { position: absolute; inset: 0; z-index: -1; background: url("/assets/home/line4.png") center/cover no-repeat; opacity: 0.14; }
-  .why__inner { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: clamp(2rem, 1rem + 4vw, 4rem); align-items: center; }
-  .why__media img { width: 100%; height: 100%; max-height: 560px; object-fit: cover; object-position: center left; border-radius: var(--radius-md); }
+  .why__grid { display: grid; grid-template-columns: 0.85fr 1.15fr; align-items: stretch; }
+  .why__media { min-height: 100%; }
+  .why__media img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
+  .why__content { padding: clamp(3rem, 2rem + 5vw, 6rem) clamp(1.5rem, 1rem + 4vw, 5rem); max-width: 720px; }
   .why .eyebrow { color: var(--color-accent); }
   .why h2 { color: #fff; }
   .why__intro { color: rgba(255, 255, 255, 0.88); margin: 1rem 0 1.8rem; max-width: 52ch; }
   .why__pillars { display: flex; flex-direction: column; gap: 1.4rem; }
   .why__pillars li { display: flex; gap: 1rem; align-items: flex-start; }
-  .why__icon { flex: 0 0 auto; width: 38px; height: 38px; border-radius: 50%; background: rgba(255, 255, 255, 0.14); color: var(--color-accent); display: grid; place-items: center; }
+  .why__icon { flex: 0 0 auto; width: 42px; height: 42px; border-radius: 50%; background: rgba(255, 255, 255, 0.14); color: var(--color-accent); display: grid; place-items: center; }
   .why__pillars h3 { color: #fff; font-size: 1.2rem; margin-bottom: 0.3rem; }
   .why__pillars p { color: rgba(255, 255, 255, 0.82); font-size: 0.95rem; }
   @media (max-width: 860px) {
-    .why__inner { grid-template-columns: 1fr; }
-    .why__media img { max-height: 380px; }
+    .why__grid { grid-template-columns: 1fr; }
+    .why__media { min-height: 340px; max-height: 460px; }
+    .why__content { padding: 2.6rem 1.4rem; }
   }
 </style>

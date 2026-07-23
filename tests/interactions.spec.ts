@@ -73,7 +73,7 @@ test.describe("interactions", () => {
     await page.locator("[data-video-open]").first().click();
     const modal = page.locator("[data-video-modal]");
     await expect(modal).toBeVisible();
-    await expect(modal.locator("iframe")).toHaveAttribute("src", /youtube\.com\/embed\/amTZybcbAGE/);
+    await expect(modal.locator("iframe")).toHaveAttribute("src", /youtube\.com\/embed\/pY_lOt_Yogk/);
     await page.keyboard.press("Escape");
     await expect(modal).toBeHidden();
   });

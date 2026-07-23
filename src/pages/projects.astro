@@ -5,7 +5,6 @@ import BeforeAfterSlider from "../components/BeforeAfterSlider.astro";
 import WhyChooseUs from "../components/WhyChooseUs.astro";
 import FAQAccordion from "../components/FAQAccordion.astro";
 import CTASection from "../components/CTASection.astro";
-import Acknowledgement from "../components/Acknowledgement.astro";
 import { projects } from "../data/projects";
 
 const featured = projects.filter((p) => p.description);
@@ -60,7 +59,6 @@ const gallery = projects.filter((p) => !p.description);
   <WhyChooseUs showIntro={false} />
   <FAQAccordion id="faqs" title="FAQs" />
   <CTASection title="Beautiful Landscapes Start Here" image="/assets/projects/project-07/after.jpg" />
-  <Acknowledgement />
 </BaseLayout>
 
 <style>

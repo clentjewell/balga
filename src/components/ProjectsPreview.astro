@@ -3,30 +3,39 @@ import BeforeAfterSlider from "./BeforeAfterSlider.astro";
 import { projectsPreview } from "../data/projects";
 export interface Props { eyebrow?: string; }
 const { eyebrow = "Our Projects" } = Astro.props;
+const [first, ...rest] = projectsPreview;
 ---
 <section class="section section--mint projects-preview">
   <div class="container">
     <div class="pp__head reveal">
-      <span class="eyebrow">{eyebrow}</span>
-      <h2>Come Home to Paradise</h2>
-      <p class="lead mx-auto">Discover the beauty of sustainable garden design. From urban retreats to sprawling natural landscapes, we’ve had the privilege of transforming gardens of all shapes and sizes.</p>
+      <div>
+        <span class="eyebrow">{eyebrow}</span>
+        <h2>Come Home to Paradise</h2>
+        <p class="pp__intro">Discover the beauty of sustainable garden design. From urban retreats to sprawling natural landscapes, we’ve had the privilege of transforming gardens of all shapes and sizes.</p>
+      </div>
+      <a href="/projects/" class="btn btn--primary pp__btn">All Projects</a>
     </div>
     <div class="pp__grid">
-      {projectsPreview.map((p) => (
+      <div class="pp__item pp__item--wide reveal">
+        <BeforeAfterSlider before={first.before} after={first.after} beforeAlt={first.beforeAlt} afterAlt={first.afterAlt} ratio="16 / 8" />
+      </div>
+      {rest.map((p) => (
         <div class="pp__item reveal">
-          <BeforeAfterSlider before={p.before} after={p.after} beforeAlt={p.beforeAlt} afterAlt={p.afterAlt} />
+          <BeforeAfterSlider before={p.before} after={p.after} beforeAlt={p.beforeAlt} afterAlt={p.afterAlt} ratio="4 / 3" />
         </div>
       ))}
-    </div>
-    <div class="pp__cta">
-      <a href="/projects/" class="btn btn--primary">All Projects</a>
     </div>
   </div>
 </section>
 <style>
-  .pp__head { text-align: center; max-width: 60ch; margin: 0 auto 2.8rem; }
-  .pp__head .lead { margin-top: 1rem; }
-  .pp__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
-  .pp__cta { text-align: center; margin-top: 2.6rem; }
-  @media (max-width: 900px) { .pp__grid { grid-template-columns: 1fr; max-width: 560px; margin-inline: auto; } }
+  .pp__head { display: flex; justify-content: space-between; align-items: flex-end; gap: 2rem; margin-bottom: 2.4rem; }
+  .pp__head .eyebrow { text-align: left; }
+  .pp__intro { margin-top: 1rem; max-width: 60ch; color: var(--color-text); }
+  .pp__btn { flex: 0 0 auto; }
+  .pp__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .pp__item--wide { grid-column: 1 / -1; }
+  @media (max-width: 760px) {
+    .pp__head { flex-direction: column; align-items: flex-start; }
+    .pp__grid { grid-template-columns: 1fr; }
+  }
 </style>

@@ -2,7 +2,6 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PageHero from "../components/PageHero.astro";
 import CTASection from "../components/CTASection.astro";
-import Acknowledgement from "../components/Acknowledgement.astro";
 import { getCollection } from "astro:content";
 
 const posts = (await getCollection("blog")).sort((a, b) => a.data.order - b.data.order);
@@ -40,11 +39,10 @@ const posts = (await getCollection("blog")).sort((a, b) => a.data.order - b.data
     title="Meaningful Landscapes Start Here"
     image="/assets/blog/native-gardens.webp"
     buttons={[
-      { label: "Contact Us", href: "/contact/", variant: "btn--white" },
+      { label: "Contact Us", href: "/contact/", variant: "btn--outline-light" },
       { label: "Pricing List", href: "/pricing/", variant: "btn--outline-light" },
     ]}
   />
-  <Acknowledgement />
 </BaseLayout>
 
 <style>

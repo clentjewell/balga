@@ -8,7 +8,7 @@ export interface Props {
 }
 const {
   title = "Beautiful Landscapes Start Here",
-  buttons = [{ label: "Contact Us", href: "/contact/", variant: "btn--white" }],
+  buttons = [{ label: "Contact Us", href: "/contact/", variant: "btn--outline-light" }],
   image = "/assets/home/cta-start-project.webp",
 } = Astro.props;
 ---
@@ -30,7 +30,7 @@ const {
     background-image: var(--cta-img);
     background-size: cover;
     background-position: center;
-    background-attachment: scroll;
+    background-attachment: fixed;
     padding-block: clamp(4rem, 3rem + 6vw, 7rem);
     text-align: center;
     isolation: isolate;
