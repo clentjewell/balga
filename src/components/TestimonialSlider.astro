@@ -5,116 +5,124 @@ const { count = all.length } = Astro.props;
 const items = all.slice(0, count);
 const stars = [0, 1, 2, 3, 4];
 ---
-<section class="section testi" style="--testi-img:url('/assets/home/testimonials-bg.webp')">
-  <div class="testi__bg" aria-hidden="true"></div>
-  <div class="container">
-    <div class="testi__head reveal">
-      <span class="eyebrow">Testimonials</span>
-      <h2>Review From Our Customers</h2>
-      <p class="lead mx-auto">Our clients appreciate how we blend sustainability and beauty in their outdoor spaces. Hear from those who’ve experienced the Balga Designs transformation.</p>
-    </div>
+<section class="testi">
+  <div class="testi__media">
+    <img src="/assets/home/testimonials-bg.webp" alt="A naturalistic native garden by Balga Designs" width="900" height="1100" loading="lazy" />
+  </div>
+  <div class="testi__panel">
+    <div class="testi__inner">
+      <div class="testi__head reveal">
+        <span class="eyebrow">Testimonials</span>
+        <h2>Review From Our Customers</h2>
+        <p class="testi__intro">Our clients appreciate how we blend sustainability and beauty in their outdoor spaces. Hear from those who’ve experienced the Balga Designs transformation.</p>
+      </div>
 
-    <div class="testi__slider" data-testi>
-      <button class="testi__nav testi__nav--prev" type="button" aria-label="Previous testimonial" data-testi-prev>‹</button>
-      <ul class="testi__track" data-testi-track>
-        {items.map((t) => (
-          <li class="testi__slide">
-            <div class="testi__card">
-              <div class="testi__stars" aria-label="5 out of 5 stars">
-                {stars.map(() => (
-                  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.8 5.9 20.4l1.4-6.8L2.2 9l6.9-.7L12 2z"/></svg>
-                ))}
+      <div class="testi__slider" data-testi>
+        <ul class="testi__track" data-testi-track>
+          {items.map((t) => (
+            <li class="testi__slide">
+              <div class="testi__card">
+                <div class="testi__stars" aria-label="5 out of 5 stars">
+                  {stars.map(() => (
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.8 5.9 20.4l1.4-6.8L2.2 9l6.9-.7L12 2z"/></svg>
+                  ))}
+                </div>
+                <blockquote>{t.quote}</blockquote>
+                <div class="testi__author">
+                  <span class="testi__name">{t.author}</span>
+                  {t.role && <span class="testi__role">{t.role}</span>}
+                </div>
+                <span class="testi__mark" aria-hidden="true">99</span>
               </div>
-              <blockquote>{t.quote}</blockquote>
-              {t.author && <cite>— {t.author}</cite>}
-            </div>
-          </li>
-        ))}
-      </ul>
-      <button class="testi__nav testi__nav--next" type="button" aria-label="Next testimonial" data-testi-next>›</button>
+            </li>
+          ))}
+        </ul>
+        <div class="testi__controls">
+          <div class="testi__dots" data-testi-dots aria-hidden="true"></div>
+          <div class="testi__nav">
+            <button type="button" aria-label="Previous testimonial" data-testi-prev>‹</button>
+            <button type="button" aria-label="Next testimonial" data-testi-next>›</button>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="testi__dots" data-testi-dots aria-hidden="true"></div>
   </div>
 </section>
 
 <style>
-  .testi { position: relative; isolation: isolate; }
-  .testi__bg { position: absolute; inset: 0; z-index: -1; background: var(--testi-img) center/cover no-repeat; }
-  .testi__bg::after { content: ""; position: absolute; inset: 0; background: rgba(46, 55, 42, 0.86); }
-  .testi__head { text-align: center; max-width: 60ch; margin: 0 auto 2.6rem; }
+  .testi { display: grid; grid-template-columns: 0.85fr 1.15fr; align-items: stretch; }
+  .testi__media { min-height: 100%; }
+  .testi__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .testi__panel { background: var(--color-secondary); color: #fff; display: flex; align-items: center; min-width: 0; }
+  .testi__inner { width: 100%; min-width: 0; max-width: 680px; margin: 0 auto; padding: clamp(2.6rem, 1.5rem + 5vw, 5rem) clamp(1.5rem, 1rem + 3vw, 3.5rem); }
+  .testi__slider { min-width: 0; }
+  .testi__head { margin-bottom: 2rem; }
   .testi__head .eyebrow { color: var(--color-accent); }
   .testi__head h2 { color: #fff; }
-  .testi__head .lead { margin-top: 1rem; color: rgba(255, 255, 255, 0.9); }
-  .testi__slider { position: relative; display: flex; align-items: center; gap: 0.5rem; }
-  .testi__track {
-    display: flex; gap: 1.5rem; overflow-x: auto; scroll-snap-type: x mandatory;
-    scroll-behavior: smooth; -ms-overflow-style: none; scrollbar-width: none; flex: 1;
-    padding: 0.5rem;
-  }
+  .testi__intro { color: rgba(255, 255, 255, 0.85); margin-top: 1rem; }
+
+  .testi__track { display: flex; overflow-x: auto; min-width: 0; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; -ms-overflow-style: none; }
   .testi__track::-webkit-scrollbar { display: none; }
-  .testi__slide { flex: 0 0 100%; scroll-snap-align: center; }
-  @media (min-width: 900px) { .testi__slide { flex-basis: calc((100% - 3rem) / 3); } }
-  .testi__card {
-    background: var(--color-mint); border-radius: var(--radius-md); padding: 2rem 1.8rem;
-    height: 100%; border-top: 3px solid var(--color-accent);
-  }
+  .testi__slide { flex: 0 0 100%; scroll-snap-align: start; padding: 0.4rem; }
+  .testi__card { position: relative; background: var(--color-background); color: var(--color-secondary-dark); border-radius: var(--radius-md); padding: 2rem 2rem 1.6rem; overflow: hidden; }
   .testi__stars { display: flex; gap: 3px; color: #d9a441; margin-bottom: 1rem; }
   .testi__card blockquote {
-    color: var(--color-secondary-dark); line-height: 1.8; font-size: 0.95rem;
-    display: -webkit-box; -webkit-line-clamp: 9; line-clamp: 9; -webkit-box-orient: vertical; overflow: hidden;
+    line-height: 1.75; font-size: 0.95rem; position: relative; z-index: 1;
+    display: -webkit-box; -webkit-line-clamp: 10; line-clamp: 10; -webkit-box-orient: vertical; overflow: hidden;
   }
-  .testi__card cite { display: block; margin-top: 1rem; font-style: normal; font-weight: 600; color: var(--color-secondary); }
-  .testi__nav {
-    flex: 0 0 auto; width: 46px; height: 46px; border-radius: 50%; background: var(--color-secondary); color: #fff;
-    font-size: 1.6rem; line-height: 1; display: grid; place-items: center; transition: background var(--transition);
+  .testi__author { margin-top: 1.2rem; position: relative; z-index: 1; }
+  .testi__name { display: block; font-family: var(--font-heading); font-weight: 600; color: var(--color-secondary); }
+  .testi__role { display: block; font-size: 0.85rem; color: var(--color-text); }
+  .testi__mark { position: absolute; right: 1.4rem; bottom: 0.4rem; font-family: var(--font-heading); font-weight: 700; font-size: 5rem; line-height: 1; color: rgba(90, 103, 78, 0.14); z-index: 0; }
+
+  .testi__controls { display: flex; align-items: center; justify-content: space-between; margin-top: 1.6rem; }
+  .testi__dots { display: flex; gap: 0.5rem; }
+  .testi__dots button { width: 9px; height: 9px; border-radius: 50%; background: rgba(255, 255, 255, 0.35); }
+  .testi__dots button[aria-current="true"] { background: #fff; }
+  .testi__nav { display: flex; gap: 0.5rem; }
+  .testi__nav button { width: 42px; height: 42px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.4); color: #fff; font-size: 1.4rem; line-height: 1; display: grid; place-items: center; transition: background var(--transition); }
+  .testi__nav button:hover { background: rgba(255, 255, 255, 0.16); }
+
+  @media (max-width: 860px) {
+    .testi { grid-template-columns: 1fr; }
+    .testi__media { min-height: 240px; max-height: 300px; }
   }
-  .testi__nav:hover { background: var(--color-secondary-dark); }
-  .testi__dots { display: flex; justify-content: center; gap: 0.5rem; margin-top: 1.5rem; }
-  .testi__dots button { width: 10px; height: 10px; border-radius: 50%; background: var(--color-border); }
-  .testi__dots button[aria-current="true"] { background: var(--color-secondary); }
-  @media (max-width: 640px) { .testi__nav { display: none; } }
 </style>
 
 <script>
   document.querySelectorAll<HTMLElement>("[data-testi]").forEach((root) => {
     const track = root.querySelector<HTMLElement>("[data-testi-track]")!;
+    const slides = Array.from(track.children) as HTMLElement[];
+    const dotsWrap = root.querySelector<HTMLElement>("[data-testi-dots]")!;
     const prev = root.querySelector<HTMLButtonElement>("[data-testi-prev]")!;
     const next = root.querySelector<HTMLButtonElement>("[data-testi-next]")!;
-    const dotsWrap = root.parentElement!.querySelector<HTMLElement>("[data-testi-dots]")!;
-    const slides = Array.from(track.children) as HTMLElement[];
 
-    // dots
-    function buildDots() {
-      dotsWrap.innerHTML = "";
-      for (let i = 0; i < slides.length; i++) {
-        const b = document.createElement("button");
-        b.type = "button"; b.setAttribute("aria-label", `Go to testimonial ${i + 1}`);
-        b.addEventListener("click", () => slides[i].scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" }));
-        dotsWrap.appendChild(b);
-      }
-      updateDots();
-    }
-    function updateDots() {
-      const active = Math.round(track.scrollLeft / (slides[0].getBoundingClientRect().width + 24));
-      Array.from(dotsWrap.children).forEach((d, i) => d.toggleAttribute("aria-current", i === active));
-    }
-    prev.addEventListener("click", () => track.scrollBy({ left: -track.clientWidth * 0.8, behavior: "smooth" }));
-    next.addEventListener("click", () => track.scrollBy({ left: track.clientWidth * 0.8, behavior: "smooth" }));
-    track.addEventListener("scroll", () => requestAnimationFrame(updateDots));
-    buildDots();
-    window.addEventListener("resize", updateDots);
+    slides.forEach((_, i) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.setAttribute("aria-label", `Go to testimonial ${i + 1}`);
+      b.addEventListener("click", () => track.scrollTo({ left: track.clientWidth * i, behavior: "smooth" }));
+      dotsWrap.appendChild(b);
+    });
+    const update = () => {
+      const idx = Math.round(track.scrollLeft / track.clientWidth);
+      Array.from(dotsWrap.children).forEach((d, i) => d.toggleAttribute("aria-current", i === idx));
+    };
+    prev.addEventListener("click", () => track.scrollBy({ left: -track.clientWidth, behavior: "smooth" }));
+    next.addEventListener("click", () => track.scrollBy({ left: track.clientWidth, behavior: "smooth" }));
+    track.addEventListener("scroll", () => requestAnimationFrame(update));
+    window.addEventListener("resize", update);
+    update();
 
-    // autoplay
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (!reduce) {
-      let timer = setInterval(auto, 5000);
+      let timer = setInterval(auto, 6000);
       function auto() {
-        const step = slides[0].getBoundingClientRect().width + 24;
-        if (track.scrollLeft + track.clientWidth >= track.scrollWidth - 8) track.scrollTo({ left: 0, behavior: "smooth" });
-        else track.scrollBy({ left: step, behavior: "smooth" });
+        const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 8;
+        if (atEnd) track.scrollTo({ left: 0, behavior: "smooth" });
+        else track.scrollBy({ left: track.clientWidth, behavior: "smooth" });
       }
       root.addEventListener("pointerenter", () => clearInterval(timer));
-      root.addEventListener("pointerleave", () => { timer = setInterval(auto, 5000); });
+      root.addEventListener("pointerleave", () => { timer = setInterval(auto, 6000); });
     }
   });
 </script>
