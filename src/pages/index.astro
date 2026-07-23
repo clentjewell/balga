@@ -98,8 +98,8 @@ import { heroFeatures } from "../data/content";
     position: relative;
     background: var(--color-hero);
     color: #fff;
-    padding-top: 150px;
-    padding-bottom: clamp(3.5rem, 2rem + 8vw, 7rem);
+    padding-top: 120px;
+    padding-bottom: clamp(2.5rem, 1.5rem + 4vw, 4rem);
     overflow: hidden;
     isolation: isolate;
   }
@@ -124,13 +124,13 @@ import { heroFeatures } from "../data/content";
   }
   .hero__overlay {
     position: absolute; inset: 0; z-index: -1;
-    background: linear-gradient(90deg, rgba(58,68,52,0.82) 0%, rgba(74,86,64,0.66) 55%, rgba(90,103,78,0.5) 100%);
+    background: rgba(90, 103, 78, 0.6); /* #5A674E @ 0.6 */
   }
   @media (prefers-reduced-motion: reduce) {
     .hero__slide { animation: none; opacity: 0; }
     .hero__slide:nth-child(1) { opacity: 1; }
   }
-  .hero__inner { display: grid; grid-template-columns: 1.4fr 1fr; align-items: center; gap: 2rem; min-height: 360px; }
+  .hero__inner { display: grid; grid-template-columns: 1.4fr 1fr; align-items: center; gap: 2rem; min-height: 300px; }
   .hero__content { max-width: 720px; }
   .hero .eyebrow { color: var(--color-accent); }
   .hero h1 { color: var(--color-white); margin-bottom: 1.3rem; }
