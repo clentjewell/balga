@@ -1,7 +1,7 @@
 ---
 import { faqs } from "../data/faqs";
-export interface Props { id?: string; title?: string; bg?: string; }
-const { id = "faqs", title = "Frequently Asked Questions", bg } = Astro.props;
+export interface Props { id?: string; title?: string; image?: string; }
+const { id = "faqs", title = "Frequently Asked Questions", image } = Astro.props;
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
@@ -12,36 +12,43 @@ const jsonLd = {
   })),
 };
 ---
-<section class:list={["section faq", { "faq--bg": bg }]} id={id} style={bg ? `--faq-img:url('${bg}')` : undefined}>
-  {bg && <div class="faq__bg" aria-hidden="true"></div>}
-  <div class="container container-narrow">
-    <div class="faq__head reveal">
-      <span class="eyebrow">FAQs</span>
-      <h2>{title}</h2>
-    </div>
-    <div class="faq__list" data-faq>
-      {faqs.map((f, i) => (
-        <details class="faq__item" open={i === 0}>
-          <summary>
-            <span>{f.q}</span>
-            <span class="faq__icon" aria-hidden="true"></span>
-          </summary>
-          <div class="faq__body">
-            {f.a.map((p) => <p>{p}</p>)}
-          </div>
-        </details>
-      ))}
+<section class="section section--white faq" id={id}>
+  <div class="container">
+    <div class:list={["faq__wrap", { "faq__wrap--split": image }]}>
+      <div class="faq__main">
+        <div class="faq__head reveal">
+          <span class="eyebrow">FAQs</span>
+          <h2>{title}</h2>
+        </div>
+        <div class="faq__list" data-faq>
+          {faqs.map((f, i) => (
+            <details class="faq__item" open={i === 0}>
+              <summary>
+                <span>{f.q}</span>
+                <span class="faq__icon" aria-hidden="true"></span>
+              </summary>
+              <div class="faq__body">
+                {f.a.map((p) => <p>{p}</p>)}
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+      {image && (
+        <div class="faq__media reveal">
+          <img src={image} alt="Balga Designs native landscape" width="900" height="1100" loading="lazy" />
+        </div>
+      )}
     </div>
   </div>
 </section>
 <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
 
 <style>
-  .faq { background: var(--color-background); position: relative; isolation: isolate; }
-  .faq--bg { background: none; }
-  .faq__bg { position: absolute; inset: 0; z-index: -1; background: var(--faq-img) center/cover no-repeat; }
-  .faq__bg::after { content: ""; position: absolute; inset: 0; background: rgba(255, 253, 251, 0.9); }
+  .faq__wrap { max-width: calc(var(--container-narrow) + var(--gutter) * 2); margin-inline: auto; }
+  .faq__wrap--split { max-width: none; display: grid; grid-template-columns: 1.15fr 0.85fr; gap: clamp(2rem, 1rem + 4vw, 4rem); align-items: center; }
   .faq__head { text-align: center; margin-bottom: 2.5rem; }
+  .faq__wrap--split .faq__head { text-align: left; }
   .faq__item { border: 1px solid var(--color-border); border-radius: var(--radius-md); margin-bottom: 0.9rem; background: var(--color-background); overflow: hidden; }
   .faq__item summary {
     display: flex; align-items: center; justify-content: space-between; gap: 1rem;
@@ -57,6 +64,12 @@ const jsonLd = {
   .faq__body { padding: 0 1.4rem 1.3rem; }
   .faq__body p { color: var(--color-text); }
   .faq__body p + p { margin-top: 0.8rem; }
+  .faq__media img { width: 100%; height: 100%; max-height: 520px; object-fit: cover; border-radius: var(--radius-md); }
+  @media (max-width: 860px) {
+    .faq__wrap--split { grid-template-columns: 1fr; }
+    .faq__wrap--split .faq__media { order: -1; }
+    .faq__media img { max-height: 320px; }
+  }
 </style>
 
 <script>
