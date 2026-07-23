@@ -1,0 +1,37 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import ServiceCard from "../components/ServiceCard.astro";
+import ProjectsPreview from "../components/ProjectsPreview.astro";
+import WhyChooseUs from "../components/WhyChooseUs.astro";
+import TestimonialSlider from "../components/TestimonialSlider.astro";
+import Acknowledgement from "../components/Acknowledgement.astro";
+import { services } from "../data/services";
+---
+<BaseLayout title="Services" description="Total care for your garden — landscape design, garden facelifts, decorative plants, integrated pest management, weed control and horticulture consultation.">
+  <PageHero title="Services" image="/assets/services/garden-facelift.jpeg" crumbs={[{ label: "Home", href: "/" }, { label: "Services" }]} />
+
+  <section class="section section--white">
+    <div class="container">
+      <div class="svc-head reveal">
+        <span class="eyebrow">Our Services</span>
+        <h2>Total Care For Your Garden</h2>
+      </div>
+      <div class="svc-grid">
+        {services.map((s) => <ServiceCard service={s} />)}
+      </div>
+    </div>
+  </section>
+
+  <ProjectsPreview />
+  <WhyChooseUs />
+  <TestimonialSlider count={6} />
+  <Acknowledgement />
+</BaseLayout>
+
+<style>
+  .svc-head { text-align: center; margin-bottom: 3rem; }
+  .svc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+  @media (max-width: 900px) { .svc-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 600px) { .svc-grid { grid-template-columns: 1fr; max-width: 460px; margin-inline: auto; } }
+</style>

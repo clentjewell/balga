@@ -1,0 +1,21 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "balga-designs-preview",
+  "main": "src/worker.js",
+  "compatibility_date": "2025-05-01",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page",
+    "run_worker_first": true
+  },
+  "vars": {
+    // Preview clone: block search-engine indexing. Set to "false" (or override
+    // per-environment) to allow indexing on a production domain.
+    "PREVIEW_NOINDEX": "true"
+  },
+  "observability": {
+    "enabled": true
+  }
+}

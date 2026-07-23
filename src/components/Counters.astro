@@ -1,0 +1,69 @@
+---
+import { counters } from "../data/content";
+export interface Props { image?: string; }
+const { image = "/assets/home/feature-1.jpeg" } = Astro.props;
+---
+<section class="stats">
+  <div class="container stats__grid">
+    <div class="stats__media">
+      <img src={image} alt="Balga Designs planting native species on site" width="620" height="720" loading="lazy" style="object-position:center" />
+    </div>
+    <div class="stats__panel">
+      <ul class="stats__list" data-counters>
+        {counters.map((c) => (
+          <li>
+            <span class="stats__num" data-target={c.value} data-decimals={(c as any).decimals ?? 0} data-suffix={c.suffix}>0{c.suffix}</span>
+            <span class="stats__label">{c.label}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .stats { background: var(--color-background); }
+  .stats__grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 0; align-items: stretch; }
+  .stats__media { min-height: 420px; }
+  .stats__media img { width: 100%; height: 100%; object-fit: cover; }
+  .stats__panel { background: var(--color-secondary); color: #fff; display: grid; place-items: center; padding: clamp(2rem, 1rem + 5vw, 4rem); }
+  .stats__list { display: grid; grid-template-columns: 1fr 1fr; gap: 2.4rem 2rem; width: 100%; }
+  .stats__num { display: block; font-family: var(--font-heading); font-weight: 700; font-size: clamp(2.4rem, 1.8rem + 2vw, 3.4rem); line-height: 1; color: #fff; }
+  .stats__label { display: block; margin-top: 0.5rem; color: rgba(255, 255, 255, 0.85); font-size: 1rem; }
+  @media (max-width: 860px) {
+    .stats__grid { grid-template-columns: 1fr; }
+    .stats__media { min-height: 260px; }
+  }
+  @media (max-width: 440px) { .stats__list { grid-template-columns: 1fr 1fr; gap: 1.8rem 1rem; } }
+</style>
+
+<script>
+  function runCounters(root: Element) {
+    const nums = root.querySelectorAll<HTMLElement>(".stats__num");
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    nums.forEach((el) => {
+      const target = parseFloat(el.dataset.target || "0");
+      const decimals = parseInt(el.dataset.decimals || "0", 10);
+      const suffix = el.dataset.suffix || "";
+      if (reduce) { el.textContent = target.toFixed(decimals) + suffix; return; }
+      const dur = 1600; const start = performance.now();
+      const tick = (now: number) => {
+        const p = Math.min((now - start) / dur, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = (target * eased).toFixed(decimals) + suffix;
+        if (p < 1) requestAnimationFrame(tick);
+        else el.textContent = target.toFixed(decimals) + suffix;
+      };
+      requestAnimationFrame(tick);
+    });
+  }
+  const wrap = document.querySelector("[data-counters]");
+  if (wrap) {
+    if ("IntersectionObserver" in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => { if (e.isIntersecting) { runCounters(e.target); io.disconnect(); } });
+      }, { threshold: 0.35 });
+      io.observe(wrap);
+    } else { runCounters(wrap); }
+  }
+</script>

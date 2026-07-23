@@ -1,0 +1,7 @@
+# Preview deployment — indexing is disabled for this workers.dev clone.
+# To allow indexing on a production domain, replace this file with an
+# allow rule (User-agent: * / Allow: /) and set PUBLIC_NOINDEX=false at build time.
+User-agent: *
+Disallow: /
+
+Sitemap: https://balga-designs-preview.workers.dev/sitemap.xml

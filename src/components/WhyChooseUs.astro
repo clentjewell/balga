@@ -1,0 +1,34 @@
+---
+import { whyChooseUs } from "../data/content";
+export interface Props { showIntro?: boolean; }
+const { showIntro = true } = Astro.props;
+---
+<section class="section why">
+  <div class="container">
+    <div class="why__head reveal">
+      <span class="eyebrow">{whyChooseUs.eyebrow}</span>
+      <h2>{whyChooseUs.title}</h2>
+      {showIntro && <p class="lead mx-auto">{whyChooseUs.intro}</p>}
+    </div>
+    <ul class="why__grid">
+      {whyChooseUs.pillars.map((p, i) => (
+        <li class="why__card reveal">
+          <span class="why__num">{String(i + 1).padStart(2, "0")}</span>
+          <h3>{p.title}</h3>
+          <p>{p.text}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+<style>
+  .why { background: var(--color-background); text-align: center; }
+  .why__head { max-width: 60ch; margin-inline: auto; margin-bottom: 3rem; }
+  .why__head .lead { margin-top: 1rem; }
+  .why__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+  .why__card { background: var(--color-mint); padding: 2.4rem 1.8rem; border-radius: var(--radius-md); border-top: 3px solid var(--color-accent); }
+  .why__num { font-family: var(--font-heading); font-weight: 700; font-size: 1.4rem; color: var(--color-accent); }
+  .why__card h3 { margin: 0.8rem 0 0.7rem; }
+  .why__card p { color: var(--color-text); }
+  @media (max-width: 860px) { .why__grid { grid-template-columns: 1fr; } }
+</style>

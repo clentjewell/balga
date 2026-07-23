@@ -1,0 +1,34 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { nav } from "../data/site";
+---
+<BaseLayout title="Page Not Found – Balga Designs" description="The page you were looking for could not be found.">
+  <section class="notfound">
+    <div class="notfound__overlay"></div>
+    <div class="container notfound__inner">
+      <p class="notfound__code">404</p>
+      <h1>This path hasn’t grown here yet</h1>
+      <p class="notfound__text">The page you’re looking for may have been moved or no longer exists. Let’s get you back to familiar ground.</p>
+      <div class="notfound__actions">
+        <a href="/" class="btn btn--white">Back to Home</a>
+        <a href="/contact/" class="btn btn--outline-light">Contact Us</a>
+      </div>
+      <nav class="notfound__nav" aria-label="Site pages">
+        {nav.map((n) => <a href={n.href}>{n.label}</a>)}
+      </nav>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .notfound { position: relative; min-height: 78vh; display: grid; align-items: center; text-align: center; background: var(--color-hero) url('/assets/projects/project-05/after.jpeg') center/cover; padding-top: 120px; isolation: isolate; }
+  .notfound__overlay { position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(46,55,42,0.72), rgba(27,27,27,0.72)); }
+  .notfound__inner { display: flex; flex-direction: column; align-items: center; gap: 1rem; color: #fff; }
+  .notfound__code { font-family: var(--font-heading); font-weight: 700; font-size: clamp(4rem, 3rem + 8vw, 8rem); line-height: 1; color: var(--color-accent); }
+  .notfound h1 { color: #fff; }
+  .notfound__text { color: rgba(255, 255, 255, 0.9); max-width: 48ch; }
+  .notfound__actions { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; margin-top: 1rem; }
+  .notfound__nav { display: flex; flex-wrap: wrap; gap: 1.2rem; justify-content: center; margin-top: 2rem; }
+  .notfound__nav a { color: rgba(255,255,255,0.85); text-decoration: underline; }
+  .notfound__nav a:hover { color: #fff; }
+</style>

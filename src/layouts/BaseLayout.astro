@@ -1,0 +1,97 @@
+---
+import "../styles/tokens.css";
+import "../styles/global.css";
+import "../styles/utilities.css";
+import "../styles/components.css";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { site } from "../data/site";
+
+export interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+  canonical?: string;
+  bodyClass?: string;
+}
+
+const {
+  title,
+  description = "Balga Designs creates beautiful native landscapes with a regenerative perspective — sustainable garden design across the Northern Rivers to Southern Gold Coast.",
+  ogImage = "/assets/projects/project-02/after.jpeg",
+  canonical,
+  bodyClass = "",
+} = Astro.props;
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, "") ?? "";
+const canonicalUrl = canonical ?? new URL(Astro.url.pathname, Astro.site ?? "http://localhost").toString();
+const ogImageUrl = ogImage.startsWith("http") ? ogImage : siteUrl + ogImage;
+// Preview clone: block indexing unless explicitly disabled.
+const noindex = (import.meta.env.PUBLIC_NOINDEX ?? "true") !== "false";
+const fullTitle = title.includes("Balga Designs") ? title : `${title} – Balga Designs`;
+---
+
+<!doctype html>
+<html lang="en-AU">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="canonical" href={canonicalUrl} />
+
+    <link rel="preconnect" href="/" />
+    <link rel="preload" href="/fonts/montserrat-var.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="icon" type="image/png" href={site.logos.mark} />
+    <link rel="apple-touch-icon" href={site.logos.mark} />
+    <link rel="sitemap" href="/sitemap.xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Balga Designs" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+    <meta name="theme-color" content="#5a674e" />
+
+    <script is:inline>
+      document.documentElement.classList.add("js");
+    </script>
+  </head>
+  <body class={bodyClass}>
+    <a href="#main" class="skip-link">Skip to content</a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+
+    <script>
+      // Reveal-on-scroll (respects prefers-reduced-motion via CSS gating)
+      const els = document.querySelectorAll(".reveal");
+      if ("IntersectionObserver" in window && els.length) {
+        const io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((e) => {
+              if (e.isIntersecting) {
+                e.target.classList.add("is-visible");
+                io.unobserve(e.target);
+              }
+            });
+          },
+          { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
+        );
+        els.forEach((el) => io.observe(el));
+        // Failsafe: never leave content hidden if the observer doesn't fire.
+        setTimeout(() => els.forEach((el) => el.classList.add("is-visible")), 3000);
+      } else {
+        els.forEach((el) => el.classList.add("is-visible"));
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,67 @@
+---
+import { faqs } from "../data/faqs";
+export interface Props { id?: string; title?: string; }
+const { id = "faqs", title = "Frequently Asked Questions" } = Astro.props;
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((f) => ({
+    "@type": "Question",
+    name: f.q,
+    acceptedAnswer: { "@type": "Answer", text: f.a.join(" ") },
+  })),
+};
+---
+<section class="section section--white faq" id={id}>
+  <div class="container container-narrow">
+    <div class="faq__head reveal">
+      <span class="eyebrow">FAQs</span>
+      <h2>{title}</h2>
+    </div>
+    <div class="faq__list" data-faq>
+      {faqs.map((f, i) => (
+        <details class="faq__item" open={i === 0}>
+          <summary>
+            <span>{f.q}</span>
+            <span class="faq__icon" aria-hidden="true"></span>
+          </summary>
+          <div class="faq__body">
+            {f.a.map((p) => <p>{p}</p>)}
+          </div>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
+
+<style>
+  .faq__head { text-align: center; margin-bottom: 2.5rem; }
+  .faq__item { border: 1px solid var(--color-border); border-radius: var(--radius-md); margin-bottom: 0.9rem; background: var(--color-background); overflow: hidden; }
+  .faq__item summary {
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    padding: 1.15rem 1.4rem; cursor: pointer; font-weight: 600; color: var(--color-primary);
+    font-family: var(--font-heading); list-style: none;
+  }
+  .faq__item summary::-webkit-details-marker { display: none; }
+  .faq__icon { position: relative; flex: 0 0 auto; width: 18px; height: 18px; }
+  .faq__icon::before, .faq__icon::after { content: ""; position: absolute; background: var(--color-secondary); transition: transform var(--transition); }
+  .faq__icon::before { top: 8px; left: 0; width: 18px; height: 2px; }
+  .faq__icon::after { left: 8px; top: 0; width: 2px; height: 18px; }
+  .faq__item[open] .faq__icon::after { transform: scaleY(0); }
+  .faq__body { padding: 0 1.4rem 1.3rem; }
+  .faq__body p { color: var(--color-text); }
+  .faq__body p + p { margin-top: 0.8rem; }
+</style>
+
+<script>
+  const wrap = document.querySelector("[data-faq]");
+  if (wrap) {
+    const items = Array.from(wrap.querySelectorAll<HTMLDetailsElement>("details"));
+    items.forEach((d) => {
+      d.addEventListener("toggle", () => {
+        if (d.open) items.forEach((o) => { if (o !== d) o.open = false; });
+      });
+    });
+  }
+</script>

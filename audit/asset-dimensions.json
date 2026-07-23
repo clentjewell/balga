@@ -1,0 +1,287 @@
+{
+  "/assets/about/evening-view.jpg": {
+    "w": 1010,
+    "h": 1600,
+    "bytes": 68403
+  },
+  "/assets/about/fire.jpg": {
+    "w": 714,
+    "h": 1102,
+    "bytes": 124671
+  },
+  "/assets/blog/balga-meaning/balga-meaning-2.jpg": {
+    "w": 1200,
+    "h": 800,
+    "bytes": 272298
+  },
+  "/assets/blog/balga-meaning/balga-meaning.jpeg": {
+    "w": 1200,
+    "h": 802,
+    "bytes": 226524
+  },
+  "/assets/blog/balga-meaning/grass-tree-horizon.jpg.webp": {
+    "w": 1400,
+    "h": 990,
+    "bytes": 225530
+  },
+  "/assets/blog/balga-meaning/newrybar-63.jpg": {
+    "w": 1400,
+    "h": 934,
+    "bytes": 154154
+  },
+  "/assets/blog/balga-meaning.jpg": {
+    "w": 1400,
+    "h": 934,
+    "bytes": 154154
+  },
+  "/assets/blog/designing-planning/design-2.webp": {
+    "w": 1400,
+    "h": 2108,
+    "bytes": 558504
+  },
+  "/assets/blog/designing-planning/design-3.webp": {
+    "w": 1400,
+    "h": 2123,
+    "bytes": 210980
+  },
+  "/assets/blog/designing-planning/image-6.jpeg": {
+    "w": 1200,
+    "h": 864,
+    "bytes": 250624
+  },
+  "/assets/blog/designing-planning/why-designing-2.jpg": {
+    "w": 841,
+    "h": 1191,
+    "bytes": 140093
+  },
+  "/assets/blog/designing-planning/why-designing-3.jpg": {
+    "w": 1400,
+    "h": 1133,
+    "bytes": 326217
+  },
+  "/assets/blog/designing-planning/why-designing.jpg": {
+    "w": 736,
+    "h": 977,
+    "bytes": 140140
+  },
+  "/assets/blog/designing-planning.jpg": {
+    "w": 1200,
+    "h": 819,
+    "bytes": 229882
+  },
+  "/assets/blog/native-gardens/cow-paddock-country-garden.jpg": {
+    "w": 736,
+    "h": 883,
+    "bytes": 157831
+  },
+  "/assets/blog/native-gardens/native-gardens-1.jpg": {
+    "w": 733,
+    "h": 1100,
+    "bytes": 197058
+  },
+  "/assets/blog/native-gardens/native-gardens-2.jpg": {
+    "w": 594,
+    "h": 892,
+    "bytes": 128518
+  },
+  "/assets/blog/native-gardens/native-gardens-3.jpg": {
+    "w": 1024,
+    "h": 1536,
+    "bytes": 477320
+  },
+  "/assets/blog/native-gardens/native-gardens-7.webp": {
+    "w": 1400,
+    "h": 896,
+    "bytes": 384352
+  },
+  "/assets/blog/native-gardens/native-gardens.jpg": {
+    "w": 828,
+    "h": 1152,
+    "bytes": 228392
+  },
+  "/assets/blog/native-gardens.webp": {
+    "w": 1400,
+    "h": 896,
+    "bytes": 384352
+  },
+  "/assets/branding/logo-mark.png": {
+    "w": 1080,
+    "h": 344,
+    "bytes": 14427
+  },
+  "/assets/branding/logo-white.png": {
+    "w": 1144,
+    "h": 406,
+    "bytes": 20301
+  },
+  "/assets/home/feature-1.jpeg": {
+    "w": 530,
+    "h": 795,
+    "bytes": 136257
+  },
+  "/assets/home/feature-2.jpeg": {
+    "w": 736,
+    "h": 1106,
+    "bytes": 189857
+  },
+  "/assets/icons/arrow-4.png": {
+    "w": 400,
+    "h": 110,
+    "bytes": 2504
+  },
+  "/assets/icons/arrow-5.png": {
+    "w": 400,
+    "h": 110,
+    "bytes": 2580
+  },
+  "/assets/icons/icon1.png": {
+    "w": 400,
+    "h": 400,
+    "bytes": 8679
+  },
+  "/assets/icons/icon2.png": {
+    "w": 400,
+    "h": 400,
+    "bytes": 8572
+  },
+  "/assets/icons/icon3.png": {
+    "w": 400,
+    "h": 400,
+    "bytes": 14308
+  },
+  "/assets/icons/icon4.png": {
+    "w": 400,
+    "h": 400,
+    "bytes": 12381
+  },
+  "/assets/icons/icon7.png": {
+    "w": 400,
+    "h": 400,
+    "bytes": 12440
+  },
+  "/assets/pricing/package-1.jpg": {
+    "w": 707,
+    "h": 512,
+    "bytes": 109433
+  },
+  "/assets/pricing/package-2.jpeg": {
+    "w": 707,
+    "h": 512,
+    "bytes": 73247
+  },
+  "/assets/pricing/package-3.jpg": {
+    "w": 707,
+    "h": 512,
+    "bytes": 106490
+  },
+  "/assets/pricing/package-4.jpg": {
+    "w": 707,
+    "h": 512,
+    "bytes": 89229
+  },
+  "/assets/projects/preview-01-after.jpeg": {
+    "w": 1600,
+    "h": 900,
+    "bytes": 325479
+  },
+  "/assets/projects/project-01/after.jpg": {
+    "w": 1024,
+    "h": 768,
+    "bytes": 205847
+  },
+  "/assets/projects/project-01/before.jpg": {
+    "w": 1600,
+    "h": 900,
+    "bytes": 254384
+  },
+  "/assets/projects/project-02/after.jpeg": {
+    "w": 1600,
+    "h": 1200,
+    "bytes": 550251
+  },
+  "/assets/projects/project-02/before.jpg": {
+    "w": 1600,
+    "h": 900,
+    "bytes": 370759
+  },
+  "/assets/projects/project-03/after.jpg": {
+    "w": 1600,
+    "h": 1139,
+    "bytes": 464836
+  },
+  "/assets/projects/project-03/before.jpg": {
+    "w": 1600,
+    "h": 900,
+    "bytes": 262173
+  },
+  "/assets/projects/project-04/after.jpeg": {
+    "w": 1600,
+    "h": 900,
+    "bytes": 430457
+  },
+  "/assets/projects/project-04/before.jpg": {
+    "w": 1600,
+    "h": 900,
+    "bytes": 281579
+  },
+  "/assets/projects/project-05/after.jpeg": {
+    "w": 1600,
+    "h": 1200,
+    "bytes": 460855
+  },
+  "/assets/projects/project-05/before.jpeg": {
+    "w": 1600,
+    "h": 900,
+    "bytes": 282312
+  },
+  "/assets/projects/project-06/after.jpeg": {
+    "w": 1600,
+    "h": 900,
+    "bytes": 358970
+  },
+  "/assets/projects/project-06/before.jpeg": {
+    "w": 1600,
+    "h": 900,
+    "bytes": 236390
+  },
+  "/assets/projects/project-07/after.jpg": {
+    "w": 1600,
+    "h": 1200,
+    "bytes": 573671
+  },
+  "/assets/projects/project-07/before.jpg": {
+    "w": 1600,
+    "h": 998,
+    "bytes": 436667
+  },
+  "/assets/services/decorative-plants.png": {
+    "w": 1000,
+    "h": 989,
+    "bytes": 595592
+  },
+  "/assets/services/garden-facelift.jpeg": {
+    "w": 800,
+    "h": 740,
+    "bytes": 155616
+  },
+  "/assets/services/horticulture.png": {
+    "w": 800,
+    "h": 720,
+    "bytes": 331124
+  },
+  "/assets/services/landscape-design.jpg": {
+    "w": 800,
+    "h": 750,
+    "bytes": 137496
+  },
+  "/assets/services/pest-management.jpg": {
+    "w": 800,
+    "h": 740,
+    "bytes": 208464
+  },
+  "/assets/services/weed-control.jpg": {
+    "w": 860,
+    "h": 780,
+    "bytes": 146636
+  }
+}

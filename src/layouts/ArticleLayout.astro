@@ -1,0 +1,71 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import CTASection from "../components/CTASection.astro";
+import Acknowledgement from "../components/Acknowledgement.astro";
+import type { CollectionEntry } from "astro:content";
+
+export interface Props { post: CollectionEntry<"blog">; }
+const { post } = Astro.props;
+const { data } = post;
+const siteUrl = Astro.site?.toString().replace(/\/$/, "") ?? "";
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: data.title,
+  description: data.description,
+  image: siteUrl + data.image,
+  datePublished: data.dateISO,
+  author: { "@type": "Organization", name: "Balga Designs" },
+  publisher: { "@type": "Organization", name: "Balga Designs", logo: { "@type": "ImageObject", url: siteUrl + "/assets/branding/logo-mark.png" } },
+  mainEntityOfPage: siteUrl + "/" + post.slug + "/",
+};
+---
+<BaseLayout title={data.title} description={data.description} ogImage={data.image}>
+  <section class="article-hero" style={`--hero-img:url('${data.image}')`}>
+    <div class="article-hero__overlay"></div>
+    <div class="container article-hero__inner">
+      <h1>{data.title}</h1>
+      <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Blog", href: "/balga-blog/" }, { label: data.title }]} />
+    </div>
+  </section>
+
+  <article class="section section--white">
+    <div class="container container-narrow article-body">
+      <p class="article-body__meta"><time datetime={data.dateISO}>{data.date}</time></p>
+      <div class="prose">
+        <slot />
+      </div>
+    </div>
+  </article>
+
+  <CTASection
+    title="Meaningful Landscapes Start Here"
+    image="/assets/blog/native-gardens.webp"
+    buttons={[
+      { label: "Contact Us", href: "/contact/", variant: "btn--white" },
+      { label: "Pricing List", href: "/pricing/", variant: "btn--outline-light" },
+    ]}
+  />
+  <Acknowledgement />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
+</BaseLayout>
+
+<style>
+  .article-hero { position: relative; min-height: clamp(300px, 40vw, 440px); display: grid; align-items: center; text-align: center; background-image: var(--hero-img); background-size: cover; background-position: center; padding-top: 90px; isolation: isolate; }
+  .article-hero__overlay { position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(27,27,27,0.5), rgba(46,55,42,0.6)); }
+  .article-hero__inner { display: flex; flex-direction: column; align-items: center; gap: 1.2rem; }
+  .article-hero h1 { color: #fff; max-width: 20ch; }
+  .article-body__meta { color: var(--color-accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.85rem; margin-bottom: 1.5rem; }
+</style>
+
+<style is:global>
+  .prose { color: var(--color-text); }
+  .prose h2 { color: var(--color-primary); font-size: clamp(1.6rem, 1.3rem + 1.3vw, 2rem); margin: 2.4rem 0 1rem; }
+  .prose h3 { color: var(--color-primary); font-size: 1.3rem; margin: 1.9rem 0 0.7rem; }
+  .prose p { margin-bottom: 1.1rem; line-height: 1.9; }
+  .prose img { width: 100%; height: auto; border-radius: var(--radius-md); margin: 1.8rem 0; box-shadow: var(--shadow-soft); }
+  .prose a { color: var(--color-secondary); text-decoration: underline; }
+  .prose ul, .prose ol { margin: 1rem 0 1.4rem; padding-left: 1.3rem; }
+  .prose li { margin-bottom: 0.5rem; list-style: disc; }
+</style>

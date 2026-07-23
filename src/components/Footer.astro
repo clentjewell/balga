@@ -1,0 +1,96 @@
+---
+import { site, footerLinks } from "../data/site";
+const year = 2025;
+---
+
+<footer class="site-footer">
+  <div class="container site-footer__grid">
+    <div class="site-footer__brand">
+      <img src={site.logos.white} alt="Balga Designs — Sustainable Landscapes" width="190" height="67" loading="lazy" />
+      <p>{site.acknowledgement}</p>
+    </div>
+
+    <div class="site-footer__col">
+      <h4>Get In Touch</h4>
+      <ul class="site-footer__contact">
+        <li><span aria-hidden="true">📍</span> {site.contact.address}</li>
+        <li><span aria-hidden="true">✉️</span> <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a></li>
+        <li><span aria-hidden="true">📞</span> <a href={site.contact.phoneHref}>{site.contact.phone}</a></li>
+        <li><span aria-hidden="true">🕐</span> {site.contact.hours}</li>
+        <li><span aria-hidden="true">🌿</span> {site.contact.serviceArea}</li>
+      </ul>
+    </div>
+
+    <div class="site-footer__col">
+      <h4>Quicklinks</h4>
+      <ul class="site-footer__links">
+        {footerLinks.quicklinks.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+      </ul>
+    </div>
+
+    <div class="site-footer__col">
+      <h4>Support</h4>
+      <ul class="site-footer__links">
+        {footerLinks.support.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+      </ul>
+      <div class="site-footer__social">
+        <a href={site.social.facebook} aria-label="Balga Designs on Facebook" rel="noopener" target="_blank">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.78-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0 0 22 12Z"/></svg>
+        </a>
+        <a href={site.social.instagram} aria-label="Balga Designs on Instagram" rel="noopener" target="_blank">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="currentColor"><path d="M12 2.2c3.2 0 3.58 0 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s0 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58 0-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.7 3.7 0 0 1-1.38-.9 3.7 3.7 0 0 1-.9-1.38c-.16-.42-.36-1.06-.41-2.23C2.21 15.58 2.2 15.2 2.2 12s0-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.21 8.8 2.2 12 2.2Zm0 1.8c-3.15 0-3.5 0-4.74.07-.9.04-1.38.19-1.71.31-.43.17-.74.37-1.06.69-.32.32-.52.63-.69 1.06-.12.33-.27.81-.31 1.71C3.2 8.9 3.2 9.25 3.2 12s0 3.1.07 4.34c.04.9.19 1.38.31 1.71.17.43.37.74.69 1.06.32.32.63.52 1.06.69.33.12.81.27 1.71.31 1.24.06 1.59.07 4.74.07s3.5 0 4.74-.07c.9-.04 1.38-.19 1.71-.31.43-.17.74-.37 1.06-.69.32-.32.52-.63.69-1.06.12-.33.27-.81.31-1.71.06-1.24.07-1.59.07-4.34s0-3.1-.07-4.34c-.04-.9-.19-1.38-.31-1.71a2.85 2.85 0 0 0-.69-1.06 2.85 2.85 0 0 0-1.06-.69c-.33-.12-.81-.27-1.71-.31C15.5 4 15.15 4 12 4Zm0 3.06A4.94 4.94 0 1 1 12 17a4.94 4.94 0 0 1 0-9.94Zm0 1.8a3.14 3.14 0 1 0 0 6.28 3.14 3.14 0 0 0 0-6.28Zm5.14-.9a1.15 1.15 0 1 1 0 2.3 1.15 1.15 0 0 1 0-2.3Z"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container site-footer__bar">
+    <p>Copyright © {year} Balga Designs</p>
+    <p>Develop by <a href={site.developer.url} rel="noopener" target="_blank">{site.developer.name}</a></p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--color-footer);
+    color: rgba(255, 255, 255, 0.82);
+    padding-top: clamp(3rem, 2rem + 4vw, 5rem);
+    font-size: 0.95rem;
+  }
+  .site-footer__grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1.3fr 1fr 1fr;
+    gap: 2.5rem;
+    padding-bottom: 2.5rem;
+  }
+  .site-footer__brand img { width: 190px; height: auto; margin-bottom: 1.2rem; }
+  .site-footer__brand p { color: rgba(255, 255, 255, 0.72); font-size: 0.9rem; line-height: 1.9; max-width: 42ch; }
+  .site-footer h4 { color: #fff; font-size: 1.15rem; margin-bottom: 1.1rem; }
+  .site-footer a { color: rgba(255, 255, 255, 0.82); }
+  .site-footer a:hover { color: #fff; }
+  .site-footer__contact { display: flex; flex-direction: column; gap: 0.7rem; }
+  .site-footer__contact li { display: flex; gap: 0.6rem; align-items: flex-start; line-height: 1.5; }
+  .site-footer__links { display: flex; flex-direction: column; gap: 0.6rem; }
+  .site-footer__social { display: flex; gap: 0.8rem; margin-top: 1.4rem; }
+  .site-footer__social a {
+    display: grid; place-items: center; width: 38px; height: 38px;
+    border: 1px solid rgba(255, 255, 255, 0.35); border-radius: 4px;
+    transition: background var(--transition), color var(--transition);
+  }
+  .site-footer__social a:hover { background: #fff; color: var(--color-secondary); }
+  .site-footer__bar {
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.6rem;
+    padding-block: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.16);
+    font-size: 0.88rem;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  @media (max-width: 900px) {
+    .site-footer__grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+    .site-footer__brand { grid-column: 1 / -1; }
+  }
+  @media (max-width: 560px) {
+    .site-footer__grid { grid-template-columns: 1fr; }
+    .site-footer__bar { flex-direction: column; text-align: center; }
+  }
+</style>

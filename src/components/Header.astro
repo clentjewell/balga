@@ -1,0 +1,206 @@
+---
+import { site, nav } from "../data/site";
+const path = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === "/" ? path === "/" : path.startsWith(href);
+---
+
+<header class="site-header" data-header>
+  <div class="container site-header__inner">
+    <a href="/" class="site-header__logo" aria-label="Balga Designs home">
+      <img
+        src={site.logos.white}
+        alt="Balga Designs — Sustainable Landscapes"
+        width="200"
+        height="71"
+        fetchpriority="high"
+      />
+    </a>
+
+    <nav class="site-nav" aria-label="Primary">
+      <ul class="site-nav__list">
+        {
+          nav.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class:list={["site-nav__link", { "is-active": isActive(item.href) }]}
+                aria-current={isActive(item.href) ? "page" : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="site-header__actions">
+      <a href="/contact/" class="btn btn--outline-light site-header__cta">Contact Us</a>
+      <button
+        type="button"
+        class="menu-toggle"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        data-menu-open
+      >
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile slide-in menu -->
+<div class="mobile-menu" id="mobile-menu" data-mobile-menu hidden>
+  <div class="mobile-menu__backdrop" data-menu-close></div>
+  <div class="mobile-menu__panel" role="dialog" aria-modal="true" aria-label="Site menu">
+    <div class="mobile-menu__head">
+      <img src={site.logos.white} alt="Balga Designs" width="150" height="53" />
+      <button type="button" class="mobile-menu__close" aria-label="Close menu" data-menu-close>
+        &times;
+      </button>
+    </div>
+    <nav aria-label="Mobile">
+      <ul class="mobile-menu__list">
+        {nav.map((item) => (
+          <li>
+            <a href={item.href} class:list={["mobile-menu__link", { "is-active": isActive(item.href) }]}>
+              {item.label}
+            </a>
+          </li>
+        ))}
+        <li><a href="/contact/" class="mobile-menu__link">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="mobile-menu__foot">
+      <a href={site.contact.phoneHref}>{site.contact.phone}</a>
+      <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
+    </div>
+  </div>
+</div>
+
+<style>
+  .site-header {
+    position: absolute;
+    inset: 0 0 auto 0;
+    z-index: 100;
+    padding-block: 1.4rem;
+  }
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+  .site-header__logo img { width: clamp(150px, 14vw, 200px); height: auto; }
+
+  .site-nav { flex: 1; display: flex; justify-content: center; }
+  .site-nav__list { display: flex; gap: clamp(1rem, 2vw, 2.2rem); align-items: center; }
+  .site-nav__link {
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    position: relative;
+    padding-block: 0.3rem;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.28);
+  }
+  .site-nav__link::after {
+    content: "";
+    position: absolute;
+    left: 0; bottom: 0;
+    width: 0; height: 2px;
+    background: #fff;
+    transition: width var(--transition);
+  }
+  .site-nav__link:hover::after,
+  .site-nav__link.is-active::after { width: 100%; }
+
+  .site-header__actions { display: flex; align-items: center; gap: 0.75rem; }
+  .site-header__cta { padding: 11px 22px; font-size: 0.95rem; }
+
+  .menu-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    padding: 8px;
+  }
+  .menu-toggle span {
+    width: 26px; height: 2px; background: #fff; display: block;
+    transition: transform var(--transition), opacity var(--transition);
+  }
+
+  /* Mobile menu */
+  .mobile-menu { position: fixed; inset: 0; z-index: 1000; }
+  .mobile-menu[hidden] { display: none; }
+  .mobile-menu__backdrop { position: absolute; inset: 0; background: rgba(27, 27, 27, 0.55); opacity: 0; transition: opacity var(--transition); }
+  .mobile-menu__panel {
+    position: absolute; top: 0; right: 0; height: 100%;
+    width: min(86vw, 340px);
+    background: var(--color-secondary);
+    color: #fff;
+    padding: 1.6rem 1.5rem;
+    transform: translateX(100%);
+    transition: transform var(--transition);
+    display: flex; flex-direction: column; gap: 1.5rem;
+    overflow-y: auto;
+  }
+  .mobile-menu.is-open .mobile-menu__backdrop { opacity: 1; }
+  .mobile-menu.is-open .mobile-menu__panel { transform: none; }
+  .mobile-menu__head { display: flex; align-items: center; justify-content: space-between; }
+  .mobile-menu__close { font-size: 2rem; line-height: 1; color: #fff; padding: 0 0.3rem; }
+  .mobile-menu__list { display: flex; flex-direction: column; gap: 0.2rem; }
+  .mobile-menu__link {
+    color: #fff; font-size: 1.15rem; font-weight: 500; display: block;
+    padding: 0.75rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  }
+  .mobile-menu__link.is-active { color: var(--color-accent); }
+  .mobile-menu__foot { display: flex; flex-direction: column; gap: 0.4rem; margin-top: auto; font-size: 0.95rem; opacity: 0.9; }
+
+  @media (max-width: 1024px) {
+    .site-nav { display: none; }
+    .site-header__cta { display: none; }
+    .menu-toggle { display: flex; }
+  }
+</style>
+
+<script>
+  const menu = document.querySelector<HTMLElement>("[data-mobile-menu]");
+  const openBtn = document.querySelector<HTMLButtonElement>("[data-menu-open]");
+  const closers = document.querySelectorAll<HTMLElement>("[data-menu-close]");
+  let lastFocused: HTMLElement | null = null;
+
+  function openMenu() {
+    if (!menu) return;
+    lastFocused = document.activeElement as HTMLElement;
+    menu.hidden = false;
+    requestAnimationFrame(() => menu.classList.add("is-open"));
+    document.body.style.overflow = "hidden";
+    openBtn?.setAttribute("aria-expanded", "true");
+    const first = menu.querySelector<HTMLElement>("a, button");
+    first?.focus();
+    document.addEventListener("keydown", onKey);
+  }
+  function closeMenu() {
+    if (!menu) return;
+    menu.classList.remove("is-open");
+    document.body.style.overflow = "";
+    openBtn?.setAttribute("aria-expanded", "false");
+    document.removeEventListener("keydown", onKey);
+    setTimeout(() => { if (menu) menu.hidden = true; }, 300);
+    lastFocused?.focus();
+  }
+  function onKey(e: KeyboardEvent) {
+    if (e.key === "Escape") closeMenu();
+    if (e.key === "Tab" && menu) {
+      const f = Array.from(menu.querySelectorAll<HTMLElement>("a, button")).filter((el) => el.offsetParent !== null);
+      if (!f.length) return;
+      const first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  }
+  openBtn?.addEventListener("click", openMenu);
+  closers.forEach((c) => c.addEventListener("click", closeMenu));
+</script>

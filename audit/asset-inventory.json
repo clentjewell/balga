@@ -1,0 +1,346 @@
+{
+  "generated": "phase-2",
+  "totalAssets": 57,
+  "assets": [
+    {
+      "dest": "/assets/branding/logo-white.png",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2024/08/Balga-Designs-Logo-with-TAGLINE_White.png",
+      "bytes": 42889,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/branding/logo-mark.png",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2024/08/Balga-Designs-Logo.png",
+      "bytes": 31694,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/icons/icon1.png",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2024/08/icon1.png",
+      "bytes": 34232,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/icons/icon2.png",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2024/08/icon2.png",
+      "bytes": 29310,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/icons/icon3.png",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2024/08/icon3.png",
+      "bytes": 47919,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/icons/icon4.png",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2024/08/icon4.png",
+      "bytes": 43414,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/icons/icon7.png",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2024/08/icon7.png",
+      "bytes": 40419,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/icons/arrow-4.png",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2024/08/arrow_Asset-4.png",
+      "bytes": 8735,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/icons/arrow-5.png",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2024/08/arrow_Asset-5.png",
+      "bytes": 8852,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/home/feature-1.jpeg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2025/04/image-1.jpeg",
+      "bytes": 142310,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/home/feature-2.jpeg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2025/04/image-2.jpeg",
+      "bytes": 199846,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/about/fire.jpg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2024/09/Fire.jpg",
+      "bytes": 188897,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/about/evening-view.jpg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2024/09/Evening-view-at-balga-designs.jpg",
+      "bytes": 68403,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/services/landscape-design.jpg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/elementor/thumbs/design-plans-AI-r4td2ikvebns6qblmaobxyxzigmh6mq3x7pp2a2h58.jpg",
+      "bytes": 161046,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/services/garden-facelift.jpeg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/elementor/thumbs/Balga-Designs-Garden-scaled-qtt7h02sz9sd3i67v56pmdq6k0csl5l3b3xu7gojjc.jpeg",
+      "bytes": 188622,
+      "from": "mirror"
+    },
+    {
+      "dest": "services/decorative-plants.png",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/elementor/thumbs/Screenshot-2025-04-24-at-3.40.27 pm-r4teqcyyilkzcze865x8ovah1lnr8waw5eyl0hc4zw.png",
+      "status": "MISSING"
+    },
+    {
+      "dest": "/assets/services/pest-management.jpg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/elementor/thumbs/IMG_4063-scaled-r4tf0uu2tzy6ykexg3e0oicrt42w2mrvc0nzqf4dm0.jpg",
+      "bytes": 259300,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/services/weed-control.jpg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/elementor/thumbs/IMG_3138-scaled-r4wx2c4oy0ot4owcj2sy77v9ss95cisfuu9dxuc394.jpg",
+      "bytes": 175281,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/services/horticulture.png",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/elementor/thumbs/garden-bed-I-r4wzdrb0rdm2k0ttraf9q0pz4gjwaf1esnumk2cx0g.png",
+      "bytes": 995340,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/pricing/package-1.jpg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2025/05/Package-1-717x512px.jpg",
+      "bytes": 436830,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/pricing/package-2.jpeg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2025/05/Package-2-717x512px.jpeg",
+      "bytes": 169559,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/pricing/package-3.jpg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2025/05/Package3-717x512px.jpg",
+      "bytes": 440084,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/pricing/package-4.jpg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2025/05/Package4-717x512px.jpg",
+      "bytes": 405291,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/projects/project-01/before.jpg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2024/09/Before-Balgs-deisgn-project_1600x900px.jpg",
+      "bytes": 1046238,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/projects/project-01/after.jpg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2024/09/After-Balga-Designs.jpg",
+      "bytes": 274808,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/projects/project-02/before.jpg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2024/09/Before-balga-designs-projects.jpg",
+      "bytes": 464481,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/projects/project-02/after.jpeg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2024/09/Blaga-Designs-scaled.jpeg",
+      "bytes": 1478384,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/projects/project-03/before.jpg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2024/09/Balga-designs-projects-1.jpg",
+      "bytes": 334779,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/projects/project-03/after.jpg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2025/04/IMG_4948-1-scaled.jpg",
+      "bytes": 1217150,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/projects/project-04/before.jpg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2024/09/Project-2-before.jpg",
+      "bytes": 376328,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/projects/project-04/after.jpeg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2024/09/Project-2-scaled.jpeg",
+      "bytes": 1180457,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/projects/project-05/before.jpeg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2024/09/before-3-scaled.jpeg",
+      "bytes": 727997,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/projects/project-05/after.jpeg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2024/09/after-4-scaled.jpeg",
+      "bytes": 1305987,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/projects/project-06/before.jpeg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2024/09/before-2-scaled.jpeg",
+      "bytes": 591104,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/projects/project-06/after.jpeg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2024/09/after-2-1.jpeg",
+      "bytes": 1956176,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/projects/project-07/before.jpg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2025/04/IMG_5268-scaled.jpg",
+      "bytes": 1073367,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/projects/project-07/after.jpg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2025/04/IMG_6384-scaled.jpg",
+      "bytes": 1530870,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/projects/preview-01-after.jpeg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2024/09/Poject-1-after-balga-designs-1.jpeg",
+      "bytes": 787744,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/blog/native-gardens.webp",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2025/05/native-gardens-7.webp",
+      "bytes": 983474,
+      "from": "fetch"
+    },
+    {
+      "dest": "/assets/blog/designing-planning.jpg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2025/04/unnamed-file.jpg",
+      "bytes": 524086,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/blog/balga-meaning.jpg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2024/08/NewrybarLandscapeDesign_63.jpg",
+      "bytes": 393877,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/blog/native-gardens/native-gardens-7.webp",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2025/05/native-gardens-7.webp",
+      "bytes": 983474,
+      "from": "fetch"
+    },
+    {
+      "dest": "/assets/blog/native-gardens/native-gardens-3.jpg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2025/05/Native-gardens-3.jpg",
+      "bytes": 514765,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/blog/native-gardens/native-gardens-1.jpg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2025/05/Native-gardens-1.jpg",
+      "bytes": 210015,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/blog/native-gardens/native-gardens-2.jpg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2025/05/Native-gardens-2.jpg",
+      "bytes": 135555,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/blog/native-gardens/native-gardens.jpg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2025/05/Native-gardens.jpg",
+      "bytes": 242309,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/blog/native-gardens/cow-paddock-country-garden.jpg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2024/09/A-Vacant-Cow-Paddock-Turned-Relaxed-Australian-Country-Garden.jpg",
+      "bytes": 168598,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/blog/designing-planning/why-designing-2.jpg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2025/05/Why-Designing-2.jpg",
+      "bytes": 153585,
+      "from": "mirror"
+    },
+    {
+      "dest": "blog/designing-planning/why-designing-3.jpg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2025/05/Why-Designing-3-.jpg",
+      "status": "MISSING"
+    },
+    {
+      "dest": "/assets/blog/designing-planning/why-designing.jpg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2025/05/Why-Designing.jpg",
+      "bytes": 150445,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/blog/designing-planning/design-3.webp",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2025/05/desing-3.webp",
+      "bytes": 271988,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/blog/designing-planning/design-2.webp",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2025/05/design-2.webp",
+      "bytes": 700450,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/blog/designing-planning/image-6.jpeg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2025/04/image-6.jpeg",
+      "bytes": 585992,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/blog/balga-meaning/newrybar-63.jpg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2024/08/NewrybarLandscapeDesign_63.jpg",
+      "bytes": 393877,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/blog/balga-meaning/grass-tree-horizon.jpg.webp",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2025/04/Grass-Tree-Horizon-Landscape-KARINA-JAMBRAK-GICLEE-ART-PRINT-2.jpg.webp",
+      "bytes": 347928,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/blog/balga-meaning/balga-meaning-2.jpg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2025/05/Balga-meaning-2.jpg",
+      "bytes": 299086,
+      "from": "mirror"
+    },
+    {
+      "dest": "/assets/blog/balga-meaning/balga-meaning.jpeg",
+      "source": "https://balgadesigns.com.au/wp-content/uploads/2025/05/Balga-Meaning.jpeg",
+      "bytes": 297749,
+      "from": "mirror"
+    }
+  ]
+}

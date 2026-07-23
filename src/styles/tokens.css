@@ -1,0 +1,48 @@
+/* Design tokens — extracted from balgadesigns.com.au computed styles + Elementor palette */
+:root {
+  /* Fonts */
+  --font-heading: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-body: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  /* Colours */
+  --color-primary: #1b1b1b;      /* dark headings */
+  --color-secondary: #5a674e;    /* brand green */
+  --color-secondary-dark: #464f3c;
+  --color-text: #6b847a;         /* sage body */
+  --color-accent: #b7b597;       /* khaki accent / eyebrow */
+  --color-mint: #ddebea;         /* section bg */
+  --color-sand: #dad3be;         /* section bg / stat block */
+  --color-hero: #939b8a;         /* hero green */
+  --color-card: #a7a489;         /* service card khaki */
+  --color-white: #fefefc;
+  --color-background: #fffdfb;    /* warm off-white */
+  --color-footer: #5a674e;
+  --color-muted: #8a9a8f;
+  --color-border: rgba(90, 103, 78, 0.18);
+
+  /* Typography scale (desktop) */
+  --fs-body: 1rem;               /* 16px */
+  --lh-body: 1.8;
+  --fs-h1: clamp(2.5rem, 1.6rem + 3.8vw, 4.375rem);   /* up to 70px */
+  --fs-h2: clamp(1.9rem, 1.35rem + 2.2vw, 2.9375rem); /* up to 47px */
+  --fs-h3: clamp(1.35rem, 1.2rem + 0.55vw, 1.5625rem);/* up to 25px */
+  --fs-h4: clamp(1.15rem, 1.05rem + 0.4vw, 1.3125rem);/* up to 21px */
+  --fs-eyebrow: 0.875rem;
+  --ls-eyebrow: 0.3em;
+
+  /* Layout */
+  --container: 1140px;
+  --container-narrow: 820px;
+  --container-wide: 1320px;
+  --gutter: 20px;
+  --section-y: clamp(3.5rem, 2rem + 6vw, 6.5rem);
+
+  /* Radii / shadows */
+  --radius-pill: 999px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --shadow-card: 0 18px 40px -24px rgba(27, 27, 27, 0.35);
+  --shadow-soft: 0 10px 30px -18px rgba(27, 27, 27, 0.28);
+
+  --transition: 0.28s ease;
+}

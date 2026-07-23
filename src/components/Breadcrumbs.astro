@@ -1,0 +1,36 @@
+---
+export interface Crumb { label: string; href?: string; }
+export interface Props { items: Crumb[]; light?: boolean; }
+const { items, light = true } = Astro.props;
+const siteUrl = Astro.site?.toString().replace(/\/$/, "") ?? "";
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: items.map((c, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    name: c.label,
+    ...(c.href ? { item: siteUrl + c.href } : {}),
+  })),
+};
+---
+<nav class:list={["breadcrumbs", { "is-light": light }]} aria-label="Breadcrumb">
+  <ol>
+    {items.map((c, i) => (
+      <li>
+        {c.href && i < items.length - 1 ? <a href={c.href}>{c.label}</a> : <span aria-current="page">{c.label}</span>}
+        {i < items.length - 1 && <span class="sep" aria-hidden="true">›</span>}
+      </li>
+    ))}
+  </ol>
+</nav>
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
+
+<style>
+  .breadcrumbs ol { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.12em; }
+  .breadcrumbs li { display: flex; align-items: center; gap: 0.5rem; }
+  .breadcrumbs.is-light, .breadcrumbs.is-light a { color: rgba(255, 255, 255, 0.9); }
+  .breadcrumbs a:hover { color: #fff; text-decoration: underline; }
+  .breadcrumbs .sep { opacity: 0.7; }
+  .breadcrumbs span[aria-current] { color: #fff; font-weight: 500; }
+</style>

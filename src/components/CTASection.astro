@@ -1,0 +1,44 @@
+---
+import { site } from "../data/site";
+export interface CTAButton { label: string; href: string; variant?: string; }
+export interface Props {
+  title?: string;
+  buttons?: CTAButton[];
+  image?: string;
+}
+const {
+  title = "Beautiful Landscapes Start Here",
+  buttons = [{ label: "Contact Us", href: "/contact/", variant: "btn--white" }],
+  image = "/assets/projects/project-01/after.jpg",
+} = Astro.props;
+---
+<section class="cta" style={`--cta-img: url('${image}')`}>
+  <div class="cta__overlay"></div>
+  <div class="container cta__inner reveal">
+    <h2>{title}</h2>
+    <p class="cta__brand">{site.brandLine}</p>
+    <p class="cta__slogan">{site.slogan}</p>
+    <div class="cta__actions">
+      {buttons.map((b) => <a href={b.href} class:list={["btn", b.variant ?? "btn--white"]}>{b.label}</a>)}
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta {
+    position: relative;
+    background-image: var(--cta-img);
+    background-size: cover;
+    background-position: center;
+    background-attachment: scroll;
+    padding-block: clamp(4rem, 3rem + 6vw, 7rem);
+    text-align: center;
+    isolation: isolate;
+  }
+  .cta__overlay { position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(27,27,27,0.62), rgba(46,55,42,0.72)); }
+  .cta__inner { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; }
+  .cta h2 { color: #fff; margin-bottom: 0.6rem; }
+  .cta__brand { color: #fff; font-weight: 600; font-size: 1.1rem; }
+  .cta__slogan { color: rgba(255, 255, 255, 0.88); }
+  .cta__actions { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; margin-top: 1.6rem; }
+</style>

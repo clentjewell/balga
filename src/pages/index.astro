@@ -1,0 +1,144 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ServiceCard from "../components/ServiceCard.astro";
+import WhyChooseUs from "../components/WhyChooseUs.astro";
+import Counters from "../components/Counters.astro";
+import HowWeWork from "../components/HowWeWork.astro";
+import ProjectsPreview from "../components/ProjectsPreview.astro";
+import CTASection from "../components/CTASection.astro";
+import Acknowledgement from "../components/Acknowledgement.astro";
+import VideoModal from "../components/VideoModal.astro";
+import { services } from "../data/services";
+import { heroFeatures } from "../data/content";
+---
+<BaseLayout
+  title="Balga Designs – Sustainable Landscapes"
+  description="Beautiful native landscapes with a regenerative perspective. Balga Designs blends aesthetic beauty with ecological harmony across the Northern Rivers to Southern Gold Coast."
+>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero__waves" aria-hidden="true"></div>
+    <div class="container hero__inner">
+      <div class="hero__content">
+        <span class="eyebrow">Gardening Service</span>
+        <h1>Beautiful Native Landscapes with a regenerative perspective</h1>
+        <p class="hero__sub">Our approach blends aesthetic beauty with ecological harmony, ensuring your outdoor space not only looks stunning but also nurtures the local ecosystem.</p>
+        <div class="hero__actions">
+          <a href="/contact/" class="btn btn--outline-light">Start Your Project</a>
+        </div>
+      </div>
+      <div class="hero__aside">
+        <button type="button" class="hero__play" data-video-open aria-label="Play video">
+          <span class="hero__play-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
+          <span>Play Video</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURE PAIR -->
+  <section class="section--mint feature-pair">
+    <div class="container">
+      <ul class="feature-pair__grid">
+        {heroFeatures.map((f) => (
+          <li class="feature-pair__card reveal">
+            <img src={f.icon} alt="" width="96" height="96" loading="lazy" />
+            <h3>{f.title}</h3>
+            <p>{f.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="section section--mint home-about">
+    <div class="container home-about__inner reveal">
+      <span class="eyebrow">About Us</span>
+      <h2>Rooted in Nature, Driven by Passion</h2>
+      <div class="home-about__text stack">
+        <p>Balga Designs was founded with a simple yet profound mission: to create gardens that respect and enhance the natural environment. Our designs are inspired by the local landscape, focusing on native species and sustainable practices that support wildlife and promote biodiversity.</p>
+        <p>We believe that every garden, no matter how small, can make a significant impact on our community, cities, and the planet. By choosing Balga Designs, you're not just enhancing your outdoor space—you're contributing to a greener, more sustainable world.</p>
+      </div>
+      <a href="/about/" class="btn btn--outline home-about__btn">Read More</a>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="section section--white home-services">
+    <div class="container">
+      <div class="home-services__head reveal">
+        <span class="eyebrow">Our Services</span>
+        <h2>Total Care For Your Garden</h2>
+      </div>
+      <div class="home-services__grid">
+        {services.map((s) => <ServiceCard service={s} />)}
+      </div>
+    </div>
+  </section>
+
+  <WhyChooseUs />
+  <Counters />
+  <HowWeWork />
+  <ProjectsPreview />
+  <CTASection title="Beautiful Landscapes Start Here" image="/assets/projects/project-01/after.jpg" />
+  <Acknowledgement />
+  <VideoModal />
+</BaseLayout>
+
+<style>
+  .hero {
+    position: relative;
+    background: var(--color-hero);
+    color: #fff;
+    padding-top: 150px;
+    padding-bottom: clamp(3.5rem, 2rem + 8vw, 7rem);
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .hero__waves {
+    position: absolute; inset: 0; z-index: -1; opacity: 0.5;
+    background-image:
+      radial-gradient(120% 80% at 100% 100%, rgba(90,103,78,0.35), transparent 55%),
+      radial-gradient(90% 70% at 0% 0%, rgba(255,255,255,0.12), transparent 60%);
+  }
+  .hero__inner { display: grid; grid-template-columns: 1.4fr 1fr; align-items: center; gap: 2rem; min-height: 360px; }
+  .hero__content { max-width: 720px; }
+  .hero .eyebrow { color: var(--color-accent); }
+  .hero h1 { color: var(--color-white); margin-bottom: 1.3rem; }
+  .hero__sub { color: rgba(255, 255, 255, 0.92); max-width: 46ch; margin-bottom: 2rem; }
+  .hero__actions { display: flex; flex-wrap: wrap; gap: 1rem; }
+  .hero__aside { display: flex; justify-content: center; }
+  .hero__play {
+    display: inline-flex; align-items: center; gap: 0.8rem;
+    background: #fff; color: var(--color-secondary);
+    padding: 10px 22px 10px 12px; border-radius: var(--radius-pill); font-weight: 600;
+    box-shadow: var(--shadow-soft); transition: transform var(--transition);
+  }
+  .hero__play:hover { transform: translateY(-2px); }
+  .hero__play-icon { width: 40px; height: 40px; border-radius: 50%; background: var(--color-secondary); color: #fff; display: grid; place-items: center; }
+
+  .feature-pair { padding-block: clamp(2.5rem, 1.5rem + 4vw, 4rem); }
+  .feature-pair__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .feature-pair__card { background: var(--color-background); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 2.4rem 2rem; text-align: center; }
+  .feature-pair__card img { width: 84px; height: 84px; object-fit: contain; margin: 0 auto 1rem; }
+  .feature-pair__card h3 { margin-bottom: 0.5rem; }
+  .feature-pair__card p { color: var(--color-text); }
+
+  .home-about__inner { max-width: 900px; }
+  .home-about__text { margin-top: 0.6rem; }
+  .home-about__btn { margin-top: 1.8rem; }
+
+  .home-services__head { text-align: center; margin-bottom: 3rem; }
+  .home-services__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+
+  @media (max-width: 900px) {
+    .hero__inner { grid-template-columns: 1fr; }
+    .hero__aside { justify-content: flex-start; }
+    .feature-pair__grid { grid-template-columns: 1fr; }
+    .home-services__grid { grid-template-columns: 1fr; max-width: 460px; margin-inline: auto; }
+  }
+  @media (min-width: 640px) and (max-width: 900px) {
+    .home-services__grid { grid-template-columns: 1fr 1fr; max-width: none; }
+  }
+</style>

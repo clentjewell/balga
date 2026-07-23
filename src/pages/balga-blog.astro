@@ -1,0 +1,65 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import CTASection from "../components/CTASection.astro";
+import Acknowledgement from "../components/Acknowledgement.astro";
+import { getCollection } from "astro:content";
+
+const posts = (await getCollection("blog")).sort((a, b) => a.data.order - b.data.order);
+---
+<BaseLayout title="Balga Blog" description="Rooted in Country — stories on native gardens, sustainable landscape design and the meaning behind Balga Designs.">
+  <PageHero title="Balga Blog" image="/assets/blog/balga-meaning.jpg" crumbs={[{ label: "Home", href: "/" }, { label: "Blog" }]} />
+
+  <section class="section section--white">
+    <div class="container">
+      <div class="blog-intro reveal">
+        <span class="eyebrow">Bringing native beauty to our home</span>
+        <h2>Rooted in Country</h2>
+        <p class="lead mx-auto">At Balga we believe that the best landscapes are those that belong. This blog is our way of sharing what we’ve learnt from the land, working with nature – not against it – enjoying gardens like they’ve always belonged.</p>
+      </div>
+
+      <div class="blog-grid">
+        {posts.map((post) => (
+          <article class="blog-card reveal">
+            <a href={`/${post.slug}/`} class="blog-card__media" tabindex="-1" aria-hidden="true">
+              <img src={post.data.image} alt={post.data.imageAlt} width="600" height="384" loading="lazy" />
+            </a>
+            <div class="blog-card__body">
+              <time datetime={post.data.dateISO}>{post.data.date}</time>
+              <h3><a href={`/${post.slug}/`}>{post.data.title}</a></h3>
+              <p>{post.data.excerpt}</p>
+              <a href={`/${post.slug}/`} class="btn--ghost blog-card__more">Read More →</a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CTASection
+    title="Meaningful Landscapes Start Here"
+    image="/assets/blog/native-gardens.webp"
+    buttons={[
+      { label: "Contact Us", href: "/contact/", variant: "btn--white" },
+      { label: "Pricing List", href: "/pricing/", variant: "btn--outline-light" },
+    ]}
+  />
+  <Acknowledgement />
+</BaseLayout>
+
+<style>
+  .blog-intro { text-align: center; max-width: 62ch; margin: 0 auto 3rem; }
+  .blog-intro .lead { margin-top: 1rem; }
+  .blog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.8rem; }
+  .blog-card { background: var(--color-background); border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow: hidden; display: flex; flex-direction: column; box-shadow: var(--shadow-soft); }
+  .blog-card__media { display: block; aspect-ratio: 3 / 2; overflow: hidden; }
+  .blog-card__media img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+  .blog-card:hover .blog-card__media img { transform: scale(1.05); }
+  .blog-card__body { padding: 1.5rem; display: flex; flex-direction: column; gap: 0.6rem; flex: 1; }
+  .blog-card__body time { color: var(--color-accent); font-size: 0.82rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; }
+  .blog-card__body h3 { font-size: 1.25rem; }
+  .blog-card__body h3 a:hover { color: var(--color-secondary); }
+  .blog-card__body p { color: var(--color-text); font-size: 0.95rem; flex: 1; }
+  .blog-card__more { margin-top: 0.4rem; font-weight: 600; color: var(--color-secondary); }
+  @media (max-width: 900px) { .blog-grid { grid-template-columns: 1fr; max-width: 460px; margin-inline: auto; } }
+</style>

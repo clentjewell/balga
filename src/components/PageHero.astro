@@ -1,0 +1,38 @@
+---
+import Breadcrumbs from "./Breadcrumbs.astro";
+import type { Crumb } from "./Breadcrumbs.astro";
+export interface Props {
+  title: string;
+  image?: string;
+  crumbs: Crumb[];
+}
+const { title, image = "/assets/about/evening-view.jpg", crumbs } = Astro.props;
+---
+<section class="page-hero" style={`--hero-img: url('${image}')`}>
+  <div class="page-hero__overlay"></div>
+  <div class="container page-hero__inner">
+    <h1>{title}</h1>
+    <Breadcrumbs items={crumbs} />
+  </div>
+</section>
+
+<style>
+  .page-hero {
+    position: relative;
+    min-height: clamp(320px, 42vw, 480px);
+    display: grid;
+    align-items: center;
+    background-image: var(--hero-img);
+    background-size: cover;
+    background-position: center;
+    padding-top: 90px;
+    text-align: center;
+    isolation: isolate;
+  }
+  .page-hero__overlay {
+    position: absolute; inset: 0; z-index: -1;
+    background: linear-gradient(180deg, rgba(27,27,27,0.45) 0%, rgba(46,55,42,0.5) 100%);
+  }
+  .page-hero__inner { display: flex; flex-direction: column; align-items: center; gap: 1.2rem; }
+  .page-hero h1 { color: #fff; }
+</style>

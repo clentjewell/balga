@@ -1,0 +1,124 @@
+---
+---
+<form class="cform" data-contact-form novalidate>
+  <div class="cform__row">
+    <div class="cform__field">
+      <label for="firstName">First Name <span aria-hidden="true">*</span></label>
+      <input id="firstName" name="firstName" type="text" autocomplete="given-name" required aria-required="true" />
+      <p class="cform__error" data-error-for="firstName" hidden></p>
+    </div>
+    <div class="cform__field">
+      <label for="lastName">Last Name <span aria-hidden="true">*</span></label>
+      <input id="lastName" name="lastName" type="text" autocomplete="family-name" required aria-required="true" />
+      <p class="cform__error" data-error-for="lastName" hidden></p>
+    </div>
+  </div>
+  <div class="cform__field">
+    <label for="email">Email Address <span aria-hidden="true">*</span></label>
+    <input id="email" name="email" type="email" autocomplete="email" required aria-required="true" />
+    <p class="cform__error" data-error-for="email" hidden></p>
+  </div>
+  <div class="cform__field">
+    <label for="message">Message <span aria-hidden="true">*</span></label>
+    <textarea id="message" name="message" rows="6" required aria-required="true"></textarea>
+    <p class="cform__error" data-error-for="message" hidden></p>
+  </div>
+  <!-- honeypot -->
+  <div class="cform__hp" aria-hidden="true">
+    <label>Do not fill<input type="text" name="company" tabindex="-1" autocomplete="off" /></label>
+  </div>
+  <button type="submit" class="btn btn--primary cform__submit" data-submit>Send Message</button>
+  <p class="cform__status" data-status role="status" aria-live="polite" hidden></p>
+</form>
+
+<style>
+  .cform { display: flex; flex-direction: column; gap: 1.2rem; }
+  .cform__row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+  .cform__field { display: flex; flex-direction: column; gap: 0.45rem; }
+  .cform label { font-weight: 600; color: var(--color-primary); font-size: 0.95rem; }
+  .cform input, .cform textarea {
+    background: var(--color-background); border: 1px solid var(--color-border); border-radius: var(--radius-md);
+    padding: 0.85rem 1rem; font-size: 1rem; color: var(--color-primary); transition: border-color var(--transition);
+  }
+  .cform input:focus, .cform textarea:focus { outline: none; border-color: var(--color-secondary); box-shadow: 0 0 0 3px rgba(90,103,78,0.15); }
+  .cform [aria-invalid="true"] { border-color: #b3261e; background: #fdf5f4; }
+  .cform__error { color: #b3261e; font-size: 0.85rem; }
+  .cform__hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .cform__submit { align-self: flex-start; min-width: 190px; }
+  .cform__submit[aria-busy="true"] { opacity: 0.75; pointer-events: none; }
+  .cform__status { padding: 0.9rem 1.1rem; border-radius: var(--radius-md); font-size: 0.95rem; }
+  .cform__status.is-ok { background: #e8f2e5; color: #33502b; }
+  .cform__status.is-info { background: var(--color-mint); color: var(--color-secondary-dark); }
+  .cform__status.is-err { background: #fdecea; color: #b3261e; }
+  @media (max-width: 560px) { .cform__row { grid-template-columns: 1fr; } }
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>("[data-contact-form]");
+  if (form) {
+    const status = form.querySelector<HTMLElement>("[data-status]")!;
+    const submit = form.querySelector<HTMLButtonElement>("[data-submit]")!;
+    const fields = ["firstName", "lastName", "email", "message"];
+
+    const showError = (name: string, msg: string) => {
+      const input = form.elements.namedItem(name) as HTMLInputElement;
+      const err = form.querySelector<HTMLElement>(`[data-error-for="${name}"]`)!;
+      input.setAttribute("aria-invalid", "true");
+      input.setAttribute("aria-describedby", `err-${name}`);
+      err.id = `err-${name}`; err.textContent = msg; err.hidden = false;
+    };
+    const clearError = (name: string) => {
+      const input = form.elements.namedItem(name) as HTMLInputElement;
+      const err = form.querySelector<HTMLElement>(`[data-error-for="${name}"]`)!;
+      input.removeAttribute("aria-invalid"); err.hidden = true;
+    };
+    const validate = () => {
+      let firstBad: string | null = null;
+      fields.forEach((n) => {
+        const input = form.elements.namedItem(n) as HTMLInputElement;
+        const v = input.value.trim();
+        clearError(n);
+        if (!v) { showError(n, "This field is required."); firstBad ??= n; }
+        else if (n === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) { showError(n, "Please enter a valid email address."); firstBad ??= n; }
+      });
+      return firstBad;
+    };
+    fields.forEach((n) => (form.elements.namedItem(n) as HTMLElement)?.addEventListener("input", () => clearError(n)));
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      status.hidden = true; status.className = "cform__status";
+      const bad = validate();
+      if (bad) { (form.elements.namedItem(bad) as HTMLElement).focus(); return; }
+
+      submit.setAttribute("aria-busy", "true");
+      const original = submit.textContent;
+      submit.textContent = "Sending…";
+      const payload = Object.fromEntries(new FormData(form).entries());
+      try {
+        const res = await fetch("/api/contact", {
+          method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload),
+        });
+        const data = await res.json().catch(() => ({}));
+        status.hidden = false;
+        if (res.ok && data.status === "sent") {
+          status.classList.add("is-ok");
+          status.textContent = data.message || "Thanks! Your message has been sent — we'll be in touch soon.";
+          form.reset();
+        } else if (res.ok && data.status === "preview") {
+          status.classList.add("is-info");
+          status.textContent = data.message || "Preview mode: your details validated correctly, but email delivery is not configured on this preview deployment.";
+          form.reset();
+        } else {
+          status.classList.add("is-err");
+          status.textContent = data.message || "Sorry, something went wrong. Please email info@balgadesigns.com.au.";
+        }
+      } catch {
+        status.hidden = false; status.classList.add("is-err");
+        status.textContent = "Network error. Please email info@balgadesigns.com.au.";
+      } finally {
+        submit.removeAttribute("aria-busy"); submit.textContent = original;
+      }
+    });
+  }
+</script>

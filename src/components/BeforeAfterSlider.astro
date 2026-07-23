@@ -1,0 +1,138 @@
+---
+export interface Props {
+  before: string;
+  after: string;
+  beforeAlt?: string;
+  afterAlt?: string;
+  labelBefore?: string;
+  labelAfter?: string;
+  offset?: number; // 0..1 initial divider
+  ratio?: string;  // css aspect-ratio
+}
+const {
+  before,
+  after,
+  beforeAlt = "Before",
+  afterAlt = "After",
+  labelBefore = "Before",
+  labelAfter = "After",
+  offset = 0.5,
+  ratio = "3 / 2",
+} = Astro.props;
+const start = Math.round(offset * 100);
+---
+<div
+  class="ba"
+  data-ba
+  style={`--pos:${start}; aspect-ratio:${ratio}`}
+>
+  <img class="ba__img ba__after" src={after} alt={afterAlt} loading="lazy" draggable="false" />
+  <img class="ba__img ba__before" src={before} alt={beforeAlt} loading="lazy" draggable="false" />
+  <span class="ba__label ba__label--before" aria-hidden="true">{labelBefore}</span>
+  <span class="ba__label ba__label--after" aria-hidden="true">{labelAfter}</span>
+  <div
+    class="ba__divider"
+    data-ba-handle
+    role="slider"
+    tabindex="0"
+    aria-label={`Reveal before and after. ${labelBefore} / ${labelAfter} comparison`}
+    aria-valuemin="0"
+    aria-valuemax="100"
+    aria-valuenow={start}
+    aria-valuetext={`${start}% ${labelBefore}`}
+  >
+    <span class="ba__handle" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/><path d="m9 6 6 6-6 6" transform="translate(6 0)"/></svg>
+    </span>
+  </div>
+</div>
+
+<style>
+  .ba {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    background: #e9e9e4;
+    user-select: none;
+    touch-action: pan-y;
+  }
+  .ba__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .ba__before { clip-path: inset(0 calc(100% - var(--pos) * 1%) 0 0); }
+  .ba__label {
+    position: absolute; top: 14px; z-index: 3;
+    background: rgba(27, 27, 27, 0.62); color: #fff;
+    font-size: 0.78rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 5px 12px; border-radius: var(--radius-pill);
+  }
+  .ba__label--before { left: 14px; }
+  .ba__label--after { right: 14px; }
+  .ba__divider {
+    position: absolute; top: 0; bottom: 0; z-index: 4;
+    left: calc(var(--pos) * 1%);
+    width: 3px; margin-left: -1.5px;
+    background: #fff; cursor: ew-resize;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06);
+    touch-action: none;
+  }
+  .ba__handle {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 44px; height: 44px; border-radius: 50%;
+    background: #fff; color: var(--color-secondary);
+    display: grid; place-items: center;
+    box-shadow: 0 6px 18px -6px rgba(0, 0, 0, 0.5);
+  }
+  .ba__divider:focus-visible { outline: none; }
+  .ba__divider:focus-visible .ba__handle { outline: 3px solid var(--color-secondary); outline-offset: 3px; }
+</style>
+
+<script>
+  function initBA(el: HTMLElement) {
+    const handle = el.querySelector<HTMLElement>("[data-ba-handle]");
+    if (!handle) return;
+    let dragging = false;
+
+    const setPos = (pct: number) => {
+      const p = Math.max(0, Math.min(100, pct));
+      el.style.setProperty("--pos", String(p));
+      handle.setAttribute("aria-valuenow", String(Math.round(p)));
+      handle.setAttribute("aria-valuetext", `${Math.round(p)}% before`);
+    };
+    const fromClientX = (x: number) => {
+      const r = el.getBoundingClientRect();
+      setPos(((x - r.left) / r.width) * 100);
+    };
+
+    el.addEventListener("pointerdown", (e) => {
+      dragging = true;
+      el.setPointerCapture?.(e.pointerId);
+      fromClientX(e.clientX);
+    });
+    el.addEventListener("pointermove", (e) => {
+      if (!dragging) return;
+      e.preventDefault();
+      fromClientX(e.clientX);
+    });
+    const stop = () => { dragging = false; };
+    el.addEventListener("pointerup", stop);
+    el.addEventListener("pointercancel", stop);
+    el.addEventListener("lostpointercapture", stop);
+
+    handle.addEventListener("keydown", (e) => {
+      const cur = parseFloat(el.style.getPropertyValue("--pos") || "50");
+      const step = e.shiftKey ? 10 : 2;
+      let handled = true;
+      switch (e.key) {
+        case "ArrowLeft": case "ArrowDown": setPos(cur - step); break;
+        case "ArrowRight": case "ArrowUp": setPos(cur + step); break;
+        case "Home": setPos(0); break;
+        case "End": setPos(100); break;
+        case "PageDown": setPos(cur - 10); break;
+        case "PageUp": setPos(cur + 10); break;
+        default: handled = false;
+      }
+      if (handled) e.preventDefault();
+    });
+  }
+  document.querySelectorAll<HTMLElement>("[data-ba]").forEach(initBA);
+</script>

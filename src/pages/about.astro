@@ -1,0 +1,79 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import HowWeWork from "../components/HowWeWork.astro";
+import Counters from "../components/Counters.astro";
+import WhyChooseUs from "../components/WhyChooseUs.astro";
+import TestimonialSlider from "../components/TestimonialSlider.astro";
+import CTASection from "../components/CTASection.astro";
+import Acknowledgement from "../components/Acknowledgement.astro";
+import VideoModal from "../components/VideoModal.astro";
+---
+<BaseLayout title="About" description="Balga Designs is more than garden design — passionate advocates for nature creating naturalistic havens that support local ecosystems.">
+  <PageHero title="About Us" image="/assets/about/evening-view.jpg" crumbs={[{ label: "Home", href: "/" }, { label: "About" }]} />
+
+  <section class="section section--mint about-intro">
+    <div class="container">
+      <div class="about-intro__head reveal">
+        <span class="eyebrow">About Us</span>
+        <h2>Rooted in Nature, Driven by Passion</h2>
+        <p class="lead">At Balga Designs, we’re more than just garden designers—we’re passionate advocates for nature. Founded on the principle of creating outdoor spaces that respect and enhance the natural environment, Balga Designs is dedicated to bringing the beauty of the wild into your home. Our journey began with a simple yet powerful idea: to transform gardens into naturalistic havens that support local ecosystems, foster biodiversity, and offer a serene retreat for people and wildlife alike.</p>
+      </div>
+      <div class="about-intro__cols">
+        <div class="reveal">
+          <h4>Our Vision</h4>
+          <p>We envision a world where every garden, regardless of size, serves as a sanctuary for nature. By promoting the use of native and non-invasive species, we aim to reconnect people with the natural beauty of their home garden and surroundings. Our designs are more than just visually appealing, they are a commitment to sustainability, a celebration of local flora, and a contribution to the broader environmental health of our communities.</p>
+        </div>
+        <div class="reveal">
+          <h4>Our Approach</h4>
+          <p>At Balga Designs, our approach is holistic and thoughtful. We begin by understanding the unique characteristics of your site, considering its natural features, soil conditions, and existing plant life. This allows us to create sustainable designs that are not only beautiful but also ecologically sound, affordable and easy to maintain. We prioritise the use of native species, which thrive in the local climate and provide essential habitat for wildlife.</p>
+        </div>
+      </div>
+      <div class="about-intro__imgs reveal">
+        <img src="/assets/about/fire.jpg" alt="Evening fire pit in a landscaped native garden" width="714" height="1102" loading="lazy" />
+        <img src="/assets/about/evening-view.jpg" alt="Misty evening view over water at a Balga Designs landscape" width="900" height="1102" loading="lazy" />
+      </div>
+    </div>
+  </section>
+
+  <HowWeWork />
+
+  <section class="video-band" style="--v-img:url('/assets/projects/project-02/after.jpeg')">
+    <div class="video-band__overlay"></div>
+    <div class="container video-band__inner">
+      <button type="button" class="video-band__play" data-video-open aria-label="Play video">
+        <svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+      <p>See how we bring sustainable landscapes to life</p>
+    </div>
+  </section>
+
+  <Counters image="/assets/home/feature-2.jpeg" />
+  <WhyChooseUs />
+  <TestimonialSlider count={5} />
+  <CTASection title="Beautiful Landscapes Start Here" image="/assets/about/evening-view.jpg" />
+  <Acknowledgement />
+  <VideoModal />
+</BaseLayout>
+
+<style>
+  .about-intro__head { max-width: 70ch; margin-bottom: 2.5rem; }
+  .about-intro__head .lead { margin-top: 1rem; }
+  .about-intro__cols { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; margin-bottom: 3rem; }
+  .about-intro__cols h4 { margin-bottom: 0.7rem; }
+  .about-intro__cols p { color: var(--color-text); }
+  .about-intro__imgs { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .about-intro__imgs img { width: 100%; height: clamp(340px, 40vw, 560px); object-fit: cover; border-radius: var(--radius-md); }
+
+  .video-band { position: relative; background-image: var(--v-img); background-size: cover; background-position: center; padding-block: clamp(4rem, 3rem + 6vw, 7rem); text-align: center; isolation: isolate; }
+  .video-band__overlay { position: absolute; inset: 0; z-index: -1; background: rgba(27,27,27,0.5); }
+  .video-band__inner { display: flex; flex-direction: column; align-items: center; gap: 1.2rem; color: #fff; }
+  .video-band__play { width: 84px; height: 84px; border-radius: 50%; background: #fff; color: var(--color-secondary); display: grid; place-items: center; box-shadow: var(--shadow-soft); transition: transform var(--transition); }
+  .video-band__play:hover { transform: scale(1.06); }
+  .video-band__inner p { font-size: 1.15rem; font-weight: 500; }
+
+  @media (max-width: 800px) {
+    .about-intro__cols { grid-template-columns: 1fr; gap: 1.8rem; }
+    .about-intro__imgs { grid-template-columns: 1fr; }
+  }
+</style>

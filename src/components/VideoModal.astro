@@ -1,0 +1,52 @@
+---
+import { site } from "../data/site";
+---
+<div class="video-modal" data-video-modal hidden>
+  <div class="video-modal__backdrop" data-video-close></div>
+  <div class="video-modal__inner" role="dialog" aria-modal="true" aria-label="Balga Designs video">
+    <button class="video-modal__close" type="button" aria-label="Close video" data-video-close>&times;</button>
+    <div class="video-modal__frame" data-video-frame data-src={site.video.embed}></div>
+  </div>
+</div>
+
+<style>
+  .video-modal { position: fixed; inset: 0; z-index: 1200; display: grid; place-items: center; padding: 1.2rem; }
+  .video-modal[hidden] { display: none; }
+  .video-modal__backdrop { position: absolute; inset: 0; background: rgba(15, 20, 14, 0.82); }
+  .video-modal__inner { position: relative; width: min(960px, 100%); }
+  .video-modal__frame { position: relative; aspect-ratio: 16 / 9; background: #000; border-radius: 6px; overflow: hidden; }
+  .video-modal__frame :global(iframe) { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .video-modal__close {
+    position: absolute; top: -46px; right: 0; color: #fff; font-size: 2.2rem; line-height: 1; padding: 0.2rem 0.6rem;
+  }
+</style>
+
+<script>
+  const modal = document.querySelector<HTMLElement>("[data-video-modal]");
+  const frame = modal?.querySelector<HTMLElement>("[data-video-frame]");
+  const closers = modal?.querySelectorAll<HTMLElement>("[data-video-close]");
+  let lastFocused: HTMLElement | null = null;
+
+  function open() {
+    if (!modal || !frame) return;
+    lastFocused = document.activeElement as HTMLElement;
+    const src = frame.dataset.src!;
+    frame.innerHTML = `<iframe src="${src}" title="Balga Designs video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+    modal.hidden = false;
+    document.body.style.overflow = "hidden";
+    (modal.querySelector<HTMLElement>("[data-video-close]"))?.focus();
+    document.addEventListener("keydown", onKey);
+  }
+  function close() {
+    if (!modal || !frame) return;
+    modal.hidden = true;
+    frame.innerHTML = "";
+    document.body.style.overflow = "";
+    document.removeEventListener("keydown", onKey);
+    lastFocused?.focus();
+  }
+  function onKey(e: KeyboardEvent) { if (e.key === "Escape") close(); }
+
+  document.querySelectorAll<HTMLElement>("[data-video-open]").forEach((b) => b.addEventListener("click", (e) => { e.preventDefault(); open(); }));
+  closers?.forEach((c) => c.addEventListener("click", close));
+</script>
