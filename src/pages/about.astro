@@ -2,7 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PageHero from "../components/PageHero.astro";
 import HowWeWork from "../components/HowWeWork.astro";
-import WhyChooseUs from "../components/WhyChooseUs.astro";
+import VideoBand from "../components/VideoBand.astro";
 import TestimonialSlider from "../components/TestimonialSlider.astro";
 import CTASection from "../components/CTASection.astro";
 import VideoModal from "../components/VideoModal.astro";
@@ -35,20 +35,9 @@ import VideoModal from "../components/VideoModal.astro";
   </section>
 
   <HowWeWork />
-
-  <section class="video-band" style="--v-img:url('/assets/projects/project-02/after.jpeg')">
-    <div class="video-band__overlay"></div>
-    <div class="container video-band__inner">
-      <button type="button" class="video-band__play" data-video-open aria-label="Play video">
-        <svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
-      </button>
-      <p>See how we bring sustainable landscapes to life</p>
-    </div>
-  </section>
-
-  <WhyChooseUs />
+  <VideoBand image="/assets/home/sunset.jpg" eyebrow="Why Balga Designs" title="We Treat Your Garden Like Our Own" />
   <TestimonialSlider count={5} />
-  <CTASection title="Beautiful Landscapes Start Here" image="/assets/about/evening-view.jpg" />
+  <CTASection title="Beautiful Landscapes Start Here" image="/assets/home/cta-start-project.webp" />
   <VideoModal />
 </BaseLayout>
 

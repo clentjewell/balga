@@ -5,7 +5,8 @@ const { count = all.length } = Astro.props;
 const items = all.slice(0, count);
 const stars = [0, 1, 2, 3, 4];
 ---
-<section class="section section--white testi">
+<section class="section testi" style="--testi-img:url('/assets/home/testimonials-bg.webp')">
+  <div class="testi__bg" aria-hidden="true"></div>
   <div class="container">
     <div class="testi__head reveal">
       <span class="eyebrow">Testimonials</span>
@@ -37,8 +38,13 @@ const stars = [0, 1, 2, 3, 4];
 </section>
 
 <style>
+  .testi { position: relative; isolation: isolate; }
+  .testi__bg { position: absolute; inset: 0; z-index: -1; background: var(--testi-img) center/cover no-repeat; }
+  .testi__bg::after { content: ""; position: absolute; inset: 0; background: rgba(46, 55, 42, 0.86); }
   .testi__head { text-align: center; max-width: 60ch; margin: 0 auto 2.6rem; }
-  .testi__head .lead { margin-top: 1rem; }
+  .testi__head .eyebrow { color: var(--color-accent); }
+  .testi__head h2 { color: #fff; }
+  .testi__head .lead { margin-top: 1rem; color: rgba(255, 255, 255, 0.9); }
   .testi__slider { position: relative; display: flex; align-items: center; gap: 0.5rem; }
   .testi__track {
     display: flex; gap: 1.5rem; overflow-x: auto; scroll-snap-type: x mandatory;

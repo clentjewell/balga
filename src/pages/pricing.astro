@@ -1,10 +1,11 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PageHero from "../components/PageHero.astro";
-import WhyChooseUs from "../components/WhyChooseUs.astro";
+import VideoBand from "../components/VideoBand.astro";
 import TestimonialSlider from "../components/TestimonialSlider.astro";
 import FAQAccordion from "../components/FAQAccordion.astro";
 import CTASection from "../components/CTASection.astro";
+import VideoModal from "../components/VideoModal.astro";
 import { packages } from "../data/pricing";
 ---
 <BaseLayout title="Pricing" description="Four Balga Designs packages — Small NativeScapes, Potted Greenery, Balga Inspo and the Complete Design Package — with transparent pricing.">
@@ -51,10 +52,11 @@ import { packages } from "../data/pricing";
     </div>
   </section>
 
-  <WhyChooseUs showIntro={false} />
+  <VideoBand image="/assets/home/sunset.jpg" eyebrow="Why Balga Designs" title="We Treat Your Garden Like Our Own" />
   <TestimonialSlider count={5} />
-  <FAQAccordion id="faqs" title="Frequently Asked Questions" />
-  <CTASection title="Beautiful Landscapes Start Here" image="/assets/pricing/package-1.jpg" />
+  <FAQAccordion id="faqs" title="Frequently Asked Questions" bg="/assets/pricing/faqs-bg.jpg" />
+  <CTASection title="Beautiful Landscapes Start Here" image="/assets/pricing/cta-footer.png" />
+  <VideoModal />
 </BaseLayout>
 
 <style>

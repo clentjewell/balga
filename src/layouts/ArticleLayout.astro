@@ -21,7 +21,7 @@ const jsonLd = {
 };
 ---
 <BaseLayout title={data.title} description={data.description} ogImage={data.image}>
-  <section class="article-hero" style={`--hero-img:url('${data.image}')`}>
+  <section class="article-hero" style={`--hero-img:url('/assets/blog/articles-header.webp')`}>
     <div class="article-hero__overlay"></div>
     <div class="container article-hero__inner">
       <h1>{data.title}</h1>
@@ -51,7 +51,7 @@ const jsonLd = {
 
 <style>
   .article-hero { position: relative; min-height: clamp(300px, 40vw, 440px); display: grid; align-items: center; text-align: center; background-image: var(--hero-img); background-size: cover; background-position: center; padding-top: 90px; isolation: isolate; }
-  .article-hero__overlay { position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(27,27,27,0.5), rgba(46,55,42,0.6)); }
+  .article-hero__overlay { position: absolute; inset: 0; z-index: -1; background: rgba(90, 103, 78, 0.6); }
   .article-hero__inner { display: flex; flex-direction: column; align-items: center; gap: 1.2rem; }
   .article-hero h1 { color: #fff; max-width: 20ch; }
   .article-body__meta { color: var(--color-accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.85rem; margin-bottom: 1.5rem; }

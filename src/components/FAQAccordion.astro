@@ -1,7 +1,7 @@
 ---
 import { faqs } from "../data/faqs";
-export interface Props { id?: string; title?: string; }
-const { id = "faqs", title = "Frequently Asked Questions" } = Astro.props;
+export interface Props { id?: string; title?: string; bg?: string; }
+const { id = "faqs", title = "Frequently Asked Questions", bg } = Astro.props;
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
@@ -12,7 +12,8 @@ const jsonLd = {
   })),
 };
 ---
-<section class="section section--white faq" id={id}>
+<section class:list={["section faq", { "faq--bg": bg }]} id={id} style={bg ? `--faq-img:url('${bg}')` : undefined}>
+  {bg && <div class="faq__bg" aria-hidden="true"></div>}
   <div class="container container-narrow">
     <div class="faq__head reveal">
       <span class="eyebrow">FAQs</span>
@@ -36,6 +37,10 @@ const jsonLd = {
 <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
 
 <style>
+  .faq { background: var(--color-background); position: relative; isolation: isolate; }
+  .faq--bg { background: none; }
+  .faq__bg { position: absolute; inset: 0; z-index: -1; background: var(--faq-img) center/cover no-repeat; }
+  .faq__bg::after { content: ""; position: absolute; inset: 0; background: rgba(255, 253, 251, 0.9); }
   .faq__head { text-align: center; margin-bottom: 2.5rem; }
   .faq__item { border: 1px solid var(--color-border); border-radius: var(--radius-md); margin-bottom: 0.9rem; background: var(--color-background); overflow: hidden; }
   .faq__item summary {

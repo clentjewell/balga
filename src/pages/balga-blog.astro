@@ -7,7 +7,7 @@ import { getCollection } from "astro:content";
 const posts = (await getCollection("blog")).sort((a, b) => a.data.order - b.data.order);
 ---
 <BaseLayout title="Balga Blog" description="Rooted in Country — stories on native gardens, sustainable landscape design and the meaning behind Balga Designs.">
-  <PageHero title="Balga Blog" image="/assets/blog/articles-header.webp" crumbs={[{ label: "Home", href: "/" }, { label: "Blog" }]} />
+  <PageHero title="Balga Blog" image="/assets/blog/balga-meaning.jpg" crumbs={[{ label: "Home", href: "/" }, { label: "Blog" }]} />
 
   <section class="section section--white">
     <div class="container">
@@ -37,7 +37,7 @@ const posts = (await getCollection("blog")).sort((a, b) => a.data.order - b.data
 
   <CTASection
     title="Meaningful Landscapes Start Here"
-    image="/assets/blog/articles-header.webp"
+    image="/assets/blog/balga-meaning.jpg"
     buttons={[
       { label: "Contact Us", href: "/contact/", variant: "btn--outline-light" },
       { label: "Pricing List", href: "/pricing/", variant: "btn--outline-light" },
