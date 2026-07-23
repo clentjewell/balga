@@ -17,7 +17,12 @@ import { heroFeatures } from "../data/content";
 >
   <!-- HERO -->
   <section class="hero">
-    <div class="hero__waves" aria-hidden="true"></div>
+    <div class="hero__slideshow" aria-hidden="true">
+      <div class="hero__slide" style="--img:url('/assets/home/hero/balga-designs-garden.jpeg')"></div>
+      <div class="hero__slide" style="--img:url('/assets/home/hero/balga-designs.jpeg')"></div>
+      <div class="hero__slide" style="--img:url('/assets/home/hero/balga-design-work.jpeg')"></div>
+    </div>
+    <div class="hero__overlay" aria-hidden="true"></div>
     <div class="container hero__inner">
       <div class="hero__content">
         <span class="eyebrow">Gardening Service</span>
@@ -52,15 +57,21 @@ import { heroFeatures } from "../data/content";
   </section>
 
   <!-- ABOUT -->
-  <section class="section section--mint home-about">
-    <div class="container home-about__inner reveal">
-      <span class="eyebrow">About Us</span>
-      <h2>Rooted in Nature, Driven by Passion</h2>
-      <div class="home-about__text stack">
-        <p>Balga Designs was founded with a simple yet profound mission: to create gardens that respect and enhance the natural environment. Our designs are inspired by the local landscape, focusing on native species and sustainable practices that support wildlife and promote biodiversity.</p>
-        <p>We believe that every garden, no matter how small, can make a significant impact on our community, cities, and the planet. By choosing Balga Designs, you're not just enhancing your outdoor space—you're contributing to a greener, more sustainable world.</p>
+  <section class="section section--white home-about">
+    <div class="container">
+      <div class="home-about__inner reveal">
+        <span class="eyebrow">About Us</span>
+        <h2>Rooted in Nature, Driven by Passion</h2>
+        <div class="home-about__text stack">
+          <p>Balga Designs was founded with a simple yet profound mission: to create gardens that respect and enhance the natural environment. Our designs are inspired by the local landscape, focusing on native species and sustainable practices that support wildlife and promote biodiversity.</p>
+          <p>We believe that every garden, no matter how small, can make a significant impact on our community, cities, and the planet. By choosing Balga Designs, you're not just enhancing your outdoor space—you're contributing to a greener, more sustainable world.</p>
+        </div>
+        <a href="/about/" class="btn btn--outline home-about__btn">Read More</a>
       </div>
-      <a href="/about/" class="btn btn--outline home-about__btn">Read More</a>
+      <div class="home-about__imgs reveal">
+        <img src="/assets/home/feature-1.jpeg" alt="Native garden with a water feature and yellow wildflowers" width="1000" height="750" loading="lazy" />
+        <img src="/assets/home/feature-2.jpeg" alt="Stone water bowl set among native grasses" width="1000" height="750" loading="lazy" />
+      </div>
     </div>
   </section>
 
@@ -77,8 +88,8 @@ import { heroFeatures } from "../data/content";
     </div>
   </section>
 
-  <WhyChooseUs />
   <Counters />
+  <WhyChooseUs />
   <HowWeWork />
   <ProjectsPreview />
   <CTASection title="Beautiful Landscapes Start Here" image="/assets/projects/project-01/after.jpg" />
@@ -96,11 +107,32 @@ import { heroFeatures } from "../data/content";
     overflow: hidden;
     isolation: isolate;
   }
-  .hero__waves {
-    position: absolute; inset: 0; z-index: -1; opacity: 0.5;
-    background-image:
-      radial-gradient(120% 80% at 100% 100%, rgba(90,103,78,0.35), transparent 55%),
-      radial-gradient(90% 70% at 0% 0%, rgba(255,255,255,0.12), transparent 60%);
+  .hero__slideshow { position: absolute; inset: 0; z-index: -2; }
+  .hero__slide {
+    position: absolute; inset: 0;
+    background-image: var(--img);
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    animation: heroFade 18s infinite;
+  }
+  .hero__slide:nth-child(1) { animation-delay: 0s; }
+  .hero__slide:nth-child(2) { animation-delay: 6s; }
+  .hero__slide:nth-child(3) { animation-delay: 12s; }
+  @keyframes heroFade {
+    0%   { opacity: 0; }
+    3%   { opacity: 1; }
+    30%  { opacity: 1; }
+    36%  { opacity: 0; }
+    100% { opacity: 0; }
+  }
+  .hero__overlay {
+    position: absolute; inset: 0; z-index: -1;
+    background: linear-gradient(90deg, rgba(58,68,52,0.82) 0%, rgba(74,86,64,0.66) 55%, rgba(90,103,78,0.5) 100%);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero__slide { animation: none; opacity: 0; }
+    .hero__slide:nth-child(1) { opacity: 1; }
   }
   .hero__inner { display: grid; grid-template-columns: 1.4fr 1fr; align-items: center; gap: 2rem; min-height: 360px; }
   .hero__content { max-width: 720px; }
@@ -125,9 +157,12 @@ import { heroFeatures } from "../data/content";
   .feature-pair__card h3 { margin-bottom: 0.5rem; }
   .feature-pair__card p { color: var(--color-text); }
 
-  .home-about__inner { max-width: 900px; }
+  .home-about__inner { max-width: 820px; margin-inline: auto; text-align: center; }
   .home-about__text { margin-top: 0.6rem; }
   .home-about__btn { margin-top: 1.8rem; }
+  .home-about__imgs { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 3rem; }
+  .home-about__imgs img { width: 100%; height: clamp(280px, 34vw, 460px); object-fit: cover; border-radius: var(--radius-md); }
+  @media (max-width: 760px) { .home-about__imgs { grid-template-columns: 1fr; } }
 
   .home-services__head { text-align: center; margin-bottom: 3rem; }
   .home-services__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
