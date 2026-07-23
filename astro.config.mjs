@@ -3,7 +3,7 @@ import { writeFileSync } from 'node:fs';
 
 // Preview deployment URL (workers.dev). Override with SITE_URL when promoting
 // to a production domain so canonicals/sitemap use the right origin.
-const SITE = process.env.SITE_URL || 'https://balga-designs-preview.workers.dev';
+const SITE = process.env.SITE_URL || 'https://balga-designs-preview.clent.workers.dev';
 
 /** Minimal sitemap generator (stable across Astro 4/5 via the `pages` API). */
 function simpleSitemap() {

@@ -4,4 +4,4 @@
 User-agent: *
 Disallow: /
 
-Sitemap: https://balga-designs-preview.workers.dev/sitemap.xml
+Sitemap: https://balga-designs-preview.clent.workers.dev/sitemap.xml
