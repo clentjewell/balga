@@ -55,13 +55,14 @@ const stars = [0, 1, 2, 3, 4];
   .testi { display: grid; grid-template-columns: 0.85fr 1.15fr; align-items: stretch; }
   .testi__media { min-height: 100%; }
   .testi__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .testi__panel { position: relative; background: var(--color-secondary); color: #fff; display: flex; align-items: center; min-width: 0; }
+  .testi__panel { position: relative; background: var(--color-accent); color: var(--color-primary); display: flex; align-items: center; min-width: 0; overflow: hidden; }
+  .testi__panel::before { content: ""; position: absolute; inset: 0; background: url("/assets/home/line4.png") center/cover no-repeat; opacity: 0.18; mix-blend-mode: multiply; pointer-events: none; }
   .testi__inner { position: relative; z-index: 1; width: 100%; min-width: 0; max-width: 680px; margin: 0 auto; padding: clamp(2.6rem, 1.5rem + 5vw, 5rem) clamp(1.5rem, 1rem + 3vw, 3.5rem); }
   .testi__slider { min-width: 0; }
   .testi__head { margin-bottom: 2rem; }
-  .testi__head .eyebrow { color: var(--color-accent); }
-  .testi__head h2 { color: #fff; }
-  .testi__intro { color: rgba(255, 255, 255, 0.85); margin-top: 1rem; }
+  .testi__head .eyebrow { color: var(--color-secondary); }
+  .testi__head h2 { color: var(--color-primary); }
+  .testi__intro { color: var(--color-secondary-dark); margin-top: 1rem; }
 
   .testi__track { display: flex; overflow-x: auto; min-width: 0; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; -ms-overflow-style: none; }
   .testi__track::-webkit-scrollbar { display: none; }
@@ -80,11 +81,11 @@ const stars = [0, 1, 2, 3, 4];
 
   .testi__controls { display: flex; align-items: center; gap: 1.2rem; margin-top: 1.6rem; }
   .testi__dots { display: flex; gap: 0.5rem; margin-left: auto; }
-  .testi__dots button { width: 9px; height: 9px; border-radius: 50%; background: rgba(255, 255, 255, 0.35); }
-  .testi__dots button[aria-current="true"] { background: #fff; }
+  .testi__dots button { width: 9px; height: 9px; border-radius: 50%; background: rgba(27, 27, 27, 0.25); }
+  .testi__dots button[aria-current="true"] { background: var(--color-secondary); }
   .testi__nav { display: flex; gap: 0.5rem; }
-  .testi__nav button { width: 42px; height: 42px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.4); color: #fff; font-size: 1.4rem; line-height: 1; display: grid; place-items: center; transition: background var(--transition); }
-  .testi__nav button:hover { background: rgba(255, 255, 255, 0.16); }
+  .testi__nav button { width: 42px; height: 42px; border-radius: 50%; border: 1px solid rgba(27, 27, 27, 0.35); color: var(--color-secondary-dark); font-size: 1.4rem; line-height: 1; display: grid; place-items: center; transition: background var(--transition); }
+  .testi__nav button:hover { background: rgba(27, 27, 27, 0.08); }
 
   @media (max-width: 860px) {
     .testi { grid-template-columns: 1fr; }
