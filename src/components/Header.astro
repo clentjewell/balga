@@ -107,12 +107,14 @@ const isActive = (href: string) =>
     padding-block: 0.3rem;
     text-shadow: 0 1px 8px rgba(0, 0, 0, 0.28);
   }
+  .site-nav__link:hover,
+  .site-nav__link.is-active { color: var(--color-accent); }
   .site-nav__link::after {
     content: "";
     position: absolute;
     left: 0; bottom: 0;
     width: 0; height: 2px;
-    background: #fff;
+    background: var(--color-accent);
     transition: width var(--transition);
   }
   .site-nav__link:hover::after,
@@ -157,6 +159,7 @@ const isActive = (href: string) =>
     text-transform: uppercase; letter-spacing: 0.06em;
     padding: 0.75rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.14);
   }
+  .mobile-menu__link:hover,
   .mobile-menu__link.is-active { color: var(--color-accent); }
   .mobile-menu__foot { display: flex; flex-direction: column; gap: 0.4rem; margin-top: auto; font-size: 0.95rem; opacity: 0.9; }
 

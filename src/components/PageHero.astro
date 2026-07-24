@@ -19,7 +19,7 @@ const { title, image = "/assets/about/evening-view.jpg", crumbs } = Astro.props;
 <style>
   .page-hero {
     position: relative;
-    min-height: clamp(320px, 42vw, 480px);
+    min-height: 40vh;
     display: grid;
     align-items: center;
     background-image: var(--hero-img);
@@ -29,6 +29,8 @@ const { title, image = "/assets/about/evening-view.jpg", crumbs } = Astro.props;
     text-align: center;
     isolation: isolate;
   }
+  @media (max-width: 1024px) { .page-hero { min-height: 38vh; } }
+  @media (max-width: 640px) { .page-hero { min-height: 300px; } }
   .page-hero__overlay {
     position: absolute; inset: 0; z-index: -1;
     background: rgba(90, 103, 78, 0.6); /* #5A674E @ 0.6 */
