@@ -18,7 +18,7 @@ const SECURITY_HEADERS = {
     "style-src 'self' 'unsafe-inline'",
     "script-src 'self' 'unsafe-inline'",
     "font-src 'self'",
-    "frame-src https://www.youtube.com https://www.youtube-nocookie.com",
+    "frame-src https://www.youtube.com https://www.youtube-nocookie.com https://maps.google.com https://www.google.com",
     "connect-src 'self'",
     "form-action 'self'",
     "frame-ancestors 'self'",

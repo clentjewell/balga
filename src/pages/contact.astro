@@ -4,61 +4,81 @@ import PageHero from "../components/PageHero.astro";
 import ContactForm from "../components/ContactForm.astro";
 import { site } from "../data/site";
 
+const pin = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg>`;
+const phone = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>`;
+const mail = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>`;
+const clock = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>`;
+const map = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 6 6-2 6 2 6-2v14l-6 2-6-2-6 2Z"/><path d="M9 4v14"/><path d="M15 6v14"/></svg>`;
+
 const info = [
-  { label: "Address", value: site.contact.address, icon: "📍" },
-  { label: "Email", value: site.contact.email, href: `mailto:${site.contact.email}`, icon: "✉️" },
-  { label: "Service Area", value: "Serving Northern Rivers to Southern Gold Coast", icon: "🌿" },
-  { label: "Phone", value: site.contact.phone, href: site.contact.phoneHref, icon: "📞" },
-  { label: "Available Hours", value: "07:00 AM - 04:00 PM", icon: "🕐" },
+  { label: "Address", value: site.contact.address, icon: pin },
+  { label: "Phone", value: site.contact.phone, href: site.contact.phoneHref, icon: phone },
+  { label: "Email", value: site.contact.email, href: `mailto:${site.contact.email}`, icon: mail },
+  { label: "Available Hours", value: "07:00 AM - 04:00 PM", icon: clock },
+  { label: "Service Area", value: "Serving Northern Rivers to Southern Gold Coast", icon: map },
 ];
 ---
 <BaseLayout title="Contact" description="Contact Balga Designs to start your journey towards a more beautiful, sustainable garden across the Northern Rivers to Southern Gold Coast.">
   <PageHero title="Contact Us" image="/assets/home/hero/balga-designs-garden.jpeg" crumbs={[{ label: "Home", href: "/" }, { label: "Contact" }]} />
 
   <section class="section section--white">
-    <div class="container">
-      <div class="contact-intro reveal">
+    <div class="container contact-grid">
+      <div class="contact-left reveal">
         <span class="eyebrow">Our Contact</span>
         <h2>Let's Bring Your Vision to Life</h2>
-        <p>Ready to transform your outdoor space?</p>
-        <p>Contact Balga Designs today to start your journey towards a more beautiful, sustainable garden.</p>
+        <p class="contact-lead">Ready to transform your outdoor space?</p>
+        <p class="contact-lead">Contact Balga Designs today to start your journey towards a more beautiful, sustainable garden.</p>
+
+        <ul class="contact-info">
+          {info.map((c) => (
+            <li>
+              <span class="contact-info__icon" aria-hidden="true" set:html={c.icon} />
+              <div>
+                <h3>{c.label}</h3>
+                {c.href ? <a href={c.href}>{c.value}</a> : <p>{c.value}</p>}
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
 
-      <div class="contact-grid">
-        <div class="contact-info reveal">
-          <ul>
-            {info.map((c) => (
-              <li>
-                <span class="contact-info__icon" aria-hidden="true">{c.icon}</span>
-                <div>
-                  <h3>{c.label}</h3>
-                  {c.href ? <a href={c.href}>{c.value}</a> : <p>{c.value}</p>}
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div class="contact-form-wrap reveal">
-          <h3>Send us a message</h3>
-          <ContactForm />
-        </div>
+      <div class="contact-form-panel reveal">
+        <ContactForm />
       </div>
     </div>
   </section>
 
+  <section class="contact-map" aria-label="Map of Lennox Head">
+    <iframe
+      title="Balga Designs service area — Lennox Head, NSW"
+      src="https://maps.google.com/maps?q=Lennox%20Head%20NSW%202478&z=13&output=embed"
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+    ></iframe>
+  </section>
 </BaseLayout>
 
 <style>
-  .contact-intro { text-align: center; max-width: 60ch; margin: 0 auto 3rem; }
-  .contact-intro p { color: var(--color-text); }
-  .contact-grid { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 3rem; align-items: start; }
-  .contact-info ul { display: flex; flex-direction: column; gap: 1.4rem; }
-  .contact-info li { display: flex; gap: 1rem; align-items: flex-start; }
-  .contact-info__icon { flex: 0 0 auto; width: 48px; height: 48px; display: grid; place-items: center; background: var(--color-mint); border-radius: 50%; font-size: 1.2rem; }
-  .contact-info h3 { font-size: 1.05rem; margin-bottom: 0.2rem; }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 1rem + 4vw, 4.5rem); align-items: start; }
+  .contact-left h2 { margin-bottom: 1.2rem; }
+  .contact-lead { color: var(--color-text); margin-bottom: 0.4rem; }
+  .contact-lead + .contact-lead { margin-bottom: 2rem; }
+  .contact-info { display: grid; grid-template-columns: 1fr 1fr; gap: 1.8rem 1.5rem; margin-top: 2rem; }
+  .contact-info li { display: flex; gap: 0.9rem; align-items: flex-start; }
+  .contact-info__icon { flex: 0 0 auto; color: var(--color-secondary); margin-top: 2px; display: inline-flex; }
+  .contact-info h3 { font-size: 1.05rem; margin-bottom: 0.25rem; }
   .contact-info p, .contact-info a { color: var(--color-text); }
   .contact-info a:hover { color: var(--color-secondary); }
-  .contact-form-wrap { background: var(--color-mint); border-radius: var(--radius-md); padding: clamp(1.6rem, 1rem + 2vw, 2.4rem); }
-  .contact-form-wrap h3 { margin-bottom: 1.4rem; }
-  @media (max-width: 860px) { .contact-grid { grid-template-columns: 1fr; gap: 2.2rem; } }
+
+  .contact-form-panel { background: var(--color-accent); border-radius: var(--radius-md); padding: clamp(1.6rem, 1rem + 2vw, 2.6rem); }
+
+  .contact-map { line-height: 0; }
+  .contact-map iframe { width: 100%; height: clamp(340px, 40vw, 460px); border: 0; display: block; }
+
+  @media (max-width: 860px) {
+    .contact-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 480px) {
+    .contact-info { grid-template-columns: 1fr; }
+  }
 </style>
