@@ -44,7 +44,11 @@ const stars = [0, 1, 2, 3, 4];
             <button type="button" aria-label="Previous testimonial" data-testi-prev>‹</button>
             <button type="button" aria-label="Next testimonial" data-testi-next>›</button>
           </div>
-          <div class="testi__dots" data-testi-dots aria-hidden="true"></div>
+          <div class="testi__dots" data-testi-dots>
+            {items.map((_, i) => (
+              <button type="button" aria-label={`Go to testimonial ${i + 1}`} data-dot={i}></button>
+            ))}
+          </div>
         </div>
       </div>
     </div>
@@ -80,9 +84,10 @@ const stars = [0, 1, 2, 3, 4];
   .testi__mark svg { width: 72px; height: 72px; display: block; }
 
   .testi__controls { display: flex; align-items: center; gap: 1.2rem; margin-top: 1.6rem; }
-  .testi__dots { display: flex; gap: 0.5rem; margin-left: auto; }
-  .testi__dots button { width: 9px; height: 9px; border-radius: 50%; background: rgba(27, 27, 27, 0.25); }
-  .testi__dots button[aria-current="true"] { background: var(--color-secondary); }
+  .testi__dots { display: flex; gap: 0.25rem; margin-left: auto; }
+  .testi__dots button { width: 28px; height: 28px; border-radius: 50%; background: transparent; display: grid; place-items: center; }
+  .testi__dots button::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: rgba(27, 27, 27, 0.25); transition: background var(--transition); }
+  .testi__dots button[aria-current="true"]::before { background: var(--color-secondary); }
   .testi__nav { display: flex; gap: 0.5rem; }
   .testi__nav button { width: 42px; height: 42px; border-radius: 50%; border: 1px solid rgba(27, 27, 27, 0.35); color: var(--color-secondary-dark); font-size: 1.4rem; line-height: 1; display: grid; place-items: center; transition: background var(--transition); }
   .testi__nav button:hover { background: rgba(27, 27, 27, 0.08); }
@@ -101,15 +106,16 @@ const stars = [0, 1, 2, 3, 4];
     const prev = root.querySelector<HTMLButtonElement>("[data-testi-prev]")!;
     const next = root.querySelector<HTMLButtonElement>("[data-testi-next]")!;
 
-    slides.forEach((_, i) => {
-      const b = document.createElement("button");
-      b.type = "button"; b.setAttribute("aria-label", `Go to testimonial ${i + 1}`);
+    const dots = Array.from(dotsWrap.querySelectorAll<HTMLButtonElement>("button"));
+    dots.forEach((b, i) => {
       b.addEventListener("click", () => track.scrollTo({ left: track.clientWidth * i, behavior: "smooth" }));
-      dotsWrap.appendChild(b);
     });
     const update = () => {
       const idx = Math.round(track.scrollLeft / track.clientWidth);
-      Array.from(dotsWrap.children).forEach((d, i) => d.toggleAttribute("aria-current", i === idx));
+      dots.forEach((d, i) => {
+        if (i === idx) d.setAttribute("aria-current", "true");
+        else d.removeAttribute("aria-current");
+      });
     };
     prev.addEventListener("click", () => track.scrollBy({ left: -track.clientWidth, behavior: "smooth" }));
     next.addEventListener("click", () => track.scrollBy({ left: track.clientWidth, behavior: "smooth" }));
