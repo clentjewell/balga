@@ -1,0 +1,13 @@
+{
+  "name": "Balga Designs — Sustainable Landscapes",
+  "short_name": "Balga Designs",
+  "description": "Native and sustainable garden design across the Northern Rivers to the Southern Gold Coast.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f6f1",
+  "theme_color": "#5a674e",
+  "icons": [
+    { "src": "/assets/branding/favicon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/assets/branding/favicon-192.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

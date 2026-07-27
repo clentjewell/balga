@@ -29,6 +29,61 @@ const ogImageUrl = ogImage.startsWith("http") ? ogImage : siteUrl + ogImage;
 // Preview clone: block indexing unless explicitly disabled.
 const noindex = (import.meta.env.PUBLIC_NOINDEX ?? "true") !== "false";
 const fullTitle = title.includes("Balga Designs") ? title : `${title} – Balga Designs`;
+const metaDescription = description;
+
+// Sitewide structured data: LocalBusiness + WebSite (linked via @id).
+const schemaGraph = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "LocalBusiness",
+      "@id": `${siteUrl}/#business`,
+      name: "Balga Designs",
+      alternateName: "Balga Designs — Sustainable Landscapes",
+      description:
+        "Sustainable landscape and native garden design studio serving the Northern Rivers to the Southern Gold Coast.",
+      url: `${siteUrl}/`,
+      logo: `${siteUrl}${site.logos.mark}`,
+      image: `${siteUrl}/assets/projects/project-02/after.jpeg`,
+      telephone: "+61413731670",
+      email: site.contact.email,
+      priceRange: "$$",
+      slogan: site.slogan,
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Lennox Head",
+        addressRegion: "NSW",
+        postalCode: "2478",
+        addressCountry: "AU",
+      },
+      geo: { "@type": "GeoCoordinates", latitude: -28.7876, longitude: 153.5942 },
+      areaServed: [
+        "Lennox Head", "Ballina", "Byron Bay", "Northern Rivers NSW", "Southern Gold Coast QLD",
+      ].map((n) => ({ "@type": "Place", name: n })),
+      openingHoursSpecification: [
+        {
+          "@type": "OpeningHoursSpecification",
+          dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+          opens: "07:00",
+          closes: "16:00",
+        },
+      ],
+      knowsAbout: [
+        "Native gardens", "Sustainable landscape design", "Regenerative planting",
+        "Horticulture", "Water-wise gardens", "Landscape architecture",
+      ],
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${siteUrl}/#website`,
+      url: `${siteUrl}/`,
+      name: "Balga Designs",
+      description: metaDescription,
+      inLanguage: "en-AU",
+      publisher: { "@id": `${siteUrl}/#business` },
+    },
+  ],
+};
 ---
 
 <!doctype html>
@@ -39,7 +94,15 @@ const fullTitle = title.includes("Balga Designs") ? title : `${title} – Balga 
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
+    {!noindex && <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />}
     <link rel="canonical" href={canonicalUrl} />
+    <meta name="author" content="Balga Designs" />
+
+    <!-- Local / geo signals -->
+    <meta name="geo.region" content="AU-NSW" />
+    <meta name="geo.placename" content="Lennox Head" />
+    <meta name="geo.position" content="-28.7876;153.5942" />
+    <meta name="ICBM" content="-28.7876, 153.5942" />
 
     <link rel="preconnect" href="/" />
     <link rel="preload" href="/fonts/montserrat-var.woff2" as="font" type="font/woff2" crossorigin />
@@ -47,19 +110,25 @@ const fullTitle = title.includes("Balga Designs") ? title : `${title} – Balga 
     <link rel="icon" type="image/png" href="/assets/branding/favicon-32.png" sizes="32x32" />
     <link rel="icon" type="image/png" href="/assets/branding/favicon-192.png" sizes="192x192" />
     <link rel="apple-touch-icon" href="/assets/branding/favicon-180.png" />
-    <link rel="sitemap" href="/sitemap.xml" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Balga Designs" />
+    <meta property="og:locale" content="en_AU" />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:alt" content="Balga Designs native landscape" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
+    <meta name="twitter:image:alt" content="Balga Designs native landscape" />
     <meta name="theme-color" content="#5a674e" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(schemaGraph)} is:inline />
 
     <script is:inline>
       document.documentElement.classList.add("js");

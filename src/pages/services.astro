@@ -6,9 +6,28 @@ import ProjectsPreview from "../components/ProjectsPreview.astro";
 import WhyChooseUs from "../components/WhyChooseUs.astro";
 import TestimonialSlider from "../components/TestimonialSlider.astro";
 import { services } from "../data/services";
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, "") ?? "";
+const serviceSchema = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  serviceType: "Landscape and native garden design",
+  provider: { "@id": `${siteUrl}/#business` },
+  areaServed: "Northern Rivers NSW to Southern Gold Coast QLD",
+  url: `${siteUrl}/services/`,
+  hasOfferCatalog: {
+    "@type": "OfferCatalog",
+    name: "Garden & Landscaping Services",
+    itemListElement: services.map((s) => ({
+      "@type": "Offer",
+      itemOffered: { "@type": "Service", name: s.title, description: s.description },
+    })),
+  },
+};
 ---
-<BaseLayout title="Services" description="Total care for your garden — landscape design, garden facelifts, decorative plants, integrated pest management, weed control and horticulture consultation.">
+<BaseLayout title="Garden & Landscaping Services" description="Total care for your garden: native landscape design, garden facelifts, decorative planting, pest and weed management and horticulture advice across the Northern Rivers.">
   <PageHero title="Services" image="/assets/services/hero.jpg" crumbs={[{ label: "Home", href: "/" }, { label: "Services" }]} />
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} is:inline />
 
   <section class="section section--white">
     <div class="container">

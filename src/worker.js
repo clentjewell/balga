@@ -97,9 +97,20 @@ async function handleContact(request, env) {
   }
 }
 
+// Content types wrangler's asset server may not set (needed alongside nosniff).
+const CONTENT_TYPES = {
+  ".xsl": "text/xsl; charset=utf-8",
+  ".webmanifest": "application/manifest+json; charset=utf-8",
+  ".xml": "application/xml; charset=utf-8",
+  ".txt": "text/plain; charset=utf-8",
+};
+
 function withHeaders(res, env, pathname) {
   const headers = new Headers(res.headers);
   for (const [k, v] of Object.entries(SECURITY_HEADERS)) headers.set(k, v);
+
+  const ext = pathname.slice(pathname.lastIndexOf("."));
+  if (CONTENT_TYPES[ext]) headers.set("Content-Type", CONTENT_TYPES[ext]);
 
   if ((env.PREVIEW_NOINDEX ?? "true") !== "false") {
     headers.set("X-Robots-Tag", "noindex, nofollow");

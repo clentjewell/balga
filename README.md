@@ -66,7 +66,9 @@ Worker (`src/worker.js`) can add security headers, caching and the preview
 public/
   assets/          branding · icons · home · about · services · projects · pricing · blog · video
   fonts/           montserrat-var.woff2 (self-hosted)
-  robots.txt
+  sitemap.xsl      stylesheet for the human-readable sitemap view
+  site.webmanifest
+  (robots.txt, llms.txt & sitemap.xml are generated into dist/ at build time)
 src/
   components/      Header, Footer, PageHero, Breadcrumbs, CTASection, ServiceCard,
                    BeforeAfterSlider, TestimonialSlider, FAQAccordion, VideoModal,
@@ -146,12 +148,31 @@ domain:
 1. **Response header** — set the Worker var `PREVIEW_NOINDEX=false` (in
    `wrangler.jsonc` `vars`, or per-environment) so the Worker stops sending
    `X-Robots-Tag`.
-2. **Meta tag** — build with `PUBLIC_NOINDEX=false` so the `<meta name="robots">`
-   tag is omitted.
-3. **robots.txt** — replace `public/robots.txt` with an allow rule.
+2. **Meta tag + robots.txt** — build with `PUBLIC_NOINDEX=false`. This swaps the
+   `<meta name="robots">` tag to `index, follow …` **and** regenerates
+   `robots.txt` with an `Allow: /` rule plus AI/answer-engine crawler grants.
 
-Also set `SITE_URL=https://your-domain` at build time so canonicals and the
-sitemap use the production origin.
+Also set `SITE_URL=https://your-domain` at build time so canonicals, the sitemap,
+`robots.txt` and `llms.txt` all use the production origin. Example go-live build:
+
+```bash
+SITE_URL=https://balgadesigns.com.au PUBLIC_NOINDEX=false npm run build
+```
+
+## SEO & structured data
+
+- **Meta** — per-page SEO titles + descriptions, canonical, Open Graph / Twitter
+  cards (`en_AU`), geo tags, `theme-color`, and a web app manifest.
+- **Structured data (JSON-LD)** — `LocalBusiness` + `WebSite` sitewide,
+  `BreadcrumbList` on inner pages, `FAQPage` on Pricing/Projects,
+  `BlogPosting` on articles, and priced `Service`/`OfferCatalog` on
+  Services & Pricing.
+- **Sitemap** — `/sitemap.xml` (with `<lastmod>`), styled by `/sitemap.xsl` into a
+  Yoast/RankMath-style human-readable view when opened in a browser. Generated at
+  build time from Astro's `pages` API.
+- **robots.txt** and **llms.txt** ([llmstxt.org](https://llmstxt.org)) are
+  generated at build time and point at the current origin. `llms.txt` gives AI
+  answer engines a clean, linked overview of the site (GEO).
 
 ## Attribution
 

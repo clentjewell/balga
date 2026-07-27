@@ -7,9 +7,29 @@ import FAQAccordion from "../components/FAQAccordion.astro";
 import CTASection from "../components/CTASection.astro";
 import VideoModal from "../components/VideoModal.astro";
 import { packages } from "../data/pricing";
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, "") ?? "";
+const priceNum = (s: string) => s.replace(/[^0-9.]/g, "");
+const offerSchema = {
+  "@context": "https://schema.org",
+  "@type": "OfferCatalog",
+  name: "Balga Designs Garden Design Packages",
+  url: `${siteUrl}/pricing/`,
+  itemListElement: packages.map((p) => ({
+    "@type": "Offer",
+    name: p.title,
+    description: p.subtitle,
+    price: priceNum(p.price),
+    priceCurrency: "AUD",
+    availability: "https://schema.org/InStock",
+    url: `${siteUrl}/pricing/`,
+    itemOffered: { "@type": "Service", name: p.title, description: p.subtitle, provider: { "@id": `${siteUrl}/#business` } },
+  })),
+};
 ---
-<BaseLayout title="Pricing" description="Four Balga Designs packages — Small NativeScapes, Potted Greenery, Balga Inspo and the Complete Design Package — with transparent pricing.">
+<BaseLayout title="Garden Design Pricing & Packages" description="Transparent pricing from Balga Designs — four native garden design packages, from Small NativeScapes to the Complete Design Package. Find the right plan for your space.">
   <PageHero title="Pricing Plans" image="/assets/pricing/hero.jpg" crumbs={[{ label: "Home", href: "/" }, { label: "Pricing" }]} />
+  <script type="application/ld+json" set:html={JSON.stringify(offerSchema)} is:inline />
 
   <section class="section section--white">
     <div class="container">
