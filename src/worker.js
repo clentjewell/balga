@@ -63,8 +63,8 @@ async function handleContact(request, env) {
   }
 
   const apiKey = env.RESEND_API_KEY;
-  const to = env.CONTACT_TO_EMAIL;
-  const from = env.CONTACT_FROM_EMAIL;
+  const to = env.CONTACT_TO_EMAIL || "rao@jewellprojects.com";
+  const from = env.CONTACT_FROM_EMAIL || "Balga Designs <onboarding@resend.dev>";
 
   // No delivery credentials configured -> honest preview response (never fake a send).
   if (!apiKey || !to || !from) {
