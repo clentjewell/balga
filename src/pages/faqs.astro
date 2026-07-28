@@ -1,0 +1,93 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import CTASection from "../components/CTASection.astro";
+import { faqs, faqCategories } from "../data/faqs";
+
+const groups = faqCategories
+  .map((cat) => ({ cat, items: faqs.filter((f) => f.category === cat) }))
+  .filter((g) => g.items.length);
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((f) => ({
+    "@type": "Question",
+    name: f.q,
+    acceptedAnswer: { "@type": "Answer", text: f.a.join(" ") },
+  })),
+};
+---
+<BaseLayout
+  title="FAQs | Native Garden Design Questions"
+  description="Answers to common questions about native garden design with Balga Designs — cost, packages, timing, service areas, sustainability and payment."
+  preloadImage="/assets/pricing/faqs-bg.jpg"
+>
+  <PageHero title="Frequently Asked Questions" image="/assets/pricing/faqs-bg.jpg" crumbs={[{ label: "Home", href: "/" }, { label: "FAQs" }]} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
+
+  <section class="section section--white">
+    <div class="container container-narrow">
+      <p class="faqp__intro reveal">Everything you might want to know about working with Balga Designs — from cost and packages to timing, the areas we serve, and how we keep gardens sustainable. Can't find your answer? <a href="/contact/">Get in touch</a> and we'll help.</p>
+
+      {groups.map((g) => (
+        <div class="faqp__group reveal">
+          <h2 class="faqp__cat">{g.cat}</h2>
+          <div class="faqp__list" data-faq>
+            {g.items.map((f) => (
+              <details class="faq__item">
+                <summary>
+                  <span>{f.q}</span>
+                  <span class="faq__icon" aria-hidden="true"></span>
+                </summary>
+                <div class="faq__body">
+                  {f.a.map((p) => <p>{p}</p>)}
+                </div>
+              </details>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <CTASection title="Beautiful Landscapes Start Here" />
+</BaseLayout>
+
+<style>
+  .faqp__intro { color: var(--color-text); font-size: 1.05rem; margin-bottom: 2.6rem; }
+  .faqp__group { margin-bottom: 2.8rem; }
+  .faqp__cat {
+    font-size: 1.4rem; color: var(--color-primary);
+    padding-bottom: 0.6rem; margin-bottom: 1.1rem;
+    border-bottom: 2px solid var(--color-accent);
+  }
+  .faqp__list { display: flex; flex-direction: column; gap: 0.9rem; }
+  .faq__item { border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-background); overflow: hidden; }
+  .faq__item summary {
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    padding: 1.1rem 1.3rem; cursor: pointer; font-weight: 600; color: var(--color-primary);
+    font-family: var(--font-heading); list-style: none;
+  }
+  .faq__item summary::-webkit-details-marker { display: none; }
+  .faq__icon { position: relative; flex: 0 0 auto; width: 18px; height: 18px; }
+  .faq__icon::before, .faq__icon::after { content: ""; position: absolute; background: var(--color-secondary); transition: transform var(--transition); }
+  .faq__icon::before { top: 8px; left: 0; width: 18px; height: 2px; }
+  .faq__icon::after { left: 8px; top: 0; width: 2px; height: 18px; }
+  .faq__item[open] .faq__icon::after { transform: scaleY(0); }
+  .faq__body { padding: 0 1.3rem 1.2rem; }
+  .faq__body p { color: var(--color-text); }
+  .faq__body p + p { margin-top: 0.8rem; }
+</style>
+
+<script>
+  // Single-open accordion within each category group.
+  document.querySelectorAll<HTMLElement>("[data-faq]").forEach((wrap) => {
+    const items = Array.from(wrap.querySelectorAll<HTMLDetailsElement>("details"));
+    items.forEach((d) => {
+      d.addEventListener("toggle", () => {
+        if (d.open) items.forEach((o) => { if (o !== d) o.open = false; });
+      });
+    });
+  });
+</script>

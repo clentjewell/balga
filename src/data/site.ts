@@ -49,6 +49,7 @@ export const nav = [
   { label: "Services", href: "/services/" },
   { label: "Projects", href: "/projects/" },
   { label: "Pricing", href: "/pricing/" },
+  { label: "FAQs", href: "/faqs/" },
   { label: "Blog", href: "/balga-blog/" },
 ];
 
@@ -61,7 +62,7 @@ export const footerLinks = {
     { label: "Blog", href: "/balga-blog/" },
   ],
   support: [
-    { label: "FAQs", href: "/pricing/#faqs" },
+    { label: "FAQs", href: "/faqs/" },
     { label: "Contact", href: "/contact/" },
   ],
 };

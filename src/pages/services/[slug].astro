@@ -1,0 +1,109 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/PageHero.astro";
+import CTASection from "../../components/CTASection.astro";
+import { services } from "../../data/services";
+import { site } from "../../data/site";
+
+export function getStaticPaths() {
+  return services.map((s) => ({ params: { slug: s.slug }, props: { service: s } }));
+}
+
+const { service } = Astro.props;
+const d = service.detail;
+const siteUrl = Astro.site?.toString().replace(/\/$/, "") ?? "";
+const related = services.filter((s) => s.slug !== service.slug);
+
+const blocks = [
+  { h: "What it is", p: d.whatItIs },
+  { h: "When you need it", p: d.whenYouNeed },
+  { h: "What's involved", p: d.whatsInvolved },
+  { h: "Why Balga Designs", p: d.whyBalga },
+];
+
+const serviceSchema = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  name: service.title,
+  description: d.whatItIs,
+  serviceType: service.title,
+  provider: { "@id": `${siteUrl}/#business` },
+  areaServed: site.contact.serviceAreas.map((n) => ({ "@type": "Place", name: n })),
+  url: `${siteUrl}/services/${service.slug}/`,
+  image: siteUrl + service.image,
+};
+---
+<BaseLayout title={d.seoTitle} description={d.metaDescription} ogImage={service.image} preloadImage={service.image}>
+  <PageHero
+    title={service.title}
+    image={service.image}
+    crumbs={[{ label: "Home", href: "/" }, { label: "Services", href: "/services/" }, { label: service.title }]}
+  />
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} is:inline />
+
+  <section class="section section--white">
+    <div class="container container-narrow svc-detail">
+      <p class="svc-detail__lead reveal">{service.description}</p>
+      {blocks.map((b) => (
+        <div class="svc-detail__block reveal">
+          <h2>{b.h}</h2>
+          <p>{b.p}</p>
+        </div>
+      ))}
+      <div class="svc-detail__cta reveal">
+        <a href="/contact/" class="btn btn--primary">Book a free consultation</a>
+        <a href="/pricing/" class="btn btn--outline">View pricing</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--sand">
+    <div class="container">
+      <div class="svc-related__head reveal">
+        <span class="eyebrow">More Services</span>
+        <h2>Explore our other services</h2>
+      </div>
+      <div class="svc-related__grid">
+        {related.map((s) => (
+          <a class="svc-related__card reveal" href={`/services/${s.slug}/`}>
+            <div class="svc-related__media">
+              <img src={s.image} alt={s.alt} width={s.width} height={s.height} loading="lazy" />
+            </div>
+            <div class="svc-related__body">
+              <h3>{s.title}</h3>
+              <span class="svc-related__more">Learn more <span aria-hidden="true">&rarr;</span></span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CTASection title="Beautiful Landscapes Start Here" />
+</BaseLayout>
+
+<style>
+  .svc-detail__lead { font-size: 1.2rem; color: var(--color-secondary-dark); font-weight: 500; margin-bottom: 2.4rem; }
+  .svc-detail__block { margin-bottom: 1.9rem; }
+  .svc-detail__block h2 { font-size: 1.35rem; color: var(--color-primary); margin-bottom: 0.5rem; }
+  .svc-detail__block p { color: var(--color-text); line-height: 1.85; }
+  .svc-detail__cta { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2.4rem; }
+
+  .svc-related__head { text-align: center; margin-bottom: 2.5rem; }
+  .svc-related__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+  .svc-related__card {
+    background: var(--color-background); border-radius: var(--radius-md); overflow: hidden;
+    display: flex; flex-direction: column; color: inherit; box-shadow: var(--shadow-soft);
+    transition: transform var(--transition);
+  }
+  .svc-related__card:hover { transform: translateY(-4px); }
+  .svc-related__card:focus-visible { outline: 3px solid var(--color-secondary); outline-offset: 3px; }
+  .svc-related__media { aspect-ratio: 16 / 11; overflow: hidden; }
+  .svc-related__media img { width: 100%; height: 100%; object-fit: cover; }
+  .svc-related__body { padding: 1.1rem 1.2rem 1.3rem; }
+  .svc-related__body h3 { color: var(--color-primary); font-size: 1.1rem; margin-bottom: 0.5rem; }
+  .svc-related__more { font-weight: 600; color: var(--color-secondary); font-size: 0.9rem; }
+
+  @media (max-width: 900px) { .svc-related__grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px) { .svc-related__grid { grid-template-columns: 1fr; max-width: 420px; margin-inline: auto; } }
+</style>

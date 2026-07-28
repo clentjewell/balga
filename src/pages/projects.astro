@@ -6,6 +6,7 @@ import VideoBand from "../components/VideoBand.astro";
 import FAQAccordion from "../components/FAQAccordion.astro";
 import VideoModal from "../components/VideoModal.astro";
 import { projects } from "../data/projects";
+import { faqsByCategory } from "../data/faqs";
 ---
 <BaseLayout title="Garden Projects & Transformations" description="Explore Balga Designs before-and-after garden transformations across the Northern Rivers — sustainable, contemporary native landscaping built to thrive." preloadImage="/assets/projects/hero.jpeg">
   <PageHero title="Projects" image="/assets/projects/hero.jpeg" crumbs={[{ label: "Home", href: "/" }, { label: "Projects" }]} />
@@ -34,7 +35,7 @@ import { projects } from "../data/projects";
 
   <VideoBand image="/assets/home/sunset.jpg" eyebrow="Why Balga Designs" title="We Treat Your Garden Like Our Own" />
 
-  <FAQAccordion id="faqs" title="FAQs" />
+  <FAQAccordion id="faqs" title="Common Questions" items={faqsByCategory(["Timing & process", "Service area"])} schema={false} viewAllHref="/faqs/" />
   <VideoModal />
 </BaseLayout>
 

@@ -7,6 +7,7 @@ import FAQAccordion from "../components/FAQAccordion.astro";
 import CTASection from "../components/CTASection.astro";
 import VideoModal from "../components/VideoModal.astro";
 import { packages } from "../data/pricing";
+import { faqsByCategory } from "../data/faqs";
 
 const siteUrl = Astro.site?.toString().replace(/\/$/, "") ?? "";
 const priceNum = (s: string) => s.replace(/[^0-9.]/g, "");
@@ -70,7 +71,7 @@ const offerSchema = {
 
   <VideoBand image="/assets/home/sunset.jpg" eyebrow="Why Balga Designs" title="We Treat Your Garden Like Our Own" />
   <TestimonialSlider count={5} />
-  <FAQAccordion id="faqs" title="Frequently Asked Questions" image="/assets/pricing/faqs-bg.jpg" />
+  <FAQAccordion id="faqs" title="Pricing FAQs" image="/assets/pricing/faqs-bg.jpg" items={faqsByCategory(["Cost & packages", "Payment"])} schema={false} viewAllHref="/faqs/" />
   <CTASection title="Beautiful Landscapes Start Here" image="/assets/pricing/cta-footer.png" />
   <VideoModal />
 </BaseLayout>

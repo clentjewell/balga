@@ -1,7 +1,24 @@
 ---
-import { faqs } from "../data/faqs";
-export interface Props { id?: string; title?: string; image?: string; }
-const { id = "faqs", title = "Frequently Asked Questions", image } = Astro.props;
+import { faqs as allFaqs, type FAQ } from "../data/faqs";
+export interface Props {
+  id?: string;
+  title?: string;
+  image?: string;
+  items?: FAQ[];
+  /** Emit FAQPage JSON-LD (keep true on the canonical /faqs/ page only). */
+  schema?: boolean;
+  /** Optional "see all FAQs" link shown under the list. */
+  viewAllHref?: string;
+}
+const {
+  id = "faqs",
+  title = "Frequently Asked Questions",
+  image,
+  items,
+  schema = true,
+  viewAllHref,
+} = Astro.props;
+const faqs = items ?? allFaqs;
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
@@ -33,6 +50,9 @@ const jsonLd = {
             </details>
           ))}
         </div>
+        {viewAllHref && (
+          <p class="faq__all"><a href={viewAllHref}>See all frequently asked questions <span aria-hidden="true">&rarr;</span></a></p>
+        )}
       </div>
       {image && (
         <div class="faq__media reveal">
@@ -42,7 +62,7 @@ const jsonLd = {
     </div>
   </div>
 </section>
-<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
+{schema && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />}
 
 <style>
   .faq__wrap { max-width: calc(var(--container-narrow) + var(--gutter) * 2); margin-inline: auto; }
@@ -64,6 +84,9 @@ const jsonLd = {
   .faq__body { padding: 0 1.4rem 1.3rem; }
   .faq__body p { color: var(--color-text); }
   .faq__body p + p { margin-top: 0.8rem; }
+  .faq__all { margin-top: 1.6rem; text-align: center; }
+  .faq__wrap--split .faq__all { text-align: left; }
+  .faq__all a { color: var(--color-secondary); font-weight: 600; }
   .faq__media img { width: 100%; height: 100%; max-height: 520px; object-fit: cover; border-radius: var(--radius-md); }
   @media (max-width: 860px) {
     .faq__wrap--split { grid-template-columns: 1fr; }

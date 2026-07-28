@@ -19,8 +19,15 @@ const PAGE_META = {
   '/services/': ['Services', 'Landscape design, garden facelifts, planting, pest & weed management and horticulture advice.'],
   '/projects/': ['Projects', 'Before-and-after native garden transformations across the Northern Rivers.'],
   '/pricing/': ['Pricing', 'Four transparent garden design packages, from Small NativeScapes to the Complete Design Package.'],
+  '/faqs/': ['FAQs', 'Answers on cost, packages, timing, service areas, sustainability and payment. First consultation is free.'],
   '/balga-blog/': ['Blog', 'Stories and guides on native gardens and sustainable landscape design.'],
-  '/contact/': ['Contact', 'Book a consultation for sustainable native garden design.'],
+  '/contact/': ['Contact', 'Book a free consultation for sustainable native garden design.'],
+  '/services/landscape-design/': ['Landscape Design', 'Custom native landscape design; packages from $2,500 to $4,500.'],
+  '/services/garden-facelift/': ['Garden Facelift', 'A sustainable refresh of an existing garden; free consultation and tailored quote.'],
+  '/services/decorative-plants/': ['Decorative Plants & Pot Styling', 'Potted greenery styling for indoor and outdoor spaces; $2,000 package.'],
+  '/services/integrated-pest-management/': ['Integrated Pest Management', 'Chemical-free, ecological pest management that restores biodiversity.'],
+  '/services/weed-control/': ['Weed Control Consultation', 'Sustainable, low-harm advice to manage and prevent weeds.'],
+  '/services/horticulture-consultation/': ['Horticulture Consultation', 'Expert plant selection, soil health and sustainable gardening advice.'],
   '/what-are-native-gardens/': ['What are Native Gardens?', 'A guide to naturalistic native gardens and the benefits of native landscaping.'],
   '/why-designing-and-planning-are-crucial-for-successful-landscaping/': ['Why Designing & Planning Matter', 'How thoughtful landscape design and planning save money, time and frustration.'],
   '/balga-meaning-purpose/': ['Balga Meaning & Purpose', 'The meaning behind the name Balga and our Country-rooted design philosophy.'],
@@ -86,7 +93,8 @@ function seoFiles() {
           const [label, desc] = PAGE_META[u] || [u, ''];
           return `- [${label}](${BASE}${u})${desc ? `: ${desc}` : ''}`;
         };
-        const corePages = ['/', '/about/', '/services/', '/projects/', '/pricing/', '/contact/'];
+        const corePages = ['/', '/about/', '/services/', '/projects/', '/pricing/', '/faqs/', '/contact/'];
+        const servicePages = urls.filter((u) => u.startsWith('/services/') && u !== '/services/');
         const articles = urls.filter((u) => u.startsWith('/what-') || u.startsWith('/why-') || u.startsWith('/balga-meaning'));
         const llms =
 `# Balga Designs
@@ -98,6 +106,9 @@ Balga Designs blends aesthetic appeal with ecological responsibility. Services s
 ## Key pages
 ${corePages.map(link).join('\n')}
 - [Blog](${BASE}/balga-blog/): Guides and stories on native gardens and sustainable design.
+
+## Services
+${servicePages.map(link).join('\n')}
 
 ## Articles
 ${articles.map(link).join('\n')}
