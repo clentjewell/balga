@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
-import { writeFileSync } from 'node:fs';
+import { writeFileSync, readFileSync } from 'node:fs';
+import { parse } from 'node-html-parser';
 
 // Preview deployment URL (workers.dev). Override with SITE_URL when promoting
 // to a production domain so canonicals/sitemap use the right origin.
@@ -109,6 +110,34 @@ ${articles.map(link).join('\n')}
 - Hours: Monday–Friday, 07:00–16:00 AEST
 `;
         writeFileSync(new URL('llms.txt', dir), llms);
+
+        // --- llms-full.txt (full extractable page copy for AI answer engines) ---
+        const sections = urls.map((u) => {
+          const rel = u === '/' ? 'index.html' : u.slice(1) + 'index.html';
+          let text = '';
+          let heading = (PAGE_META[u] && PAGE_META[u][0]) || u;
+          try {
+            const root = parse(readFileSync(new URL(rel, dir), 'utf8'));
+            const h1 = root.querySelector('h1');
+            if (h1) heading = h1.text.trim();
+            const main = root.querySelector('#main') || root.querySelector('main') || root;
+            main.querySelectorAll('script, style, noscript, svg').forEach((n) => n.remove());
+            text = main.structuredText
+              .replace(/[ \t]+\n/g, '\n')
+              .replace(/\n{3,}/g, '\n\n')
+              .trim();
+          } catch { /* skip unreadable page */ }
+          return `## ${heading}\nURL: ${BASE}${u}\n\n${text}\n`;
+        });
+        const llmsFull =
+`# Balga Designs — full content
+
+> Extractable text content of balgadesigns.com.au for AI answer engines and LLMs.
+> Sustainable landscape & native garden design, Lennox Head NSW, serving the Northern Rivers to the Southern Gold Coast.
+> Contact: info@balgadesigns.com.au · 041 373 1670
+
+${sections.join('\n---\n\n')}`;
+        writeFileSync(new URL('llms-full.txt', dir), llmsFull);
       },
     },
   };

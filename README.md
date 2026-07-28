@@ -162,17 +162,21 @@ SITE_URL=https://balgadesigns.com.au PUBLIC_NOINDEX=false npm run build
 ## SEO & structured data
 
 - **Meta** — per-page SEO titles + descriptions, canonical, Open Graph / Twitter
-  cards (`en_AU`), geo tags, `theme-color`, and a web app manifest.
+  cards (`en_AU`) with a branded 1200×630 share image
+  (`assets/branding/og-image.jpg`), geo tags, `theme-color`, a web app manifest,
+  and a preloaded LCP hero image per page (`fetchpriority=high`) for Core Web Vitals.
 - **Structured data (JSON-LD)** — `LocalBusiness` + `WebSite` sitewide,
   `BreadcrumbList` on inner pages, `FAQPage` on Pricing/Projects,
-  `BlogPosting` on articles, and priced `Service`/`OfferCatalog` on
+  `BlogPosting` (with `wordCount`/`dateModified`) on articles, `VideoObject` on
+  pages with the intro video, and priced `Service`/`OfferCatalog` on
   Services & Pricing.
 - **Sitemap** — `/sitemap.xml` (with `<lastmod>`), styled by `/sitemap.xsl` into a
   Yoast/RankMath-style human-readable view when opened in a browser. Generated at
   build time from Astro's `pages` API.
-- **robots.txt** and **llms.txt** ([llmstxt.org](https://llmstxt.org)) are
-  generated at build time and point at the current origin. `llms.txt` gives AI
-  answer engines a clean, linked overview of the site (GEO).
+- **robots.txt**, **llms.txt** and **llms-full.txt**
+  ([llmstxt.org](https://llmstxt.org)) are generated at build time and point at
+  the current origin. `llms.txt` gives AI answer engines a clean, linked overview;
+  `llms-full.txt` carries the full extractable page copy (GEO).
 
 ## Attribution
 

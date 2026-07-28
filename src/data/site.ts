@@ -18,6 +18,11 @@ export const site = {
   video: {
     youtubeId: "pY_lOt_Yogk",
     embed: "https://www.youtube.com/embed/pY_lOt_Yogk?autoplay=1&rel=0",
+    title: "Balga Designs — Sustainable Landscapes",
+    description:
+      "A short introduction to Balga Designs and our approach to beautiful, regenerative native gardens across the Northern Rivers to the Southern Gold Coast.",
+    thumbnail: "https://i.ytimg.com/vi/pY_lOt_Yogk/hqdefault.jpg",
+    // uploadDate intentionally omitted until the real YouTube publish date is confirmed.
   },
   developer: { name: "Jewell Projects", url: "https://jewellprojects.com/" },
   acknowledgement:

@@ -8,6 +8,7 @@ export interface Props { post: CollectionEntry<"blog">; }
 const { post } = Astro.props;
 const { data } = post;
 const siteUrl = Astro.site?.toString().replace(/\/$/, "") ?? "";
+const wordCount = (post.body.replace(/[#>*_`\-\[\]()!]/g, " ").match(/\b\w+\b/g) || []).length;
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
@@ -15,12 +16,21 @@ const jsonLd = {
   description: data.description,
   image: siteUrl + data.image,
   datePublished: data.dateISO,
-  author: { "@type": "Organization", name: "Balga Designs" },
-  publisher: { "@type": "Organization", name: "Balga Designs", logo: { "@type": "ImageObject", url: siteUrl + "/assets/branding/logo-mark.png" } },
-  mainEntityOfPage: siteUrl + "/" + post.slug + "/",
+  dateModified: data.dateISO,
+  wordCount,
+  inLanguage: "en-AU",
+  articleSection: "Landscaping",
+  keywords: ["native gardens", "sustainable landscaping", "garden design", "Northern Rivers"],
+  author: { "@type": "Organization", name: "Balga Designs", url: siteUrl + "/" },
+  publisher: {
+    "@type": "Organization",
+    name: "Balga Designs",
+    logo: { "@type": "ImageObject", url: siteUrl + "/assets/branding/logo-mark.png", width: 512, height: 512 },
+  },
+  mainEntityOfPage: { "@type": "WebPage", "@id": siteUrl + "/" + post.slug + "/" },
 };
 ---
-<BaseLayout title={data.title} description={data.description} ogImage={data.image}>
+<BaseLayout title={data.title} description={data.description} ogImage={data.image} preloadImage="/assets/blog/articles-header.webp">
   <section class="article-hero" style={`--hero-img:url('/assets/blog/articles-header.webp')`}>
     <div class="article-hero__overlay"></div>
     <div class="container article-hero__inner">

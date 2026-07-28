@@ -13,14 +13,16 @@ export interface Props {
   ogImage?: string;
   canonical?: string;
   bodyClass?: string;
+  preloadImage?: string;
 }
 
 const {
   title,
   description = "Balga Designs creates beautiful native landscapes with a regenerative perspective — sustainable garden design across the Northern Rivers to Southern Gold Coast.",
-  ogImage = "/assets/projects/project-02/after.jpeg",
+  ogImage = "/assets/branding/og-image.jpg",
   canonical,
   bodyClass = "",
+  preloadImage,
 } = Astro.props;
 
 const siteUrl = Astro.site?.toString().replace(/\/$/, "") ?? "";
@@ -105,6 +107,7 @@ const schemaGraph = {
     <meta name="ICBM" content="-28.7876, 153.5942" />
 
     <link rel="preconnect" href="/" />
+    {preloadImage && <link rel="preload" as="image" href={preloadImage} fetchpriority="high" />}
     <link rel="preload" href="/fonts/montserrat-var.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" type="image/png" href="/assets/branding/favicon-32.png" sizes="32x32" />

@@ -1,6 +1,17 @@
 ---
 import { site } from "../data/site";
+const videoSchema = {
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: site.video.title,
+  description: site.video.description,
+  thumbnailUrl: [site.video.thumbnail],
+  embedUrl: `https://www.youtube.com/embed/${site.video.youtubeId}`,
+  contentUrl: `https://www.youtube.com/watch?v=${site.video.youtubeId}`,
+  publisher: { "@type": "Organization", name: "Balga Designs" },
+};
 ---
+<script type="application/ld+json" set:html={JSON.stringify(videoSchema)} is:inline />
 <div class="video-modal" data-video-modal hidden>
   <div class="video-modal__backdrop" data-video-close></div>
   <div class="video-modal__inner" role="dialog" aria-modal="true" aria-label="Balga Designs video">
