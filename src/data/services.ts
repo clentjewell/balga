@@ -16,15 +16,15 @@ export interface Service {
   alt: string;
   width: number;
   height: number;
-  /** id of a related project (see src/data/projects.ts) to showcase on the page. */
-  relatedProject: string;
+  /** ids of related projects (see src/data/projects.ts) to showcase; empty = no section. */
+  relatedProjects: string[];
   detail: ServiceDetail;
 }
 
 export const services: Service[] = [
   {
     slug: "landscape-design",
-    relatedProject: "project-01",
+    relatedProjects: ["project-01","project-02","project-07"],
     title: "Landscape Design",
     description:
       "Custom designs that blend aesthetic appeal with environmental consciousness.",
@@ -48,7 +48,7 @@ export const services: Service[] = [
   },
   {
     slug: "garden-facelift",
-    relatedProject: "project-06",
+    relatedProjects: ["project-06","project-02","project-04"],
     title: "Garden Facelift",
     description:
       "Tailored to harmonise with the natural environment, creating spaces that are both functional and beautiful.",
@@ -72,7 +72,7 @@ export const services: Service[] = [
   },
   {
     slug: "decorative-plants",
-    relatedProject: "project-04",
+    relatedProjects: ["project-04","project-02"],
     title: "Decorative Plants",
     description:
       "Enhance your space by incorporating potted greenery, bringing an organic and stylish feel to your indoor & outdoor area.",
@@ -96,7 +96,7 @@ export const services: Service[] = [
   },
   {
     slug: "integrated-pest-management",
-    relatedProject: "project-03",
+    relatedProjects: ["project-03","project-07"],
     title: "Integrated Pest Management",
     description:
       "Restoring native ecosystems and promoting biodiversity within your garden.",
@@ -120,7 +120,7 @@ export const services: Service[] = [
   },
   {
     slug: "weed-control",
-    relatedProject: "project-05",
+    relatedProjects: ["project-05","project-03"],
     title: "Weed Control Consultation",
     description:
       "Get expert advice on sustainable methods to manage and prevent weeds without harming your garden's ecosystem.",
@@ -144,7 +144,7 @@ export const services: Service[] = [
   },
   {
     slug: "horticulture-consultation",
-    relatedProject: "project-07",
+    relatedProjects: ["project-07","project-03"],
     title: "Horticulture Consultation",
     description:
       "Expert advice on plant selection, soil health, and sustainable gardening practices.",

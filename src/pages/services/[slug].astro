@@ -15,7 +15,9 @@ const { service } = Astro.props;
 const d = service.detail;
 const siteUrl = Astro.site?.toString().replace(/\/$/, "") ?? "";
 const related = services.filter((s) => s.slug !== service.slug);
-const project = projects.find((p) => p.id === service.relatedProject);
+const relatedProjects = service.relatedProjects
+  .map((id) => projects.find((p) => p.id === id))
+  .filter((p) => p !== undefined);
 
 const blocks = [
   { h: "What it is", p: d.whatItIs },
@@ -47,7 +49,7 @@ const serviceSchema = {
   <section class="section section--white">
     <div class="container">
       <p class="svc-detail__lead reveal">{service.description}</p>
-      <div class:list={["svc-detail", { "svc-detail--single": !project }]}>
+      <div class="svc-detail">
         <div class="svc-detail__main">
           {blocks.map((b) => (
             <div class="svc-detail__block reveal">
@@ -61,28 +63,46 @@ const serviceSchema = {
           </div>
         </div>
 
-        {project && (
-          <aside class="svc-detail__aside reveal">
-            <figure class="svc-proj">
-              <BeforeAfterSlider
-                before={project.before}
-                after={project.after}
-                beforeAlt={project.beforeAlt}
-                afterAlt={project.afterAlt}
-                ratio="4 / 3"
-              />
-              <figcaption class="svc-proj__cap">
-                <span class="eyebrow">Related project</span>
-                <h3>{project.title}</h3>
-                {project.location && <p class="svc-proj__loc">{project.location}</p>}
-                <a href="/projects/" class="svc-proj__link">See more of our work <span aria-hidden="true">&rarr;</span></a>
-              </figcaption>
-            </figure>
-          </aside>
-        )}
+        <aside class="svc-detail__aside reveal">
+          <figure class="svc-img">
+            <img src={service.image} alt={service.alt} width={service.width} height={service.height} loading="lazy" />
+          </figure>
+        </aside>
       </div>
     </div>
   </section>
+
+  {relatedProjects.length > 0 && (
+    <section class="section section--mint">
+      <div class="container">
+        <div class="svc-projects__head reveal">
+          <span class="eyebrow">Our Work</span>
+          <h2>Related projects</h2>
+          <p>A look at how this comes to life in real gardens across the Northern Rivers.</p>
+        </div>
+        <div class="svc-projects__grid">
+          {relatedProjects.map((p) => (
+            <figure class="svc-projects__item reveal">
+              <BeforeAfterSlider
+                before={p.before}
+                after={p.after}
+                beforeAlt={p.beforeAlt}
+                afterAlt={p.afterAlt}
+                ratio="4 / 3"
+              />
+              <figcaption class="svc-projects__cap">
+                <h3>{p.title}</h3>
+                {p.location && <p>{p.location}</p>}
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+        <div class="svc-projects__cta reveal">
+          <a href="/projects/" class="btn btn--outline">View all projects</a>
+        </div>
+      </div>
+    </section>
+  )}
 
   <section class="section section--sand">
     <div class="container">
@@ -111,8 +131,7 @@ const serviceSchema = {
 
 <style>
   .svc-detail__lead { font-size: 1.2rem; color: var(--color-secondary-dark); font-weight: 500; margin-bottom: 2.4rem; max-width: 68ch; }
-  .svc-detail { display: grid; grid-template-columns: 1fr 0.92fr; gap: clamp(2rem, 1rem + 4vw, 4rem); align-items: start; }
-  .svc-detail--single { grid-template-columns: 1fr; max-width: 68ch; }
+  .svc-detail { display: grid; grid-template-columns: 1fr 0.9fr; gap: clamp(2rem, 1rem + 4vw, 4rem); align-items: start; }
   .svc-detail__main { min-width: 0; }
   .svc-detail__block { margin-bottom: 1.9rem; }
   .svc-detail__block h2 { font-size: 1.35rem; color: var(--color-primary); margin-bottom: 0.5rem; }
@@ -120,16 +139,21 @@ const serviceSchema = {
   .svc-detail__cta { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2.4rem; }
 
   .svc-detail__aside { position: sticky; top: 100px; min-width: 0; }
-  .svc-proj { margin: 0; background: var(--color-background); border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-soft); }
-  .svc-proj__cap { padding: 1.2rem 1.3rem 1.4rem; }
-  .svc-proj__cap .eyebrow { color: var(--color-secondary); }
-  .svc-proj__cap h3 { color: var(--color-primary); font-size: 1.2rem; margin: 0.3rem 0 0.2rem; }
-  .svc-proj__loc { color: var(--color-text); font-size: 0.9rem; margin-bottom: 0.6rem; }
-  .svc-proj__link { font-weight: 600; color: var(--color-secondary); font-size: 0.95rem; }
+  .svc-img { margin: 0; border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-soft); }
+  .svc-img img { width: 100%; height: auto; display: block; }
+
+  .svc-projects__head { text-align: center; max-width: 60ch; margin: 0 auto 2.6rem; }
+  .svc-projects__head p { color: var(--color-text); margin-top: 0.6rem; }
+  .svc-projects__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.6rem; }
+  .svc-projects__item { margin: 0; background: var(--color-background); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-soft); }
+  .svc-projects__cap { padding: 1rem 1.2rem 1.2rem; }
+  .svc-projects__cap h3 { color: var(--color-primary); font-size: 1.1rem; margin-bottom: 0.2rem; }
+  .svc-projects__cap p { color: var(--color-text); font-size: 0.9rem; }
+  .svc-projects__cta { text-align: center; margin-top: 2.4rem; }
 
   @media (max-width: 860px) {
-    .svc-detail { grid-template-columns: 1fr; gap: 2.4rem; }
-    .svc-detail__aside { position: static; order: -1; max-width: 520px; }
+    .svc-detail { grid-template-columns: 1fr; gap: 2.2rem; }
+    .svc-detail__aside { position: static; order: -1; max-width: 560px; }
   }
 
   .svc-related__head { text-align: center; margin-bottom: 2.5rem; }
