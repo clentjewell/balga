@@ -11,7 +11,8 @@
     "preview": "astro preview",
     "check": "astro check",
     "test": "playwright test",
-    "deploy": "wrangler deploy"
+    "deploy": "wrangler deploy",
+    "audit": "node scripts/audit-site.mjs dist"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",

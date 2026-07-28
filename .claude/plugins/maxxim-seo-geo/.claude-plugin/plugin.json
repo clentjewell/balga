@@ -1,0 +1,10 @@
+{
+  "name": "maxxim-seo-geo",
+  "version": "1.0.0",
+  "description": "Maxxim SEO/GEO skill layer — build-time on-page standards (Layer 1), retrofit upgrade, GEO content and citations (Layer 3), and the Design-phase SEO Strategy document.",
+  "author": {
+    "name": "Clent Jewell",
+    "url": "https://jewellai.com"
+  },
+  "keywords": ["seo", "geo", "local-seo", "schema", "astro", "maxxim"]
+}
