@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<title>SEO Strategy — Balga Designs</title>
+<meta name="maxxim:client" content="balga-designs">
+<meta name="maxxim:phase" content="design">
+<meta name="maxxim:skill" content="seo-strategy">
+<meta name="maxxim:generated" content="2026-07-28">
+<meta name="description" content="Design-phase SEO and GEO strategy for Balga Designs, a sustainable landscape and native garden design studio based in Lennox Head NSW.">
+</head>
+<body>
+<h1>SEO &amp; GEO Strategy — Balga Designs</h1>
+
+<p><strong>Client:</strong> Balga Designs — sustainable landscape &amp; native garden design studio. <strong>Base:</strong> Lennox Head NSW 2478 (service-area business). <strong>Service area:</strong> Northern Rivers NSW through to Southern Gold Coast QLD; core suburbs Lennox Head, Ballina, Byron Bay. <strong>Contact:</strong> 041 373 1670 / info@balgadesigns.com.au. <strong>Website:</strong> <a href="https://balgadesigns.com.au">https://balgadesigns.com.au</a>. <strong>Phase:</strong> Design. <strong>Generated:</strong> 2026-07-28.</p>
+
+<p><em>Scope note:</em> This document is a strategy, not a guarantee. Rankings, traffic and enquiry figures below are targets and milestones, not promises. Search-volume and difficulty figures are labelled estimate <strong>bands</strong> to be validated in Google Search Console and a keyword tool once the site is indexed and collecting data. The site is currently deployed to a <code>noindex</code> workers.dev preview; the milestone clock in this document starts at go-live, when the production domain is indexable.</p>
+
+<hr>
+
+<h2>1. SEO Objectives</h2>
+
+<p>The single business objective is <strong>qualified lead enquiries for garden and landscape design</strong> — phone calls, contact-form submissions and quote requests from within the Northern Rivers → Southern Gold Coast service area. Every SEO objective below is a proxy for that outcome; organic traffic that does not convert to enquiries is not the goal.</p>
+
+<h3>Guiding principles</h3>
+<ul>
+<li><strong>Local intent first.</strong> A design studio serving a defined geography wins on local and "near me" queries, not on national head terms.</li>
+<li><strong>Authority compounds slowly.</strong> A new domain has no track record. Realistic timelines only — no page-one-in-30-days claims.</li>
+<li><strong>Enquiries over vanity.</strong> Report movement in enquiries and assisted conversions, not raw impressions.</li>
+</ul>
+
+<h3>Milestones tied to business goals</h3>
+
+<table>
+<thead>
+<tr><th>Horizon</th><th>SEO objective</th><th>Measurable milestone (target, not guarantee)</th><th>Business tie-in</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>0–3 months</strong> (foundation)</td>
+<td>Get indexed, verified and measured.</td>
+<td>Production domain fully indexed in Search Console; Google Business Profile (GBP) verified and complete; baseline captured for organic sessions, impressions and enquiries; first tracked keywords appearing in GSC (any position); Core Web Vitals "Good" on all templates.</td>
+<td>Establishes the measurement baseline so enquiry attribution is possible at all.</td>
+</tr>
+<tr>
+<td><strong>6 months</strong> (traction)</td>
+<td>Rank for long-tail local + suburb terms; begin appearing in the local map pack for brand and near-brand queries.</td>
+<td>A meaningful share of tracked suburb/service keywords (e.g. "garden design Lennox Head", "native garden design Ballina") in the top 10–20; GBP surfacing for "garden designer near me" in the base suburb; a first cohort of Google reviews (target 5–10); month-on-month growth in organic sessions and a first trickle of organic enquiries.</td>
+<td>First organic enquiries attributable to search rather than referral/social.</td>
+</tr>
+<tr>
+<td><strong>12 months</strong> (authority)</td>
+<td>Establish topical authority for native/sustainable garden design across the service area and a repeatable enquiry channel.</td>
+<td>Multiple primary service+suburb clusters ranking page one; steady map-pack presence across Lennox Head, Ballina and Byron Bay; a healthy, growing review base; organic search a consistent, month-over-month contributor to total enquiries; a small but real backlink profile from local/industry sources.</td>
+<td>Organic search functioning as a predictable, compounding lead source.</td>
+</tr>
+</tbody>
+</table>
+
+<p><em>These are direction-of-travel targets. Actual timing depends on competition, review velocity, publishing consistency and Google's own indexing/ranking behaviour, none of which can be guaranteed.</em></p>
+
+<hr>
+
+<h2>2. Technical SEO Audit Framework</h2>
+
+<p>Balga Designs was built to the Maxxim SEO Layer 1 standard, so the technical foundation is strong. The current site already ships: <strong>LocalBusiness + WebSite + Breadcrumb + FAQ + Service/Offer + BlogPosting + VideoObject JSON-LD</strong>, an <strong>XML sitemap with an XSL view</strong>, <strong>robots.txt</strong>, <strong>llms.txt + llms-full.txt</strong>, per-page <strong>meta and Open Graph</strong> tags, a single <strong>&lt;h1&gt;</strong> per page, image <strong>alt text</strong>, and <strong>LCP preload</strong> on the hero. The stack (Astro static site on Cloudflare Workers) is inherently fast and Core-Web-Vitals-friendly.</p>
+
+<p>The framework below is therefore <strong>"maintain + monitor" on what already exists</strong>, plus a <strong>prioritised gap list</strong>. It is ordered by impact, not presented as a flat checklist.</p>
+
+<h3>Priority 1 — Highest impact (do first / at go-live)</h3>
+<ul>
+<li><strong>Indexability flip.</strong> The single most important technical action: confirm the <code>noindex</code> is removed at go-live on the production domain and the workers.dev preview stays <code>noindex</code>. Verify there is no stray <code>Disallow: /</code> or preview-only header in production robots.txt / meta.</li>
+<li><strong>Canonical hygiene.</strong> Every production URL must self-canonical to the <code>balgadesigns.com.au</code> apex (or chosen www/non-www) — never to the preview host. One canonical host, enforced by 301 redirect for the other variant, plus HTTPS-only.</li>
+<li><strong>Search Console + sitemap submission.</strong> Verify the production property, submit <code>sitemap.xml</code>, and watch the Coverage/Indexing report for exclusions.</li>
+<li><strong>Content gaps that are also technical gaps — per-service and per-suburb pages.</strong> These are the highest-leverage build items: dedicated indexable pages for each core service (Landscape Design, Garden Facelift, Decorative Plants/pot styling, Integrated Pest Management, Weed Control Consultation, Horticulture Consultation) and for each core suburb (Lennox Head, Ballina, Byron Bay). Without them there is nothing for suburb/service queries to rank. Each needs its own URL, title, H1, unique body and Service schema.</li>
+</ul>
+
+<h3>Priority 2 — Local trust signals (high impact for this business type)</h3>
+<ul>
+<li><strong>Google Business Profile</strong> — not on-site, but the dominant local ranking asset. Claim, verify, complete (see Section 6).</li>
+<li><strong>Reviews</strong> — establish the review-generation flow (Section 6). Also a ranking + conversion signal.</li>
+<li><strong>NAP consistency</strong> — one source of truth for Name/Address/Phone across LocalBusiness JSON-LD, footer, contact page and GBP. As a service-area business, suppress the street address publicly where appropriate and define the service area explicitly.</li>
+</ul>
+
+<h3>Priority 3 — Maintain &amp; monitor (already shipping; keep healthy)</h3>
+<ul>
+<li><strong>Structured data:</strong> keep the LocalBusiness/Service/FAQ/BlogPosting JSON-LD valid as content changes; re-validate in the Rich Results Test after template changes. Add Service schema to the new per-service pages.</li>
+<li><strong>Core Web Vitals:</strong> Astro-on-Workers should hold LCP/INP/CLS in "Good". Monitor field data in the Search Console CWV report once traffic exists; guard against regressions from added images, embeds or the video (VideoObject) hero. Keep the LCP preload aligned with the actual largest element.</li>
+<li><strong>Mobile:</strong> confirm mobile-first rendering, tap targets and readable fonts on the real device profile of local users.</li>
+<li><strong>Site structure &amp; URLs:</strong> shallow, readable, keyword-aware paths (see Section 5 URL conventions); logical hub → cluster hierarchy.</li>
+<li><strong>Redirects:</strong> keep a clean 301 map; avoid chains; watch for soft-404s on thin pages.</li>
+<li><strong>sitemap.xml / robots.txt / llms.txt:</strong> keep in sync as pages are added — new service/suburp pages must appear in the sitemap.</li>
+</ul>
+
+<h3>How to prioritise ongoing</h3>
+<p>Rank each finding by <strong>(impact on local enquiries) × (number of pages affected) ÷ (effort)</strong>. Indexability and per-suburb/service pages beat micro-optimisations every time.</p>
+
+<hr>
+
+<h2>3. Keyword Strategy</h2>
+
+<p>Clusters are grouped by topic and intent. Volume and difficulty are <strong>estimate bands</strong> — "low / medium / high" — to be validated in Search Console and a keyword tool (e.g. Google Keyword Planner, Ahrefs, Semrush) once the site collects impression data. No invented monthly search counts. For a regional Australian service business, most valuable terms sit in the <strong>low-to-medium volume, medium-difficulty</strong> range but convert strongly because intent is local and commercial.</p>
+
+<h3>Cluster A — Native garden design (core / brand-defining)</h3>
+<ul>
+<li>native garden design; native garden designer; native garden ideas; Australian native garden design — <em>volume: medium (est.); difficulty: medium (est.); intent: commercial + informational.</em></li>
+</ul>
+
+<h3>Cluster B — Sustainable / landscape design</h3>
+<ul>
+<li>sustainable garden design; landscape design; sustainable landscaping; regenerative garden design — <em>volume: medium (est.); difficulty: medium–high (est.); intent: commercial.</em></li>
+</ul>
+
+<h3>Cluster C — Location-qualified (highest commercial value)</h3>
+<ul>
+<li>garden design / landscape design / native garden design + {Lennox Head, Ballina, Byron Bay, Northern Rivers}; "garden designer near me" — <em>volume: low per suburb, medium aggregate (est.); difficulty: low–medium (est.); intent: transactional/commercial.</em> These are the enquiry engine.</li>
+</ul>
+
+<h3>Cluster D — Service-specific</h3>
+<ul>
+<li>garden facelift; pot styling / decorative plant styling; potted plant styling; integrated pest management garden; weed control consultation; horticulture consultation — <em>volume: low–medium (est.); difficulty: low–medium (est.); intent: commercial/transactional.</em></li>
+</ul>
+
+<h3>Cluster E — Low-maintenance / water-wise (informational lead-in)</h3>
+<ul>
+<li>low-maintenance native garden; water-wise garden; drought-tolerant garden design; low-maintenance garden ideas — <em>volume: medium (est.); difficulty: medium (est.); intent: informational → commercial.</em></li>
+</ul>
+
+<h3>Cluster F — Native plants NSW (top-of-funnel authority)</h3>
+<ul>
+<li>native plants NSW; native plants Northern Rivers; best native plants for coastal gardens; what are native gardens — <em>volume: medium (est.); difficulty: medium (est.); intent: informational.</em> Feeds the blog and earns links; supports GEO/AI citations.</li>
+</ul>
+
+<h3>Keyword → page mapping</h3>
+
+<table>
+<thead>
+<tr><th>Target page</th><th>URL (proposed)</th><th>Primary keyword cluster</th><th>Intent</th><th>Status</th></tr>
+</thead>
+<tbody>
+<tr><td>Home</td><td>/</td><td>native + sustainable garden design (Northern Rivers)</td><td>Commercial</td><td>Exists</td></tr>
+<tr><td>Landscape Design service</td><td>/services/landscape-design/</td><td>landscape design; sustainable landscaping</td><td>Commercial</td><td>Gap — build</td></tr>
+<tr><td>Garden Facelift service</td><td>/services/garden-facelift/</td><td>garden facelift (Cluster D)</td><td>Transactional</td><td>Gap — build</td></tr>
+<tr><td>Decorative Plants / Pot Styling</td><td>/services/pot-styling/</td><td>pot styling; decorative plant styling</td><td>Commercial</td><td>Gap — build</td></tr>
+<tr><td>Integrated Pest Management</td><td>/services/integrated-pest-management/</td><td>IPM garden; garden pest management</td><td>Commercial</td><td>Gap — build</td></tr>
+<tr><td>Weed Control Consultation</td><td>/services/weed-control/</td><td>weed control consultation</td><td>Commercial</td><td>Gap — build</td></tr>
+<tr><td>Horticulture Consultation</td><td>/services/horticulture-consultation/</td><td>horticulture consultation</td><td>Commercial</td><td>Gap — build</td></tr>
+<tr><td>Lennox Head area page</td><td>/garden-design-lennox-head/</td><td>garden design Lennox Head (Cluster C)</td><td>Transactional</td><td>Gap — build</td></tr>
+<tr><td>Ballina area page</td><td>/garden-design-ballina/</td><td>garden design Ballina (Cluster C)</td><td>Transactional</td><td>Gap — build</td></tr>
+<tr><td>Byron Bay area page</td><td>/garden-design-byron-bay/</td><td>garden design Byron Bay (Cluster C)</td><td>Transactional</td><td>Gap — build</td></tr>
+<tr><td>Northern Rivers area page</td><td>/native-garden-design-northern-rivers/</td><td>native garden design Northern Rivers</td><td>Commercial</td><td>Gap — build</td></tr>
+<tr><td>Article: What are Native Gardens?</td><td>/blog/what-are-native-gardens/</td><td>what are native gardens (Cluster F)</td><td>Informational</td><td>Exists</td></tr>
+<tr><td>Article: Why Designing &amp; Planning Matter</td><td>/blog/why-planning-matters/</td><td>garden design planning; why plan a garden</td><td>Informational</td><td>Exists</td></tr>
+<tr><td>Article: Balga — Meaning &amp; Purpose</td><td>/blog/balga-meaning/</td><td>balga grass tree; brand story</td><td>Informational/brand</td><td>Exists</td></tr>
+<tr><td>Planned pillar: Native &amp; Sustainable Garden Design guide</td><td>/native-sustainable-garden-design/</td><td>Clusters A + B + E (hub)</td><td>Informational → commercial</td><td>Gap — build (pillar)</td></tr>
+<tr><td>Planned article: Low-maintenance / water-wise natives</td><td>/blog/low-maintenance-native-gardens/</td><td>Cluster E</td><td>Informational</td><td>Gap — build</td></tr>
+<tr><td>Planned article: Best native plants for Northern Rivers coastal gardens</td><td>/blog/native-plants-northern-rivers/</td><td>Cluster F</td><td>Informational</td><td>Gap — build</td></tr>
+</tbody>
+</table>
+
+<p><strong>Rule:</strong> one primary keyword cluster per page. Avoid two pages competing for the same term (keyword cannibalisation) — the suburb pages and the service pages must be clearly differentiated in title, H1 and body.</p>
+
+<hr>
+
+<h2>4. Content Strategy for SEO</h2>
+
+<h3>Pillar / cluster model</h3>
+<p>Adopt a hub-and-spoke topic model so authority concentrates rather than scatters.</p>
+<ul>
+<li><strong>Hub (pillar):</strong> a comprehensive "Native &amp; Sustainable Garden Design" guide covering what native/sustainable design is, why it matters in the Northern Rivers climate, the design process, and low-maintenance/water-wise principles. It links out to every cluster and every cluster links back to it.</li>
+<li><strong>Clusters (spokes):</strong>
+<ul>
+<li><em>Blog/informational spokes:</em> the 3 existing articles (What are Native Gardens?; Why Designing &amp; Planning Matter; Balga — Meaning &amp; Purpose) plus new pieces on low-maintenance/water-wise natives and native plants for the region.</li>
+<li><em>Service spokes:</em> the six service pages from Section 3, each linking up to the pillar and across to relevant articles.</li>
+<li><em>Local spokes:</em> the suburb/area pages, which anchor the pillar to geography.</li>
+</ul></li>
+</ul>
+
+<h3>Build on what exists</h3>
+<p>The three published articles are the seed of the cluster. Actions: interlink them with each other and the (new) pillar; refresh each with a clear FAQ block and a call-to-action toward the relevant service; ensure each targets a distinct Cluster F / informational keyword so they do not overlap.</p>
+
+<h3>Gap-analysis approach</h3>
+<p>Rather than guessing topics: (1) once indexed, mine Search Console for queries the site already surfaces for but ranks 8–20 — these are quick-win content gaps; (2) compare the keyword map (Section 3) against existing URLs to find clusters with no page (currently: all service pages, all suburb pages, the pillar, water-wise and regional-plants articles); (3) pull "People Also Ask" and autocomplete for the core terms to source real question phrasing for FAQ content; (4) review the top 3 competitors (Section 8) for themes present on their sites and absent here.</p>
+
+<h3>Publishing cadence (realistic)</h3>
+<ul>
+<li><strong>Months 0–3:</strong> prioritise the structural pages (service + suburb + pillar) over new blog posts — these unlock rankings fastest. Aim to ship the service and suburb pages in this window.</li>
+<li><strong>Months 3–12:</strong> one well-researched article or one refreshed existing page per 3–4 weeks. Consistency beats volume; a lone studio should not over-commit and then stall.</li>
+</ul>
+
+<h3>Brief requirements per cluster piece</h3>
+<ul>
+<li>Target primary keyword + 2–4 secondary/PAA variants (from real query data, not invented).</li>
+<li>Search intent and the reader's next step (which service/CTA it feeds).</li>
+<li>Recommended word count anchored to what currently ranks for the term — not an arbitrary number.</li>
+<li>Required H2/H3 subtopics; at least one FAQ block phrased as people actually ask (supports GEO — see Section 9).</li>
+<li>Internal links: up to the pillar, across to 1–2 sibling pieces, out to the relevant service/suburb page.</li>
+<li>Original imagery of Balga's own work with descriptive, plant/location-aware alt text.</li>
+<li>Brand voice: regenerative, native, sustainable, "rooted in Country", naturalistic — never generic landscaping copy.</li>
+</ul>
+
+<hr>
+
+<h2>5. On-Page Optimisation</h2>
+
+<h3>Title &amp; meta description formulas (with examples)</h3>
+<ul>
+<li><strong>Title formula:</strong> <code>Primary Keyword | Location | Balga Designs</code> — keep under ~60 characters.
+<ul>
+<li>Home: <code>Native &amp; Sustainable Garden Design | Northern Rivers NSW | Balga Designs</code></li>
+<li>Suburb: <code>Garden Design Lennox Head | Native &amp; Sustainable | Balga Designs</code></li>
+<li>Service: <code>Garden Facelift &amp; Refresh | Northern Rivers | Balga Designs</code></li>
+</ul></li>
+<li><strong>Meta description formula:</strong> value + place + differentiator + soft CTA, ~150 characters.
+<ul>
+<li>Example: "Naturalistic native and sustainable garden design across the Northern Rivers, from Lennox Head to Byron Bay. Rooted in Country. Get a quote from Balga Designs."</li>
+</ul></li>
+</ul>
+
+<h3>Heading guidance (H1–H3)</h3>
+<ul>
+<li><strong>One H1 per page</strong> containing the primary keyword naturally (e.g. "Native Garden Design in Ballina").</li>
+<li><strong>H2s</strong> for major sections and the secondary intents (process, plants, service area, FAQ).</li>
+<li><strong>H3s</strong> for sub-points and individual FAQ questions. Never skip levels; headings describe content, they are not decoration.</li>
+</ul>
+
+<h3>Internal linking</h3>
+<ul>
+<li>Hub-and-spoke: every service, suburb and article links back to the pillar; the pillar links out to all.</li>
+<li>Contextual, descriptive anchor text ("low-maintenance native gardens"), never "click here".</li>
+<li>Each service page links to the suburbs it serves and vice-versa; each article links to the service it supports.</li>
+<li>Keep important pages within 2–3 clicks of the home page.</li>
+</ul>
+
+<h3>Image optimisation</h3>
+<ul>
+<li>Use Balga's own project photography; compress and serve modern formats (Astro can output WebP/AVIF).</li>
+<li>Descriptive alt text with plant/location context where genuine ("coastal native garden with grass trees, Lennox Head").</li>
+<li>Explicit width/height (or aspect-ratio) to protect CLS; keep the hero as the preloaded LCP element.</li>
+<li>Meaningful file names (<code>native-garden-lennox-head.jpg</code>), not <code>IMG_1234.jpg</code>.</li>
+</ul>
+
+<h3>URL conventions</h3>
+<ul>
+<li>Lowercase, hyphenated, keyword-bearing, shallow: <code>/services/garden-facelift/</code>, <code>/garden-design-ballina/</code>, <code>/blog/what-are-native-gardens/</code>.</li>
+<li>No dates, IDs or stop-word clutter; stable slugs (avoid renaming — if you must, 301 the old URL).</li>
+<li>Trailing-slash convention chosen once and enforced site-wide via canonical + redirect.</li>
+</ul>
+
+<hr>
+
+<h2>6. Local SEO <em>(HIGH priority)</em></h2>
+
+<p>For a service-area business chasing local enquiries, local SEO is the highest-ROI channel — often ahead of classic organic. Balga operates from Lennox Head and serves the Northern Rivers through to the Southern Gold Coast; the map pack and GBP are where most local buyers make first contact.</p>
+
+<h3>Google Business Profile optimisation checklist</h3>
+<ul>
+<li><strong>Claim &amp; verify</strong> the profile (<a href="https://share.google/azgjHgEUmjfY9iOT9">existing GBP</a>).</li>
+<li><strong>Configure as a service-area business:</strong> hide the street address, define the service area by suburb/region (Lennox Head, Ballina, Byron Bay, Northern Rivers → Southern Gold Coast).</li>
+<li><strong>Categories:</strong> primary "Landscape designer"; secondary as relevant (e.g. "Garden designer", "Landscaper", "Horticulturist").</li>
+<li><strong>Exact NAP:</strong> Balga Designs / 041 373 1670 / info@balgadesigns.com.au — identical to the site's LocalBusiness JSON-LD and footer.</li>
+<li><strong>Hours:</strong> Mon–Fri 07:00–16:00 AEST.</li>
+<li><strong>Services &amp; pricing:</strong> list all six services; where comfortable, publish the real package prices (Small NativeScapes $2,500; Potted Greenery $2,000; Balga Inspo $2,000; Complete Design $4,500).</li>
+<li><strong>Description &amp; attributes:</strong> keyword-aware, brand-true ("sustainable native garden design rooted in Country"); set attributes (e.g. LGBTQ-friendly, online estimates) if accurate.</li>
+<li><strong>Photos:</strong> regular, geo-relevant project photos; add the intro/hero video.</li>
+<li><strong>Google Posts:</strong> post updates/offers/new projects periodically for freshness.</li>
+<li><strong>Products/Q&amp;A:</strong> seed the GBP Q&amp;A with the same FAQs used on-site.</li>
+<li><strong>Website link:</strong> point to the production domain (not the preview) once live; ideally to the most relevant local landing page.</li>
+</ul>
+
+<h3>Citations</h3>
+<p>Build consistent NAP citations to reinforce local relevance. <strong>Cross-reference the Maxxim citations playbook</strong> (<code>maxxim-citations-playbook</code>) to generate the client-specific, prioritised, ready-to-paste submission list using Balga's exact NAP. Priority order for this business:</p>
+<ol>
+<li><strong>Google Business Profile</strong> (done above — the anchor citation).</li>
+<li><strong>Core aggregators/directories:</strong> Bing Places, Apple Business Connect, True Local, Yellow Pages AU, Yelp AU, Hotfrog, Startlocal.</li>
+<li><strong>Industry &amp; niche:</strong> Houzz (see Section 7), AILDM and Landscaping NSW member/find-a-pro listings, local nursery/native-plant supplier "find a designer" pages.</li>
+<li><strong>Local/regional:</strong> Northern Rivers business directories, Ballina/Byron/Lennox chamber-of-commerce and community listings, tourism/regional guides.</li>
+</ol>
+<p>Keep NAP byte-for-byte identical everywhere; inconsistent citations dilute the signal. Track submissions in the playbook's checklist.</p>
+
+<h3>Review-generation strategy</h3>
+<ul>
+<li>Make Google reviews a standard step at project sign-off; send a direct GBP review link (short link) by SMS/email while satisfaction is high.</li>
+<li>Aim for a steady drip (a few per month) rather than a spike — velocity and recency matter more than a one-off batch.</li>
+<li>Respond to every review, positive or negative, in brand voice — a ranking and trust signal.</li>
+<li>Encourage reviewers to mention the suburb and service naturally ("native garden design in Ballina") — never scripted or incentivised.</li>
+<li>Seed a first cohort from recent happy clients at go-live.</li>
+</ul>
+
+<h3>Locally-targeted content</h3>
+<ul>
+<li>The suburb/area pages (Section 3) are the on-site backbone of local SEO — genuinely localised, not templated: local climate, coastal-native palettes, regional projects, service-area statement.</li>
+<li>Embed a service-area map and reference nearby landmarks/regions honestly.</li>
+<li>Blog occasionally on regional themes ("native plants for Northern Rivers coastal gardens") to reinforce geographic relevance and earn local links.</li>
+</ul>
+
+<hr>
+
+<h2>7. Link Building Strategy</h2>
+
+<p>Content-led and relationship-led only. No paid link schemes, PBNs, or link exchanges — Google devalues them and they risk the domain. For a local landscape studio, a <strong>small number of genuinely local and industry-relevant links</strong> outperforms volume.</p>
+
+<h3>Realistic target tiers</h3>
+<table>
+<thead>
+<tr><th>Tier</th><th>Sources</th><th>Approach</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>1. Foundational / listings</strong></td><td>GBP, core directories, Houzz profile, supplier "find a designer/installer" locators, nursery partner pages</td><td>Complete profiles with links (overlaps with citations, Section 6). Low effort, do first.</td></tr>
+<tr><td><strong>2. Industry associations</strong></td><td>AILDM (Australian Institute of Landscape Designers &amp; Managers), Landscaping NSW / Landscape Association, relevant horticulture bodies</td><td>Join where eligible; earn member-directory and "find a professional" links plus credibility.</td></tr>
+<tr><td><strong>3. Local press &amp; community</strong></td><td>Northern Rivers media (e.g. regional news/community outlets), Byron/Ballina/Lennox community sites, local sustainability/native-plant groups, Landcare/community garden projects</td><td>Pitch genuine stories — a distinctive local project, sustainability angle, or expert comment on water-wise gardening. Community involvement earns natural links.</td></tr>
+<tr><td><strong>4. Local sponsorships &amp; partnerships</strong></td><td>Community events, markets, schools/community gardens, complementary trades (builders, architects, nurseries)</td><td>Sponsor or collaborate; request a link from the partner/event page. Also a referral source.</td></tr>
+<tr><td><strong>5. Linkable assets</strong></td><td>Original native-plant guides for the Northern Rivers, a coastal water-wise plant list, design-process explainers</td><td>Build genuinely useful, region-specific resources worth citing; promote to Tier 3–4 contacts. These also power GEO/AI citations (Section 9).</td></tr>
+</tbody>
+</table>
+
+<h3>Method &amp; cadence</h3>
+<ul>
+<li>Start with Tier 1–2 (fast, foundational), then invest ongoing effort in Tier 3–5 relationships.</li>
+<li>A handful of quality local/industry links per quarter is a realistic, healthy pace for a lone studio — not dozens.</li>
+<li>Prioritise relevance and locality over raw domain metrics.</li>
+</ul>
+
+<h3>Toxic links / disavow</h3>
+<p>A clean new domain will not need disavowal. Monitor the Search Console links report periodically; only consider Google's disavow tool if a clear pattern of spammy, unsolicited links appears — and even then, sparingly. Do not disavow pre-emptively.</p>
+
+<hr>
+
+<h2>8. Competitor SEO Analysis</h2>
+
+<p><strong>No live competitor data is available at strategy time.</strong> This section is a <strong>framework</strong> for the analyst to execute once tooling and indexation are in place — it deliberately does <em>not</em> invent competitor names or metrics.</p>
+
+<h3>Step 1 — Identify the true top 3 local organic competitors</h3>
+<ul>
+<li>Search the core commercial queries (Cluster A/B/C) from a Northern Rivers location (or with local-emulation) and record who ranks in both the <strong>map pack</strong> and the <strong>classic organic</strong> results for "garden design / landscape design + Lennox Head / Ballina / Byron Bay".</li>
+<li>Separate <em>SEO competitors</em> (who ranks for your terms) from <em>business competitors</em> — they may differ. Prioritise the studios appearing repeatedly across your target queries and geography.</li>
+<li>Shortlist the top 3 that overlap most with Balga's services and area.</li>
+</ul>
+
+<h3>Step 2 — What to compare (pull for each competitor)</h3>
+<table>
+<thead>
+<tr><th>Dimension</th><th>What to pull</th><th>Tool</th></tr>
+</thead>
+<tbody>
+<tr><td>Authority</td><td>Domain Authority / Domain Rating, referring-domain count and trend</td><td>Ahrefs / Moz / Semrush</td></tr>
+<tr><td>Keyword footprint &amp; gaps</td><td>Terms they rank for that Balga does not (keyword-gap report); their top pages by traffic</td><td>Ahrefs/Semrush "Content/Keyword Gap"</td></tr>
+<tr><td>Content themes</td><td>Site structure — do they have per-service pages, per-suburb pages, a blog, guides? Depth and freshness.</td><td>Manual crawl / Screaming Frog</td></tr>
+<tr><td>Backlink profile</td><td>Where their links come from (local press, associations, directories) — a target list Balga can replicate</td><td>Ahrefs/Semrush backlink report</td></tr>
+<tr><td>Local presence</td><td>GBP completeness, review count/velocity/rating, categories, photos</td><td>Manual GBP review</td></tr>
+<tr><td>Technical/on-page</td><td>Titles, schema, CWV, mobile — quick tells of how optimised they are</td><td>Manual / Lighthouse</td></tr>
+</tbody>
+</table>
+
+<h3>Step 3 — Where to find exploitable gaps</h3>
+<ul>
+<li><strong>Keyword gaps:</strong> commercial suburb/service terms competitors rank for and Balga has no page for — feed straight into the Section 3 build list.</li>
+<li><strong>Content gaps:</strong> topics/questions they cover thinly or not at all, especially native/sustainable/water-wise angles that suit Balga's brand.</li>
+<li><strong>Link gaps:</strong> local/industry sites linking to competitors but not Balga — a ready-made outreach list for Section 7.</li>
+<li><strong>Review gaps:</strong> if competitors have few or stale reviews, Balga's review programme (Section 6) is a fast differentiator.</li>
+<li><strong>Brand/differentiation gaps:</strong> lean into "rooted in Country", regenerative and native specialism where competitors are generic.</li>
+</ul>
+<p>Re-run this analysis roughly every 6 months; competitor sets and rankings shift.</p>
+
+<hr>
+
+<h2>9. AI Search &amp; SGE / GEO Considerations</h2>
+
+<h3>How AI overviews &amp; zero-click affect these queries</h3>
+<p>Google AI Overviews and AI assistants increasingly answer informational queries directly, meaning some "what are native gardens" / "low-maintenance native garden" traffic never clicks through (zero-click). However, <strong>local, transactional intent is more resilient</strong> — "garden designer near me / in Ballina", quotes, and contact actions still route to the map pack, GBP and the site. The strategic response: don't chase pure-informational clicks that AI absorbs; instead earn <strong>citations</strong> in AI answers (brand exposure) while owning the local commercial queries that still convert.</p>
+
+<h3>Formats that earn AI citations (Balga already ships most)</h3>
+<ul>
+<li><strong>Concise, quotable answers:</strong> lead each page/section with a direct 1–2 sentence answer to the implied question, then elaborate — the pattern LLMs lift as citations.</li>
+<li><strong>FAQ blocks</strong> phrased the way people actually ask Google/AI (use the <code>maxxim-seo-content</code> skill to draft these), backed by FAQ JSON-LD (already shipping).</li>
+<li><strong>Structured data:</strong> the existing LocalBusiness/Service/FAQ/BlogPosting JSON-LD helps machines parse entity, services and location — maintain and extend to new pages.</li>
+<li><strong>llms.txt + llms-full.txt:</strong> already shipped — keep them current so AI crawlers get a clean, accurate summary of who Balga is, where it serves and what it offers.</li>
+<li><strong>Clear entity signals &amp; consistent NAP</strong> across site, schema and GBP so AI systems resolve Balga as a real, located business.</li>
+</ul>
+
+<h3>Opportunities</h3>
+<ul>
+<li>Being an early, well-structured, GEO-ready local site in a niche (native/sustainable design, Northern Rivers) is a genuine edge for AI citation.</li>
+<li>Region-specific linkable assets (native-plant guides) are exactly what AI answers cite for "best native plants for coastal NSW gardens".</li>
+</ul>
+
+<h3>Mitigations</h3>
+<ul>
+<li>Assume some informational impressions won't convert to clicks; weight content toward commercial/local intent and brand-building.</li>
+<li>Track AI-overview presence qualitatively (spot-check key queries) since precise attribution is limited.</li>
+<li>Keep facts, prices and service areas accurate and current so AI representations of Balga stay correct.</li>
+</ul>
+
+<hr>
+
+<h2>10. Measurement &amp; Reporting</h2>
+
+<p><strong>Golden rule:</strong> report <strong>movement</strong> and trend, never guaranteed positions. Rankings fluctuate; the story is direction over time against the baseline captured at go-live.</p>
+
+<h3>Tools</h3>
+<ul>
+<li><strong>Google Search Console</strong> — impressions, clicks, average position, CTR, query/page data, indexing, Core Web Vitals field data, links. The primary source of truth for organic.</li>
+<li><strong>GA4 or a privacy-first analytics option</strong> (e.g. Cloudflare Web Analytics / Plausible) — sessions, engaged sessions, source/medium, conversions.</li>
+<li><strong>Rank tracking</strong> — a tool tracking the target suburb/service keywords for the local geography (local-pack + organic).</li>
+<li><strong>GBP Insights / Performance</strong> — searches, views, calls, direction requests, website clicks, review count/rating.</li>
+<li><strong>Call/enquiry tracking</strong> — form-submission events and (optionally) call tracking to attribute enquiries to organic.</li>
+</ul>
+
+<h3>KPIs</h3>
+<table>
+<thead>
+<tr><th>KPI</th><th>Source</th><th>Why it matters</th></tr>
+</thead>
+<tbody>
+<tr><td>Organic sessions (trend)</td><td>GA4 / analytics</td><td>Top-of-funnel demand reaching the site</td></tr>
+<tr><td>Keyword rankings (movement, local)</td><td>Rank tracker + GSC</td><td>Progress on target suburb/service terms</td></tr>
+<tr><td>Impressions &amp; CTR</td><td>GSC</td><td>Visibility and title/meta effectiveness</td></tr>
+<tr><td>Organic enquiries — calls &amp; form submissions</td><td>GA4 events + GBP + call tracking</td><td><strong>The primary business KPI</strong></td></tr>
+<tr><td>GBP actions (calls, direction requests, clicks)</td><td>GBP Insights</td><td>Local-pack performance and intent</td></tr>
+<tr><td>Reviews (count, rating, velocity)</td><td>GBP</td><td>Local ranking + conversion trust signal</td></tr>
+<tr><td>Core Web Vitals (LCP/INP/CLS)</td><td>GSC / CrUX</td><td>Technical health; guard against regressions</td></tr>
+<tr><td>Indexation coverage</td><td>GSC</td><td>New service/suburb pages actually indexed</td></tr>
+<tr><td>Referring domains</td><td>Ahrefs/Semrush/GSC</td><td>Authority growth from Section 7</td></tr>
+</tbody>
+</table>
+
+<h3>Cadence</h3>
+<ul>
+<li><strong>Monthly report:</strong> baseline vs previous month vs same-month-prior — sessions, rankings movement, impressions/CTR, enquiries, GBP actions, reviews, CWV status, work done + next month's plan. Narrative, not just numbers.</li>
+<li><strong>Quarterly:</strong> competitor re-check (Section 8), content/link review, keyword-map refresh from real GSC data.</li>
+</ul>
+
+<h3>Checkpoints (mapped to Section 1)</h3>
+<ul>
+<li><strong>3 months:</strong> confirm foundation — indexed, GBP verified, baseline established, first queries appearing, CWV "Good". Success = measurement is trustworthy and structural pages are live.</li>
+<li><strong>6 months:</strong> assess traction — long-tail local terms ranking, first review cohort, first organic enquiries, upward session trend. Adjust content/link focus on the evidence.</li>
+<li><strong>12 months:</strong> assess authority — multiple clusters page one, steady map-pack presence, organic a consistent enquiry contributor, growing links/reviews. Set the next-year plan from real data.</li>
+</ul>
+
+<p><em>All checkpoint outcomes are targets to steer by, reported as movement against baseline — never as guaranteed rankings.</em></p>
+
+<hr>
+
+<p><strong>Balga Designs</strong> — Lennox Head NSW 2478 · 041 373 1670 · info@balgadesigns.com.au · <a href="https://balgadesigns.com.au">balgadesigns.com.au</a> · <a href="https://www.instagram.com/balgadesigns/">Instagram</a> · <a href="https://www.facebook.com/profile.php?id=61572646869008">Facebook</a> · <a href="https://share.google/azgjHgEUmjfY9iOT9">Google Business Profile</a></p>
+<p><em>Maxxim SEO Strategy — Design phase — generated 2026-07-28. Estimates and targets in this document are to be validated against live data; no ranking or timeline is guaranteed.</em></p>
+
+</body>
+</html>
