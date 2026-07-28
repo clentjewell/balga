@@ -18,6 +18,8 @@ export interface Service {
   height: number;
   /** ids of related projects (see src/data/projects.ts) to showcase; empty = no section. */
   relatedProjects: string[];
+  /** project id whose photo illustrates the two-column content (distinct from hero + related). */
+  contentProject: string;
   detail: ServiceDetail;
 }
 
@@ -25,6 +27,7 @@ export const services: Service[] = [
   {
     slug: "landscape-design",
     relatedProjects: ["project-01","project-02","project-07"],
+    contentProject: "project-03",
     title: "Landscape Design",
     description:
       "Custom designs that blend aesthetic appeal with environmental consciousness.",
@@ -49,6 +52,7 @@ export const services: Service[] = [
   {
     slug: "garden-facelift",
     relatedProjects: ["project-06","project-02","project-04"],
+    contentProject: "project-01",
     title: "Garden Facelift",
     description:
       "Tailored to harmonise with the natural environment, creating spaces that are both functional and beautiful.",
@@ -73,6 +77,7 @@ export const services: Service[] = [
   {
     slug: "decorative-plants",
     relatedProjects: ["project-04","project-02"],
+    contentProject: "project-06",
     title: "Decorative Plants",
     description:
       "Enhance your space by incorporating potted greenery, bringing an organic and stylish feel to your indoor & outdoor area.",
@@ -97,6 +102,7 @@ export const services: Service[] = [
   {
     slug: "integrated-pest-management",
     relatedProjects: ["project-03","project-07"],
+    contentProject: "project-02",
     title: "Integrated Pest Management",
     description:
       "Restoring native ecosystems and promoting biodiversity within your garden.",
@@ -121,6 +127,7 @@ export const services: Service[] = [
   {
     slug: "weed-control",
     relatedProjects: ["project-05","project-03"],
+    contentProject: "project-04",
     title: "Weed Control Consultation",
     description:
       "Get expert advice on sustainable methods to manage and prevent weeds without harming your garden's ecosystem.",
@@ -145,6 +152,7 @@ export const services: Service[] = [
   {
     slug: "horticulture-consultation",
     relatedProjects: ["project-07","project-03"],
+    contentProject: "project-05",
     title: "Horticulture Consultation",
     description:
       "Expert advice on plant selection, soil health, and sustainable gardening practices.",

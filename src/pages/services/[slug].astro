@@ -18,6 +18,11 @@ const related = services.filter((s) => s.slug !== service.slug);
 const relatedProjects = service.relatedProjects
   .map((id) => projects.find((p) => p.id === id))
   .filter((p) => p !== undefined);
+// Distinct photo for the two-column content (not the hero, not the related grid).
+const contentProject = projects.find((p) => p.id === service.contentProject);
+const contentImg = contentProject
+  ? { src: contentProject.after, alt: contentProject.afterAlt }
+  : { src: service.image, alt: service.alt };
 
 const blocks = [
   { h: "What it is", p: d.whatItIs },
@@ -65,7 +70,7 @@ const serviceSchema = {
 
         <aside class="svc-detail__aside reveal">
           <figure class="svc-img">
-            <img src={service.image} alt={service.alt} width={service.width} height={service.height} loading="lazy" />
+            <img src={contentImg.src} alt={contentImg.alt} loading="lazy" />
           </figure>
         </aside>
       </div>
@@ -139,8 +144,8 @@ const serviceSchema = {
   .svc-detail__cta { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2.4rem; }
 
   .svc-detail__aside { position: sticky; top: 100px; min-width: 0; }
-  .svc-img { margin: 0; border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-soft); }
-  .svc-img img { width: 100%; height: auto; display: block; }
+  .svc-img { margin: 0; border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-soft); aspect-ratio: 4 / 3; }
+  .svc-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
   .svc-projects__head { text-align: center; max-width: 60ch; margin: 0 auto 2.6rem; }
   .svc-projects__head p { color: var(--color-text); margin-top: 0.6rem; }
