@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#5a674e">
+<meta name="description" content="Balga Designs — website content to approve, Google Business Profile checklist and directory listings.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%8C%BF%3C/text%3E%3C/svg%3E">
+<title>Balga Designs — Website Content & Local Search Plan</title>
+</head>
+<body>
+
+<style>
+:root{
+  --bg:#f7f6f1; --surface:#ffffff; --surface-2:#fbfbf6;
+  --ink:#1b1b1b; --muted:#6b6f63; --faint:#8b8f81;
+  --accent:#5a674e; --accent-2:#b7b597; --link:#4d5a42;
+  --border:#e6e6df; --chip:#efe9d6; --chip-ink:#6a5b1f;
+  --radius:14px; --maxw:70ch;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14160e; --surface:#1b1e14; --surface-2:#20241a;
+    --ink:#e9ece2; --muted:#a7ab9b; --faint:#8b8f7f;
+    --accent:#9db584; --accent-2:#b7b597; --link:#bccca7;
+    --border:#2c3123; --chip:#33341f; --chip-ink:#e6dca6;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#f7f6f1; --surface:#ffffff; --surface-2:#fbfbf6; --ink:#1b1b1b; --muted:#6b6f63; --faint:#8b8f81;
+  --accent:#5a674e; --accent-2:#b7b597; --link:#4d5a42; --border:#e6e6df; --chip:#efe9d6; --chip-ink:#6a5b1f;
+}
+:root[data-theme="dark"]{
+  --bg:#14160e; --surface:#1b1e14; --surface-2:#20241a; --ink:#e9ece2; --muted:#a7ab9b; --faint:#8b8f7f;
+  --accent:#9db584; --accent-2:#b7b597; --link:#bccca7; --border:#2c3123; --chip:#33341f; --chip-ink:#e6dca6;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  line-height:1.72;font-size:17px;-webkit-font-smoothing:antialiased;}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px;}
+h1,h2,h3,h4,h5{font-family:Georgia,"Iowan Old Style","Times New Roman",serif;line-height:1.22;text-wrap:balance;color:var(--ink);}
+
+/* Masthead */
+.mast{background:var(--accent);color:#fff;}
+:root[data-theme="dark"] .mast{color:#12140d;}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .mast{color:#12140d;}}
+.mast .wrap{padding-top:42px;padding-bottom:34px;}
+.eyebrow{font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.18em;font-size:.72rem;font-weight:600;opacity:.9;margin:0 0 .5rem;}
+.mast h1{margin:0;font-size:clamp(1.9rem,1.3rem+2.4vw,2.9rem);color:inherit;}
+.mast p{margin:.7rem 0 0;max-width:60ch;opacity:.94;font-size:1.02rem;}
+
+/* Tabs */
+.tabs{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--border);
+  display:flex;gap:2px;flex-wrap:wrap;padding-top:6px;}
+.tabs .wrapflex{max-width:960px;margin:0 auto;padding:0 12px;display:flex;gap:4px;flex-wrap:wrap;width:100%;}
+.tab{font-family:system-ui,sans-serif;font-size:.95rem;font-weight:600;color:var(--muted);
+  background:transparent;border:0;border-bottom:3px solid transparent;
+  padding:14px 16px;cursor:pointer;transition:color .15s,border-color .15s;}
+.tab:hover{color:var(--ink);}
+.tab[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent);}
+.tab:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px;}
+
+/* Document body */
+.panel{padding:34px 0 72px;}
+.panel[hidden]{display:none;}
+.doc{max-width:var(--maxw);margin:0 auto;overflow-wrap:anywhere;}
+.doc>h2:first-child,.doc>.d:first-child{margin-top:0;}
+.doc h2{font-size:clamp(1.5rem,1.1rem+1.4vw,2rem);margin:0 0 .4rem;padding-bottom:.35rem;}
+.doc h3{font-size:1.28rem;margin:2.4rem 0 .6rem;color:var(--accent);}
+.doc h4{font-size:1.06rem;margin:1.7rem 0 .4rem;}
+.doc h5{font-size:.95rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:1.3rem 0 .3rem;font-family:system-ui,sans-serif;}
+.doc p{margin:0 0 1.05rem;}
+.doc ul,.doc ol{margin:0 0 1.2rem;padding-left:1.3rem;}
+.doc li{margin-bottom:.5rem;}
+.doc li::marker{color:var(--accent-2);}
+.doc a{color:var(--link);text-underline-offset:2px;}
+.doc strong{color:var(--ink);}
+.doc blockquote{margin:1.4rem 0;padding:.6rem 0 .6rem 1.2rem;border-left:3px solid var(--accent-2);color:var(--muted);font-style:italic;}
+.doc hr{border:0;border-top:1px solid var(--border);margin:2.4rem 0;}
+.doc code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.9em;background:var(--surface-2);padding:.1em .4em;border-radius:5px;border:1px solid var(--border);}
+
+/* First doc-title of each panel (was the doc's own H1) */
+.doc h2.d:first-child{font-size:clamp(1.7rem,1.2rem+1.8vw,2.3rem);color:var(--ink);
+  border-bottom:2px solid var(--accent-2);padding-bottom:.5rem;margin-bottom:1.4rem;}
+
+/* Tables */
+.doc table{width:100%;border-collapse:collapse;margin:1.2rem 0 1.8rem;font-size:.92rem;
+  font-variant-numeric:tabular-nums;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.tablewrap{overflow-x:auto;}
+.doc th,.doc td{text-align:left;padding:.7rem .9rem;border-bottom:1px solid var(--border);vertical-align:top;overflow-wrap:anywhere;word-break:break-word;}
+.doc .tablewrap{overflow-x:auto;margin:1.2rem 0 1.8rem;-webkit-overflow-scrolling:touch;}
+.doc .tablewrap>table{margin:0;min-width:520px;}
+.doc thead th{background:var(--surface-2);color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-size:.72rem;font-family:system-ui,sans-serif;}
+.doc tbody tr:last-child td{border-bottom:0;}
+.doc tbody tr:hover td{background:var(--surface-2);}
+
+/* TODO chips */
+.todo{display:inline;background:var(--chip);color:var(--chip-ink);border-radius:6px;
+  padding:.05em .45em;font-size:.85em;font-weight:600;font-family:system-ui,sans-serif;white-space:normal;}
+
+.note{max-width:var(--maxw);margin:0 auto 1.6rem;padding:.9rem 1.1rem;background:var(--surface-2);
+  border:1px solid var(--border);border-left:3px solid var(--accent-2);border-radius:10px;color:var(--muted);font-size:.92rem;}
+.foot{max-width:var(--maxw);margin:2.5rem auto 0;padding-top:1.3rem;border-top:1px solid var(--border);color:var(--faint);font-size:.85rem;}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;}}
+@media (max-width:560px){body{font-size:16px;} .tab{padding:12px 12px;}}
+</style>
+
+<header class="mast">
+  <div class="wrap">
+    <p class="eyebrow">For Margarida · Balga Designs</p>
+    <h1>Website Content &amp; Local Search Plan</h1>
+    <p>A quick review pack from the team building your new website. Please read the <strong>Website content</strong> tab and let us know it’s good to publish — and where you see <span style="white-space:nowrap">“Please confirm”</span>, those are small details only you can confirm. The other two tabs are simple steps to help more local customers find you.</p>
+  </div>
+</header>
+<nav class="tabs" aria-label="Sections"><div class="wrapflex" role="tablist">
+<button class="tab" role="tab" id="tab-content" aria-controls="panel-content" aria-selected="true" data-target="content">Website content to approve</button>
+<button class="tab" role="tab" id="tab-gbp" aria-controls="panel-gbp" aria-selected="false" data-target="gbp">Google Business Profile</button>
+<button class="tab" role="tab" id="tab-citations" aria-controls="panel-citations" aria-selected="false" data-target="citations">Get listed (directories)</button>
+</div></nav>
+<div class="wrap"><p class="note" role="note">Nothing here is live yet. The website content on the first tab goes up only once you approve it. Items marked <span class="todo">Please confirm:</span> are questions for you — just reply with the answers and we’ll finish those lines.</p></div>
+<main class="wrap">
+<section class="panel" role="tabpanel" id="panel-content" aria-labelledby="tab-content">
+<div class="doc">
+<h2 class="d">Balga Designs — SEO/GEO Content Draft: FAQ &amp; Service-Page Copy</h2>
+
+<section>
+<h3 class="d">About this draft</h3>
+<p><strong>This is a draft for owner approval — nothing here is published automatically.</strong> It gives you GEO-oriented (Generative Engine Optimisation) content written the way real customers ask questions in Google and AI assistants like ChatGPT, Gemini and Google's AI overviews. Please read it as a single unit, edit anything that does not sound like you, and flag any item marked <em><span class="todo">Please confirm:</span></em>.</p>
+<p>The FAQ below is structured so it can be shipped with <strong>FAQPage JSON-LD structured data</strong>, which the Balga Designs website already supports. Each answer intentionally leads with a short, direct sentence an AI assistant can quote verbatim, followed by a fuller, warmer paragraph. Once you approve the wording, the content is applied through the normal website skills.</p>
+<p>Business details used throughout, for your reference: Balga Designs, Lennox Head NSW 2478 (a service-area business, not a shopfront). Phone <a href="tel:+61413731670">041 373 1670</a>, email <a href="mailto:info@balgadesigns.com.au">info@balgadesigns.com.au</a>, website <a href="https://balgadesigns.com.au">https://balgadesigns.com.au</a>. Hours Mon&ndash;Fri 07:00&ndash;16:00 AEST. Service area: the Northern Rivers (NSW) through to the Southern Gold Coast (QLD), including Lennox Head, Ballina and Byron Bay.</p>
+</section>
+
+<hr>
+
+<section>
+<h3 class="d">Page A — Frequently Asked Questions</h3>
+<p>Fourteen questions in customers' real words, grouped by the topic people search for. Each answer opens with a one-sentence quotable answer, then explains further.</p>
+
+<article>
+<h4 class="d">Cost &amp; packages</h4>
+
+<section>
+<h5 class="d">How much does a native garden design cost near Lennox Head or Ballina?</h5>
+<p><strong>Our Small NativeScapes Package starts at $2,500 for a small space (up to about 40&nbsp;m&sup2;) within 30&nbsp;km of Lennox Head, and larger design packages run to $4,500.</strong></p>
+<p>The right package depends on the size and stage of your project. Our Small NativeScapes Package is $2,500 and is ideal for compact yards and courtyards up to roughly 40&nbsp;m&sup2;. For a whole new garden, new build or renovation, the Complete Design Package is $4,500 and can be staged over time. We also offer a Potted Greenery / Pot Styling Package and a Balga Inspo (DIY-guidance) Package, both $2,000. Every design is naturalistic, native-led and built around the health of your local ecosystem.</p>
+</section>
+
+<section>
+<h5 class="d">What's included in the $2,500 Small NativeScapes Package?</h5>
+<p><strong>The Small NativeScapes Package includes an onsite assessment, a mood-board, a materials palette, a tailored plant list, one revision round, and 15 hours of install labour.</strong></p>
+<p>It is designed for small spaces up to about 40&nbsp;m&sup2; and is a roughly 20-hour job, available within 30&nbsp;km of Lennox Head. You get a considered, water-wise native design plus hands-on installation help, so the garden is not just planned but actually planted. If your space is larger or part of a build, the Complete Design Package ($4,500) is usually the better fit.</p>
+</section>
+
+<section>
+<h5 class="d">What are the differences between your design packages?</h5>
+<p><strong>We offer four packages: Small NativeScapes ($2,500), Potted Greenery / Pot Styling ($2,000), Balga Inspo DIY-guidance ($2,000), and the Complete Design Package ($4,500).</strong></p>
+<p>Small NativeScapes suits compact yards and includes install labour. Potted Greenery / Pot Styling is all about decorative potted plants for indoor and outdoor areas. Balga Inspo is for keen DIY gardeners who want an inspiration and guidance design to run with themselves. The Complete Design Package is our most thorough option for new builds and renovations, aligning the landscape plan with your construction and able to be staged. If you are unsure which one fits, tell us about your space and we will point you to the right starting point.</p>
+</section>
+
+<section>
+<h5 class="d">Do you charge for a quote or first consultation?</h5>
+<p><strong><span class="todo">Please confirm: whether the initial enquiry/quote is free or fee-based.</span></strong></p>
+<p>To get started, reach out through the contact form on our website, email <a href="mailto:info@balgadesigns.com.au">info@balgadesigns.com.au</a>, or message <a href="tel:+61413731670">041 373 1670</a>, and we will talk through your space and recommend the right package. <span class="todo">Please confirm: quote/consultation pricing before this answer is published.</span></p>
+</section>
+</article>
+
+<article>
+<h4 class="d">Timing &amp; process</h4>
+
+<section>
+<h5 class="d">How long does a garden design take from start to finish?</h5>
+<p><strong><span class="todo">Please confirm: typical turnaround time from booking to completed design.</span></strong></p>
+<p>What we can tell you is the shape of the work: the Small NativeScapes Package is around a 20-hour job that covers the onsite assessment, mood-board, materials palette, plant list, one revision round and 15 hours of install labour. Larger projects such as the Complete Design Package can be staged to suit your build timeline. <span class="todo">Please confirm: calendar turnaround so we can give customers a real timeframe.</span></p>
+</section>
+
+<section>
+<h5 class="d">What should I expect when I work with Balga Designs?</h5>
+<p><strong>We start with an onsite assessment, then develop a mood-board, materials palette and tailored plant list, refine it through a revision round, and (on the relevant packages) install the garden for you.</strong></p>
+<p>Our approach is warm, collaborative and rooted in Country. We listen to how you want to use the space, read the site and its local ecosystem, and design a naturalistic native garden that blends beauty with biodiversity. You are involved at each step, with room to give feedback before anything is planted. The result is a low-maintenance, water-wise garden that feels like it belongs where it is.</p>
+</section>
+
+<section>
+<h5 class="d">How do I book Balga Designs?</h5>
+<p><strong>You can book through the contact form on our website, by email at info@balgadesigns.com.au, or by messaging 041 373 1670.</strong></p>
+<p>Get in touch with a few details about your space, your suburb and what you are hoping for, and we will recommend a package and next steps. Our hours are Monday to Friday, 07:00&ndash;16:00 AEST.</p>
+</section>
+</article>
+
+<article>
+<h4 class="d">Service area</h4>
+
+<section>
+<h5 class="d">Do you service my suburb? Do you work in Byron Bay and Ballina?</h5>
+<p><strong>Yes — we work across the Northern Rivers in NSW through to the Southern Gold Coast in QLD, including Lennox Head, Ballina and Byron Bay.</strong></p>
+<p>Balga Designs is a service-area studio based in Lennox Head, so we come to you. If you are anywhere between the Northern Rivers and the Southern Gold Coast, we would love to hear about your garden. Note that our Small NativeScapes Package is offered within 30&nbsp;km of Lennox Head; for locations further afield, get in touch and we will let you know what we can do.</p>
+</section>
+</article>
+
+<article>
+<h4 class="d">Plants, maintenance &amp; sustainability</h4>
+
+<section>
+<h5 class="d">Are native gardens really low-maintenance and water-wise?</h5>
+<p><strong>Yes — a well-designed native garden is low-maintenance and water-wise because it uses plants suited to our local climate and soils.</strong></p>
+<p>By choosing species that naturally belong in the Northern Rivers and coastal environment, your garden needs less watering, less feeding and less fuss than a conventional garden. Balga Designs specialises in naturalistic native gardens that look beautiful while supporting local ecosystem health, so you spend less time on upkeep and more time enjoying the space.</p>
+</section>
+
+<section>
+<h5 class="d">Why choose a native garden over a regular one?</h5>
+<p><strong>Native gardens are water-wise, lower-maintenance and support local biodiversity, all while looking naturally at home in our region.</strong></p>
+<p>Beyond the practical savings on water and upkeep, a native garden gives back to the environment around it — feeding local birds and pollinators and helping restore the native ecosystem. It is a beautiful, regenerative choice that is rooted in Country and true to where you live.</p>
+</section>
+
+<section>
+<h5 class="d">What does "sustainable" or "regenerative" landscaping actually mean at Balga Designs?</h5>
+<p><strong>It means designing gardens that give more back to the local ecosystem than they take, using native planting, biodiversity, healthy soil and water-wise methods.</strong></p>
+<p>Sustainability is at the heart of everything we do. We blend aesthetic appeal with environmental consciousness — restoring native ecosystems, promoting biodiversity, managing weeds without harming the garden, and advising on soil health and sustainable practices. The goal is a garden that is beautiful today and healthier for the land over time.</p>
+</section>
+
+<section>
+<h5 class="d">Can you help with weeds and pests without using harsh chemicals?</h5>
+<p><strong>Yes — we offer Weed Control Consultation and Integrated Pest Management focused on sustainable methods that protect your garden's ecosystem.</strong></p>
+<p>Rather than reaching straight for harsh chemicals, we give expert advice on sustainable ways to manage and prevent weeds, and we use integrated pest management to restore native ecosystems and promote biodiversity in your garden. It is a gentler, more ecological approach that keeps your soil, plants and local wildlife healthy.</p>
+</section>
+
+<section>
+<h5 class="d">Can you just recommend the right plants for my soil and conditions?</h5>
+<p><strong>Yes — our Horticulture Consultation offers expert advice on plant selection, soil health and sustainable gardening practices.</strong></p>
+<p>If you do not need a full design but want to plant with confidence, this is the service for you. We help you choose species that will thrive in your specific soil and conditions, improve soil health, and garden more sustainably — so your investment in plants pays off.</p>
+</section>
+</article>
+
+<article>
+<h4 class="d">Payment</h4>
+
+<section>
+<h5 class="d">How do I pay, and what payment methods do you accept?</h5>
+<p><strong>We accept direct deposit, bank transfer and cash.</strong></p>
+<p>Once you have chosen a package and we have confirmed the details, we will let you know how to settle payment via direct deposit, bank transfer or cash. <span class="todo">Please confirm: any deposit amount or payment-schedule/staging terms before this is published.</span></p>
+</section>
+</article>
+</section>
+
+<hr>
+
+<section>
+<h3 class="d">Page B — Service-page copy</h3>
+<p>A short, brand-true section for each of the six services: what it is, when you need it, what it involves and costs, and why choose Balga Designs.</p>
+
+<article>
+<h4 class="d">Landscape Design</h4>
+<p><strong>What it is:</strong> A custom landscape design that blends aesthetic appeal with environmental consciousness, tailored to your space and your local ecosystem.</p>
+<p><strong>When you need it:</strong> When you want to reimagine a whole garden — a new outdoor area, a tired yard, or a blank canvas you want done thoughtfully and sustainably from the ground up.</p>
+<p><strong>What it involves and costs:</strong> Our design packages range from the Small NativeScapes Package at $2,500 (small spaces up to about 40&nbsp;m&sup2; within 30&nbsp;km of Lennox Head, including onsite assessment, mood-board, materials palette, plant list, one revision round and 15 hours of install labour) through to the Complete Design Package at $4,500 for new builds and renovations, which can be staged.</p>
+<p><strong>Why Balga Designs:</strong> We create naturalistic native gardens that are water-wise, low-maintenance and rooted in Country — beautiful spaces that also support the health of the land they sit on.</p>
+</article>
+
+<article>
+<h4 class="d">Garden Facelift</h4>
+<p><strong>What it is:</strong> A refresh of your existing garden, tailored to harmonise with the natural environment and create a space that is both functional and beautiful.</p>
+<p><strong>When you need it:</strong> When your garden has good bones but has become overgrown, dated or unloved, and you want to bring it back to life without starting completely from scratch.</p>
+<p><strong>What it involves and costs:</strong> A facelift is shaped around your space and goals. <span class="todo">Please confirm: which design package (or custom scope) a Garden Facelift is quoted under, so we can list a starting price.</span></p>
+<p><strong>Why Balga Designs:</strong> We work with what is already there and with the local ecosystem, so your revived garden feels natural, sustainable and easy to care for.</p>
+</article>
+
+<article>
+<h4 class="d">Decorative Plants (Pot Styling)</h4>
+<p><strong>What it is:</strong> Styling your space with potted greenery to bring an organic, stylish feel to both indoor and outdoor areas.</p>
+<p><strong>When you need it:</strong> When you want greenery and warmth without a full garden build — perfect for balconies, courtyards, entrances, patios and interiors.</p>
+<p><strong>What it involves and costs:</strong> Our Potted Greenery / Pot Styling Package is $2,000 and centres on selecting and arranging potted plants to suit your space and style.</p>
+<p><strong>Why Balga Designs:</strong> We choose plants that thrive in your conditions and pair them beautifully with your space, so the result looks considered and stays healthy.</p>
+</article>
+
+<article>
+<h4 class="d">Integrated Pest Management</h4>
+<p><strong>What it is:</strong> A sustainable approach to managing pests that restores native ecosystems and promotes biodiversity within your garden.</p>
+<p><strong>When you need it:</strong> When pests are affecting your garden and you want them managed without harsh chemicals that damage soil, plants and local wildlife.</p>
+<p><strong>What it involves and costs:</strong> We assess your garden and apply integrated, ecological pest-management methods. <span class="todo">Please confirm: consultation pricing for this service.</span></p>
+<p><strong>Why Balga Designs:</strong> Our methods work with nature, not against it — protecting the biodiversity that keeps your garden resilient over the long term.</p>
+</article>
+
+<article>
+<h4 class="d">Weed Control Consultation</h4>
+<p><strong>What it is:</strong> Expert advice on sustainable methods to manage and prevent weeds without harming your garden's ecosystem.</p>
+<p><strong>When you need it:</strong> When weeds keep taking over and you want a lasting, low-harm strategy rather than a quick chemical fix.</p>
+<p><strong>What it involves and costs:</strong> We review your weed issues and advise on sustainable prevention and control tailored to your garden. <span class="todo">Please confirm: consultation pricing for this service.</span></p>
+<p><strong>Why Balga Designs:</strong> We help you keep weeds in check while protecting your soil, your plants and the native ecosystem around them.</p>
+</article>
+
+<article>
+<h4 class="d">Horticulture Consultation</h4>
+<p><strong>What it is:</strong> Expert advice on plant selection, soil health and sustainable gardening practices.</p>
+<p><strong>When you need it:</strong> When you want to garden with confidence — choosing the right plants, improving your soil, and adopting sustainable habits — without necessarily commissioning a full design.</p>
+<p><strong>What it involves and costs:</strong> A consultation focused on your plants, soil and goals. <span class="todo">Please confirm: consultation pricing for this service.</span></p>
+<p><strong>Why Balga Designs:</strong> Our advice is grounded in local knowledge and ecological thinking, so your garden thrives naturally and sustainably.</p>
+</article>
+</section>
+
+<hr>
+
+<section>
+<h3 class="d">Contact</h3>
+<p>Balga Designs, Lennox Head NSW 2478. Phone <a href="tel:+61413731670">041 373 1670</a>, email <a href="mailto:info@balgadesigns.com.au">info@balgadesigns.com.au</a>, website <a href="https://balgadesigns.com.au">https://balgadesigns.com.au</a>. Hours Mon&ndash;Fri 07:00&ndash;16:00 AEST. Serving the Northern Rivers (NSW) through the Southern Gold Coast (QLD), including Lennox Head, Ballina and Byron Bay.</p>
+</section>
+</div>
+</section>
+<section class="panel" role="tabpanel" id="panel-gbp" aria-labelledby="tab-gbp" hidden>
+<div class="doc">
+<h2 class="d">Your Google Business Profile — quick wins</h2>
+<p>Your Google Business Profile is the most important place local customers (and AI assistants like Google's AI answers and ChatGPT) find a landscaper. Yours already exists — these steps get the most out of it. Work top to bottom.</p>
+
+<h3 class="d">Do these first</h3>
+<h4 class="d">1. Match your details to the website exactly</h4>
+<p>Google trusts a business more when the name, phone and website are identical everywhere. Please use:</p>
+<ul>
+<li><strong>Business name:</strong> Balga Designs</li>
+<li><strong>Phone:</strong> 041 373 1670</li>
+<li><strong>Website:</strong> https://balgadesigns.com.au (add this once the new site is live)</li>
+</ul>
+<h4 class="d">2. Set it up as a service-area business</h4>
+<p>Because you visit clients rather than run a shopfront, <strong>hide the street address</strong> and set your <strong>service areas</strong> instead: Lennox Head, Ballina, Byron Bay, and the wider Northern Rivers through to the Southern Gold Coast.</p>
+<h4 class="d">3. Choose the right categories</h4>
+<p>Category is one of the biggest ranking factors. Set the <strong>primary category to “Landscape designer,”</strong> then add <strong>Garden designer, Landscaper</strong> and <strong>Horticulturist</strong> as additional categories.</p>
+
+<h3 class="d">High impact</h3>
+<h4 class="d">List your services</h4>
+<p>Add each service with a one-line description (the wording on the “Website content” tab can be reused):</p>
+<ul>
+<li>Landscape Design</li>
+<li>Garden Facelift</li>
+<li>Decorative Plants / Pot Styling</li>
+<li>Integrated Pest Management</li>
+<li>Weed Control Consultation</li>
+<li>Horticulture Consultation</li>
+</ul>
+<h4 class="d">Add plenty of photos</h4>
+<p>Photos matter enormously for landscaping. Add <strong>15–20+ real before-and-after photos</strong>, plus your logo and a cover image, and add a few fresh ones each month. Real project photos beat stock every time.</p>
+<h4 class="d">Ask for Google reviews</h4>
+<p>Reviews are the single biggest lever for showing up in the local “map pack” — and they’re what AI assistants quote. Ask recent happy clients for a Google review, and reply to every one. A steady trickle is better than a sudden burst.</p>
+<h4 class="d">Write your business description</h4>
+<p>Paste the ready-made description from the <strong>“Get listed” tab</strong> (the canonical listing block) into the profile’s “From the business” section.</p>
+
+<h3 class="d">Keep it active</h3>
+<ul>
+<li>Post a recent project or seasonal tip every week or two (Google Posts).</li>
+<li>Add attributes — eco-friendly, appointment required, service options.</li>
+<li>Seed a few Questions &amp; Answers (cost, areas served) and answer them.</li>
+<li>List your four design packages with prices under Products.</li>
+<li>Turn on messaging / booking if you’d like enquiries straight from the profile.</li>
+</ul>
+
+<h3 class="d">Quick checklist</h3>
+<table>
+<thead><tr><th>Task</th><th>Priority</th><th>Done?</th></tr></thead>
+<tbody>
+<tr><td>Name / phone / website match the website</td><td>Critical</td><td>☐</td></tr>
+<tr><td>Address hidden, service areas set</td><td>Critical</td><td>☐</td></tr>
+<tr><td>Primary + secondary categories set</td><td>Critical</td><td>☐</td></tr>
+<tr><td>Six services listed with descriptions</td><td>High</td><td>☐</td></tr>
+<tr><td>15–20+ real before/after photos + logo + cover</td><td>High</td><td>☐</td></tr>
+<tr><td>Review requests sent to recent clients</td><td>High</td><td>☐</td></tr>
+<tr><td>Business description added</td><td>High</td><td>☐</td></tr>
+<tr><td>Posts, attributes, Q&amp;A, packages, messaging</td><td>Ongoing</td><td>☐</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="panel" role="tabpanel" id="panel-citations" aria-labelledby="tab-citations" hidden>
+<div class="doc">
+<h2 class="d">Citations Playbook — Balga Designs</h2>
+
+<section>
+<h3 class="d">How to work this playbook</h3>
+<p>This is a hand-worked checklist, not an automated submitter. Sit down with the <strong>Canonical Listing Block</strong> below open in one window and each directory in another, then copy the facts across verbatim.</p>
+<ul>
+<li><strong>Work top-down.</strong> Do the <em>High</em> priority targets first, starting with Google Business Profile — it is the single most valuable listing and everything else reinforces it.</li>
+<li><strong>Keep the NAP byte-identical everywhere.</strong> Same name, same phone format, same email, same website spelling on every site. Inconsistent Name / Address / Phone (NAP) data is what confuses search engines and weakens citations. Copy and paste — never retype.</li>
+<li><strong>Record every live listing URL.</strong> As each listing goes live, paste its public URL into the <em>URL</em> column and set <em>Status</em> to <em>Live</em>. You will need those URLs later to re-verify the business or fix details if the NAP ever changes.</li>
+<li><strong>One fact source.</strong> If a detail changes (phone, hours, a new service), update the Canonical Listing Block first, then push the change out to every recorded listing URL.</li>
+</ul>
+</section>
+
+<section>
+<h3 class="d">The Canonical Listing Block</h3>
+<p>This is the single copy-paste source of truth. Every directory gets these same facts — consistency is the whole point.</p>
+
+<h4 class="d">Name, Address, Phone (NAP)</h4>
+<table>
+<tbody>
+<tr><th>Business name</th><td>Balga Designs</td></tr>
+<tr><th>Full styled name</th><td>Balga Designs — Sustainable Landscapes</td></tr>
+<tr><th>Street address</th><td>TODO: confirm with owner — service-area business, no shopfront; do not publish a street address unless the owner confirms one</td></tr>
+<tr><th>Suburb / State / Postcode</th><td>Lennox Head, NSW 2478, Australia</td></tr>
+<tr><th>Phone (local)</th><td>041 373 1670</td></tr>
+<tr><th>Phone (international)</th><td>+61 413 731 670</td></tr>
+<tr><th>Email</th><td>info@balgadesigns.com.au</td></tr>
+<tr><th>Website</th><td>https://balgadesigns.com.au</td></tr>
+<tr><th>Hours</th><td>Monday–Friday 07:00–16:00 (AEST)</td></tr>
+<tr><th>Service area</th><td>Northern Rivers (NSW) through to the Southern Gold Coast (QLD). Key towns: Lennox Head, Ballina, Byron Bay.</td></tr>
+</tbody>
+</table>
+
+<h4 class="d">Existing profiles to reference / link</h4>
+<ul>
+<li>Facebook: <a href="https://www.facebook.com/profile.php?id=61572646869008">https://www.facebook.com/profile.php?id=61572646869008</a></li>
+<li>Instagram: <a href="https://www.instagram.com/balgadesigns/">https://www.instagram.com/balgadesigns/</a></li>
+<li>Google Business Profile (share link): <a href="https://share.google/azgjHgEUmjfY9iOT9">https://share.google/azgjHgEUmjfY9iOT9</a></li>
+</ul>
+
+<h4 class="d">Short description (~50 words)</h4>
+<blockquote>
+<p>Balga Designs is a sustainable landscape and native garden design studio rooted in Country on the NSW Northern Rivers. We craft naturalistic native gardens that blend beauty with local-ecosystem health — regenerative, low-impact spaces designed for how you live, from Lennox Head to the Southern Gold Coast.</p>
+</blockquote>
+
+<h4 class="d">Long description (~150 words)</h4>
+<blockquote>
+<p>Balga Designs is a sustainable landscape and native garden design studio based in Lennox Head, working across the Northern Rivers of New South Wales through to the Southern Gold Coast. We design naturalistic, native-led gardens that are rooted in Country — spaces where beauty and the health of the local ecosystem grow together. Our ecological, regenerative approach favours indigenous planting, healthy soil and habitat that supports pollinators, birds and the wider landscape.</p>
+<p>From a full landscape design to a garden facelift, decorative pot styling, integrated pest management and horticulture or weed-control consultation, we help homeowners create gardens that feel settled in place and get better with age. As a service-area studio we come to you across Lennox Head, Ballina, Byron Bay and beyond. Warm, considered and nature-led, Balga Designs makes gardens that give back to the country they sit in.</p>
+</blockquote>
+
+<h4 class="d">Google Business categories</h4>
+<ul>
+<li><strong>Primary:</strong> Landscape designer</li>
+<li><strong>Secondary:</strong> Garden designer</li>
+<li><strong>Secondary:</strong> Landscaper</li>
+<li><strong>Secondary:</strong> Horticulturist</li>
+</ul>
+
+<h4 class="d">Services</h4>
+<ul>
+<li>Landscape Design</li>
+<li>Garden Facelift</li>
+<li>Decorative Plants (pot styling)</li>
+<li>Integrated Pest Management</li>
+<li>Weed Control Consultation</li>
+<li>Horticulture Consultation</li>
+</ul>
+
+<h4 class="d">Design packages</h4>
+<table>
+<thead>
+<tr><th>Package</th><th>Price</th></tr>
+</thead>
+<tbody>
+<tr><td>Small NativeScapes Package</td><td>$2,500</td></tr>
+<tr><td>Potted Greenery Package</td><td>$2,000</td></tr>
+<tr><td>Balga Inspo Package</td><td>$2,000</td></tr>
+<tr><td>Complete Design Package</td><td>$4,500</td></tr>
+</tbody>
+</table>
+
+<h4 class="d">Service-area suburbs / towns</h4>
+<ul>
+<li>Lennox Head, NSW</li>
+<li>Ballina, NSW</li>
+<li>Byron Bay, NSW</li>
+<li>Broader Northern Rivers (NSW) through to the Southern Gold Coast (QLD)</li>
+</ul>
+</section>
+
+<section>
+<h3 class="d">Prioritised target list</h3>
+<p>Work this table top-down. Set each row's <em>Status</em> to <em>Submitted</em> when you lodge it and <em>Live</em> once it publishes, and paste the live URL into the <em>URL</em> column for re-verification.</p>
+
+<h4 class="d">1. Google Business Profile (do this first)</h4>
+<table>
+<thead>
+<tr><th>Target</th><th>Priority</th><th>Cost</th><th>URL</th><th>Status</th><th>Notes</th></tr>
+</thead>
+<tbody>
+<tr><td>Google Business Profile</td><td>High</td><td>Free</td><td>https://www.google.com/business/</td><td>Not started</td><td>The anchor of the whole plan. Set as a service-area business (no shopfront); hide the street address and add the service-area towns. Use primary category "Landscape designer". Existing share link: https://share.google/azgjHgEUmjfY9iOT9 — claim/verify it before creating anything new.</td></tr>
+<tr><td>Apple Business Connect</td><td>High</td><td>Free</td><td>https://businessconnect.apple.com</td><td>Not started</td><td>Powers Apple Maps / Siri. Second most useful map listing after Google for AU service businesses.</td></tr>
+<tr><td>Bing Places for Business</td><td>Med</td><td>Free</td><td>https://www.bingplaces.com</td><td>Not started</td><td>Feeds Bing Maps and Copilot answers. Can import directly from the Google Business Profile.</td></tr>
+</tbody>
+</table>
+
+<h4 class="d">2. Australian core directories</h4>
+<table>
+<thead>
+<tr><th>Target</th><th>Priority</th><th>Cost</th><th>URL</th><th>Status</th><th>Notes</th></tr>
+</thead>
+<tbody>
+<tr><td>True Local</td><td>High</td><td>Free</td><td>https://www.truelocal.com.au</td><td>Not started</td><td>Major AU consumer directory; free listing with reviews.</td></tr>
+<tr><td>Yellow Pages Australia</td><td>High</td><td>Free</td><td>https://www.yellowpages.com.au</td><td>Not started</td><td>Free listing available; paid upgrades exist but not required for citation value.</td></tr>
+<tr><td>Yelp Australia</td><td>Med</td><td>Free</td><td>https://www.yelp.com.au</td><td>Not started</td><td>Feeds Apple Maps and AI answers. Claim the business, set service-area.</td></tr>
+<tr><td>Hotfrog Australia</td><td>Med</td><td>Free</td><td>https://www.hotfrog.com.au</td><td>Not started</td><td>Free business listing; good NAP citation.</td></tr>
+<tr><td>StartLocal</td><td>Med</td><td>Free</td><td>https://www.startlocal.com.au</td><td>Not started</td><td>AU local directory; list under Ballina / Northern Rivers region.</td></tr>
+<tr><td>Local Search</td><td>Med</td><td>Free</td><td>https://www.localsearch.com.au</td><td>Not started</td><td>Free listing; strong on regional NSW searches.</td></tr>
+<tr><td>Aussie Web</td><td>Low</td><td>Free</td><td>https://www.aussieweb.com.au</td><td>Not started</td><td>Long-standing AU directory; free basic listing.</td></tr>
+<tr><td>dLook</td><td>Low</td><td>Free</td><td>https://www.dlook.com.au</td><td>Not started</td><td>AU directory; free listing.</td></tr>
+<tr><td>Cylex Australia</td><td>Low</td><td>Free</td><td>https://www.cylex.com.au</td><td>Not started</td><td>Free listing; low effort NAP citation.</td></tr>
+</tbody>
+</table>
+
+<h4 class="d">3. Landscaping / horticulture industry associations</h4>
+<table>
+<thead>
+<tr><th>Target</th><th>Priority</th><th>Cost</th><th>URL</th><th>Status</th><th>Notes</th></tr>
+</thead>
+<tbody>
+<tr><td>AILDM — Australian Institute of Landscape Designers &amp; Managers</td><td>High</td><td>Paid</td><td>https://www.aildm.com.au</td><td>Not started</td><td>The peak body for landscape designers in Australia; membership carries a public "find a designer" directory. Highly relevant — confirm membership tier and eligibility.</td></tr>
+<tr><td>Landscaping NSW &amp; ACT (formerly LNA)</td><td>High</td><td>Paid</td><td>https://www.landscapensw.com.au</td><td>Not started</td><td>State industry association with a public member listing. Regionally relevant for NSW. Confirm current name/URL and membership cost with owner.</td></tr>
+<tr><td>Landscape Association</td><td>Med</td><td>Paid</td><td>https://www.landscapeassociation.com.au</td><td>Not started</td><td>TODO: confirm this is distinct from Landscaping NSW &amp; ACT — the state body was historically the "Landscape Association / LNA". Verify before joining twice.</td></tr>
+<tr><td>Nursery &amp; Garden Industry (Greenlife Industry Australia)</td><td>Low</td><td>Paid</td><td>https://www.greenlifeindustry.com.au</td><td>Not started</td><td>TODO: confirm relevance — geared to nurseries/growers more than design studios. May suit the Decorative Plants / horticulture side. Verify before joining.</td></tr>
+</tbody>
+</table>
+
+<h4 class="d">4. Supplier / "find a designer" locators</h4>
+<table>
+<thead>
+<tr><th>Target</th><th>Priority</th><th>Cost</th><th>URL</th><th>Status</th><th>Notes</th></tr>
+</thead>
+<tbody>
+<tr><td>Houzz (Australia)</td><td>High</td><td>Free</td><td>https://www.houzz.com.au</td><td>Not started</td><td>Free professional profile with a project portfolio; strong "find a landscape designer" locator and high-intent audience. Upload native-garden project photos.</td></tr>
+<tr><td>hipages</td><td>Med</td><td>Paid</td><td>https://hipages.com.au</td><td>Not started</td><td>AU trades/services lead platform. Lead-based pricing — list for the citation and consider leads separately. Confirm fit with owner.</td></tr>
+<tr><td>Oneflare</td><td>Low</td><td>Free</td><td>https://www.oneflare.com.au</td><td>Not started</td><td>Free profile; lead fees optional. Adds an AU service-business citation.</td></tr>
+<tr><td>Localsearch / ServiceSeeking style locators</td><td>Low</td><td>Free</td><td>https://www.serviceseeking.com.au</td><td>Not started</td><td>TODO: confirm with owner whether lead platforms are wanted — free profile still adds a citation.</td></tr>
+</tbody>
+</table>
+
+<h4 class="d">5. Local community / council / chamber</h4>
+<table>
+<thead>
+<tr><th>Target</th><th>Priority</th><th>Cost</th><th>URL</th><th>Status</th><th>Notes</th></tr>
+</thead>
+<tbody>
+<tr><td>Ballina Shire Council business / local directory</td><td>High</td><td>Free</td><td>https://www.ballina.nsw.gov.au</td><td>Not started</td><td>Council area covering Lennox Head. Check for a "shop local" / business directory listing. Strongly local and relevant.</td></tr>
+<tr><td>Byron Shire Council business / local directory</td><td>Med</td><td>Free</td><td>https://www.byron.nsw.gov.au</td><td>Not started</td><td>Byron Bay is a key service town. Look for a local business listing or supported "shop local" program.</td></tr>
+<tr><td>Ballina Chamber of Commerce</td><td>Med</td><td>Paid</td><td>https://www.ballinacommerce.com.au</td><td>Not started</td><td>Local chamber; membership usually includes a member directory listing. TODO: confirm current URL and joining fee.</td></tr>
+<tr><td>Byron United / Byron Bay business chamber</td><td>Low</td><td>Paid</td><td>https://www.byronunited.com.au</td><td>Not started</td><td>Byron-area business network with a member directory. TODO: confirm current name/URL and fee.</td></tr>
+<tr><td>Lennox Head Chamber of Commerce</td><td>Low</td><td>Paid</td><td>TODO: confirm with owner</td><td>Not started</td><td>Home-town chamber if one is currently active. TODO: confirm existence, URL and fee locally.</td></tr>
+</tbody>
+</table>
+</section>
+
+<hr>
+
+<section>
+<h3 class="d">Re-verification log</h3>
+<p>Once a listing is live, keep its public URL in the target table above and re-check it every few months. If any NAP detail changes, update the Canonical Listing Block first, then work through each recorded live URL and correct it there too.</p>
+</section>
+</div>
+</section>
+  <p class="foot">Prepared by Jewell Projects for Balga Designs · Please reply with your approval and any edits.</p>
+</main>
+<script>
+(function(){
+  document.documentElement.classList.add("js");
+  // Wrap tables so wide ones scroll instead of pushing the page sideways.
+  [].slice.call(document.querySelectorAll(".doc table")).forEach(function(t){
+    if(t.parentNode && t.parentNode.classList && t.parentNode.classList.contains("tablewrap")) return;
+    var w=document.createElement("div"); w.className="tablewrap";
+    t.parentNode.insertBefore(w,t); w.appendChild(t);
+  });
+  var tabs=[].slice.call(document.querySelectorAll(".tab"));
+  var panels=[].slice.call(document.querySelectorAll(".panel"));
+  function select(id){
+    tabs.forEach(function(t){t.setAttribute("aria-selected", t.dataset.target===id ? "true":"false");});
+    panels.forEach(function(p){ if(p.id==="panel-"+id){p.hidden=false;} else {p.hidden=true;} });
+    try{ window.scrollTo({top:0,behavior:"instant"}); }catch(e){ window.scrollTo(0,0); }
+  }
+  tabs.forEach(function(t,i){
+    t.addEventListener("click",function(){select(t.dataset.target);});
+    t.addEventListener("keydown",function(e){
+      if(e.key==="ArrowRight"||e.key==="ArrowLeft"){
+        e.preventDefault();
+        var n=(i+(e.key==="ArrowRight"?1:-1)+tabs.length)%tabs.length;
+        tabs[n].focus(); select(tabs[n].dataset.target);
+      }
+    });
+  });
+})();
+</script>
+
+
+</body>
+</html>

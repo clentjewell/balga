@@ -11,7 +11,7 @@ Great news — the new Balga Designs website is built and we've optimised it so 
 
 Before we publish one last set of additions, we'd love your sign-off. I've put everything in a single review page so it's easy to go through:
 
-👉 **Review & approve here:** https://balga-review.clent.workers.dev
+👉 **Review & approve here:** https://balga-designs-preview.clent.workers.dev/review/
 
 **What we'd like to add to the site (Tab 1 — "Website content to approve"):**
 
