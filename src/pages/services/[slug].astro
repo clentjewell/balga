@@ -2,7 +2,9 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PageHero from "../../components/PageHero.astro";
 import CTASection from "../../components/CTASection.astro";
+import BeforeAfterSlider from "../../components/BeforeAfterSlider.astro";
 import { services } from "../../data/services";
+import { projects } from "../../data/projects";
 import { site } from "../../data/site";
 
 export function getStaticPaths() {
@@ -13,6 +15,7 @@ const { service } = Astro.props;
 const d = service.detail;
 const siteUrl = Astro.site?.toString().replace(/\/$/, "") ?? "";
 const related = services.filter((s) => s.slug !== service.slug);
+const project = projects.find((p) => p.id === service.relatedProject);
 
 const blocks = [
   { h: "What it is", p: d.whatItIs },
@@ -42,17 +45,41 @@ const serviceSchema = {
   <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} is:inline />
 
   <section class="section section--white">
-    <div class="container container-narrow svc-detail">
+    <div class="container">
       <p class="svc-detail__lead reveal">{service.description}</p>
-      {blocks.map((b) => (
-        <div class="svc-detail__block reveal">
-          <h2>{b.h}</h2>
-          <p>{b.p}</p>
+      <div class:list={["svc-detail", { "svc-detail--single": !project }]}>
+        <div class="svc-detail__main">
+          {blocks.map((b) => (
+            <div class="svc-detail__block reveal">
+              <h2>{b.h}</h2>
+              <p>{b.p}</p>
+            </div>
+          ))}
+          <div class="svc-detail__cta reveal">
+            <a href="/contact/" class="btn btn--primary">Book a free consultation</a>
+            <a href="/pricing/" class="btn btn--outline">View pricing</a>
+          </div>
         </div>
-      ))}
-      <div class="svc-detail__cta reveal">
-        <a href="/contact/" class="btn btn--primary">Book a free consultation</a>
-        <a href="/pricing/" class="btn btn--outline">View pricing</a>
+
+        {project && (
+          <aside class="svc-detail__aside reveal">
+            <figure class="svc-proj">
+              <BeforeAfterSlider
+                before={project.before}
+                after={project.after}
+                beforeAlt={project.beforeAlt}
+                afterAlt={project.afterAlt}
+                ratio="4 / 3"
+              />
+              <figcaption class="svc-proj__cap">
+                <span class="eyebrow">Related project</span>
+                <h3>{project.title}</h3>
+                {project.location && <p class="svc-proj__loc">{project.location}</p>}
+                <a href="/projects/" class="svc-proj__link">See more of our work <span aria-hidden="true">&rarr;</span></a>
+              </figcaption>
+            </figure>
+          </aside>
+        )}
       </div>
     </div>
   </section>
@@ -83,11 +110,27 @@ const serviceSchema = {
 </BaseLayout>
 
 <style>
-  .svc-detail__lead { font-size: 1.2rem; color: var(--color-secondary-dark); font-weight: 500; margin-bottom: 2.4rem; }
+  .svc-detail__lead { font-size: 1.2rem; color: var(--color-secondary-dark); font-weight: 500; margin-bottom: 2.4rem; max-width: 68ch; }
+  .svc-detail { display: grid; grid-template-columns: 1fr 0.92fr; gap: clamp(2rem, 1rem + 4vw, 4rem); align-items: start; }
+  .svc-detail--single { grid-template-columns: 1fr; max-width: 68ch; }
+  .svc-detail__main { min-width: 0; }
   .svc-detail__block { margin-bottom: 1.9rem; }
   .svc-detail__block h2 { font-size: 1.35rem; color: var(--color-primary); margin-bottom: 0.5rem; }
   .svc-detail__block p { color: var(--color-text); line-height: 1.85; }
   .svc-detail__cta { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2.4rem; }
+
+  .svc-detail__aside { position: sticky; top: 100px; min-width: 0; }
+  .svc-proj { margin: 0; background: var(--color-background); border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-soft); }
+  .svc-proj__cap { padding: 1.2rem 1.3rem 1.4rem; }
+  .svc-proj__cap .eyebrow { color: var(--color-secondary); }
+  .svc-proj__cap h3 { color: var(--color-primary); font-size: 1.2rem; margin: 0.3rem 0 0.2rem; }
+  .svc-proj__loc { color: var(--color-text); font-size: 0.9rem; margin-bottom: 0.6rem; }
+  .svc-proj__link { font-weight: 600; color: var(--color-secondary); font-size: 0.95rem; }
+
+  @media (max-width: 860px) {
+    .svc-detail { grid-template-columns: 1fr; gap: 2.4rem; }
+    .svc-detail__aside { position: static; order: -1; max-width: 520px; }
+  }
 
   .svc-related__head { text-align: center; margin-bottom: 2.5rem; }
   .svc-related__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
