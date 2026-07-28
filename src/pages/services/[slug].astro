@@ -157,8 +157,10 @@ const serviceSchema = {
   }
 
   .svc-related__head { text-align: center; margin-bottom: 2.5rem; }
-  .svc-related__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+  /* Flex so an incomplete final row (e.g. 3 + 2) centres instead of sitting left. */
+  .svc-related__grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5rem; }
   .svc-related__card {
+    flex: 0 1 calc((100% - 3rem) / 3); min-width: 0;
     background: var(--color-background); border-radius: var(--radius-md); overflow: hidden;
     display: flex; flex-direction: column; color: inherit; box-shadow: var(--shadow-soft);
     transition: transform var(--transition);
@@ -171,6 +173,6 @@ const serviceSchema = {
   .svc-related__body h3 { color: var(--color-primary); font-size: 1.1rem; margin-bottom: 0.5rem; }
   .svc-related__more { font-weight: 600; color: var(--color-secondary); font-size: 0.9rem; }
 
-  @media (max-width: 900px) { .svc-related__grid { grid-template-columns: 1fr 1fr; } }
-  @media (max-width: 560px) { .svc-related__grid { grid-template-columns: 1fr; max-width: 420px; margin-inline: auto; } }
+  @media (max-width: 900px) { .svc-related__card { flex-basis: calc((100% - 1.5rem) / 2); } }
+  @media (max-width: 560px) { .svc-related__card { flex-basis: 100%; max-width: 420px; } }
 </style>
