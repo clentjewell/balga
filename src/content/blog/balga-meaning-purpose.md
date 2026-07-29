@@ -4,7 +4,7 @@ description: "The meaning behind the name Balga and the philosophy of Country-ro
 excerpt: "Rooted in Country: The Balga way of Garden Design. At Balga Designs, every garden we create begins with a deep respect for the land."
 date: "May 8, 2025"
 dateISO: "2025-05-08"
-image: "/assets/blog/balga-meaning.jpg"
+image: "/assets/blog/balga-meaning.webp"
 imageAlt: "Grass tree (Balga) in an Australian landscape"
 order: 3
 ---
@@ -13,7 +13,7 @@ order: 3
 
 At Balga Designs, every garden we create begins with a story—one deeply rooted in the land beneath our feet. The name Balga comes from the Aboriginal word for the Grass Tree, Xanthorrhoea sp., a remarkable and resilient native Australian plant.
 
-![Newrybar landscape design with grass trees](/assets/blog/balga-meaning/newrybar-63.jpg)
+![Newrybar landscape design with grass trees](/assets/blog/balga-meaning/newrybar-63.webp)
 
 ![Grass tree on the horizon in an Australian landscape](/assets/blog/balga-meaning/grass-tree-horizon.jpg.webp)
 
@@ -27,7 +27,7 @@ Balga Designs is here to invite that change.
 
 We design landscapes that are inspired by nature and rooted in respect. Gardens that nourish our lifestyle while honouring the unique environment we’re part of. By using native flora, we not only create beauty—we support biodiversity, invite native wildlife back into our lives, and help heal the land.
 
-![A native garden designed by Balga Designs](/assets/blog/balga-meaning/balga-meaning-2.jpg)
+![A native garden designed by Balga Designs](/assets/blog/balga-meaning/balga-meaning-2.webp)
 
 But just like the Grass Tree, my work is shaped by a blend of stories. I come from a Mediterranean background, and that influence occasionally shows in the materials I choose, the textures I play with, and the way I shape spaces. My goal is always to find harmony between the local ecosystem and timeless, naturalistic beauty.
 
@@ -39,4 +39,4 @@ Welcome to Balga Designs. Let’s grow something meaningful together.
 
 One garden at the time.
 
-![A regenerative garden by Balga Designs](/assets/blog/balga-meaning/balga-meaning.jpeg)
+![A regenerative garden by Balga Designs](/assets/blog/balga-meaning/balga-meaning.webp)

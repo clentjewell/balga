@@ -33,7 +33,7 @@ Because native plants are naturally suited to their environment, they tend to be
 
 This makes native landscaping perfect for busy homeowners or anyone looking to reduce the effort and cost of upkeep without sacrificing beauty.
 
-![Native plants in a low-maintenance garden](/assets/blog/native-gardens/native-gardens-3.jpg)
+![Native plants in a low-maintenance garden](/assets/blog/native-gardens/native-gardens-3.webp)
 
 ### 3. Reducing Lawn Area
 
@@ -67,9 +67,9 @@ This creates a sort of living mulch—dense, healthy plant communities that leav
 
 In other words, native landscaping doesn’t just benefit your own space—it acts as a protective buffer for the wider environment.
 
-![Native garden planting](/assets/blog/native-gardens/native-gardens-1.jpg)
+![Native garden planting](/assets/blog/native-gardens/native-gardens-1.webp)
 
-![Native garden foliage detail](/assets/blog/native-gardens/native-gardens-2.jpg)
+![Native garden foliage detail](/assets/blog/native-gardens/native-gardens-2.webp)
 
 ### 7. Aesthetically Beautiful
 
@@ -93,7 +93,7 @@ By reducing long-term upkeep costs, minimizing water bills, and showcasing thoug
 
 A thriving, naturalistic garden can transform curb appeal, enhance outdoor living spaces, and leave a lasting impression—not just on visitors, but on the local ecosystem too.
 
-![A thriving naturalistic native garden](/assets/blog/native-gardens/native-gardens.jpg)
+![A thriving naturalistic native garden](/assets/blog/native-gardens/native-gardens.webp)
 
 ### 10. Connection
 
@@ -103,7 +103,7 @@ Tending to native plants invites us to slow down and observe—to notice the ret
 
 A native garden isn’t just a landscape. It’s a relationship—one that deepens over time and reminds us that we’re not separate from the natural world, but part of it.
 
-![A vacant cow paddock turned relaxed Australian country garden](/assets/blog/native-gardens/cow-paddock-country-garden.jpg)
+![A vacant cow paddock turned relaxed Australian country garden](/assets/blog/native-gardens/cow-paddock-country-garden.webp)
 
 ## Conclusion
 

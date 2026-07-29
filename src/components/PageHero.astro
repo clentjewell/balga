@@ -6,7 +6,7 @@ export interface Props {
   image?: string;
   crumbs: Crumb[];
 }
-const { title, image = "/assets/about/evening-view.jpg", crumbs } = Astro.props;
+const { title, image = "/assets/about/evening-view.webp", crumbs } = Astro.props;
 ---
 <section class="page-hero" style={`--hero-img: url('${image}')`}>
   <div class="page-hero__overlay"></div>

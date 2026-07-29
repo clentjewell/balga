@@ -4,7 +4,7 @@ description: "Why thoughtful landscape design and planning save money, time and 
 excerpt: "When it comes to landscaping, many homeowners approach their outdoor space with excitement and enthusiasm, but often without a clear plan in place."
 date: "May 8, 2025"
 dateISO: "2025-05-08"
-image: "/assets/blog/designing-planning.jpg"
+image: "/assets/blog/designing-planning.webp"
 imageAlt: "A well-planned landscape design"
 order: 2
 ---
@@ -13,9 +13,9 @@ order: 2
 
 When it comes to landscaping, many homeowners approach their outdoor space with excitement and enthusiasm, but often without a clear plan in place. It’s easy to think that landscaping is simply about placing a few plants here and there, but in reality, designing and planning are just as crucial as creating a blueprint for your home.
 
-![Landscape design planning](/assets/blog/designing-planning/why-designing-2.jpg)
+![Landscape design planning](/assets/blog/designing-planning/why-designing-2.webp)
 
-![Landscape design in progress](/assets/blog/designing-planning/why-designing-3.jpg)
+![Landscape design in progress](/assets/blog/designing-planning/why-designing-3.webp)
 
 In fact, landscape design is as essential to your garden as a house plan is to your home. Without thoughtful consideration and a strategic approach, you might find yourself facing unnecessary costs, wasted time, and the frustration of an outdoor space that doesn’t live up to its potential.
 
@@ -35,7 +35,7 @@ A landscape designer or planner considers soil health, water drainage, sun expos
 
 A well-thought-out landscape plan also means that you’ll need to spend less on irrigation systems, fertilizers, and pest control. Essentially, you’re building a garden that works with nature, not against it. And that leads to fewer hidden costs creeping up later on.
 
-![A designed garden bed](/assets/blog/designing-planning/why-designing.jpg)
+![A designed garden bed](/assets/blog/designing-planning/why-designing.webp)
 
 ![Planted landscape design](/assets/blog/designing-planning/design-3.webp)
 
@@ -61,4 +61,4 @@ A professional designer can help you plan wisely, ensuring that your outdoor spa
 
 So, before you start planting, take a moment to plan ahead. Your future self—and your garden—will thank you!
 
-![A finished, thriving landscape](/assets/blog/designing-planning/image-6.jpeg)
+![A finished, thriving landscape](/assets/blog/designing-planning/image-6.webp)

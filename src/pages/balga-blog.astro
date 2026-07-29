@@ -6,8 +6,8 @@ import { getCollection } from "astro:content";
 
 const posts = (await getCollection("blog")).sort((a, b) => a.data.order - b.data.order);
 ---
-<BaseLayout title="Balga Blog | Native Garden Insights" description="Rooted in Country — guides and stories from Balga Designs on native gardens, sustainable landscape design and regenerative planting for Australian homes." preloadImage="/assets/blog/balga-meaning.jpg">
-  <PageHero title="Balga Blog" image="/assets/blog/balga-meaning.jpg" crumbs={[{ label: "Home", href: "/" }, { label: "Blog" }]} />
+<BaseLayout title="Balga Blog | Native Garden Insights" description="Rooted in Country — guides and stories from Balga Designs on native gardens, sustainable landscape design and regenerative planting for Australian homes." preloadImage="/assets/blog/balga-meaning.webp">
+  <PageHero title="Balga Blog" image="/assets/blog/balga-meaning.webp" crumbs={[{ label: "Home", href: "/" }, { label: "Blog" }]} />
 
   <section class="section section--white">
     <div class="container">

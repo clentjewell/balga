@@ -21,7 +21,7 @@ export const packages: Package[] = [
     price: "$2,500.00",
     hours: "Approximately 20 Hour Job",
     radius: "Within 30km radius from Lennox Head",
-    image: "/assets/pricing/package-1.jpg",
+    image: "/assets/pricing/package-1.webp",
     alt: "Small native garden design",
     intro: [
       "The Small NativeScapes Package is designed for those looking to revamp their front/backyards without the guesswork.",
@@ -49,7 +49,7 @@ export const packages: Package[] = [
     price: "$2,000.00",
     hours: "Approximately 20 Hour Job",
     radius: "Within 30km radius from Lennox Head",
-    image: "/assets/pricing/package-2.jpeg",
+    image: "/assets/pricing/package-2.webp",
     alt: "Pot styling and decorative plants",
     intro: [
       "Ideal for those who are renting a property, our pot styling consultation is perfect for clients who are wanting to incorporate potted greenery in an indoor or outdoor space but aren’t sure where to begin.",
@@ -74,7 +74,7 @@ export const packages: Package[] = [
     price: "$2,000.00",
     hours: "Approximately 10 Hour Job",
     radius: "Within 30km radius from Lennox Head",
-    image: "/assets/pricing/package-3.jpg",
+    image: "/assets/pricing/package-3.webp",
     alt: "Inspiration landscape design mood board",
     intro: [
       "You are willing to do all the hard work but you;re just lacking a bit of imagination. Getting overwhelmed with how to get started and need a plan?",
@@ -101,7 +101,7 @@ export const packages: Package[] = [
     price: "$4,500.00",
     hours: "Approximately 30 Hour Job",
     radius: "Within 30km radios from Lennox Head",
-    image: "/assets/pricing/package-4.jpg",
+    image: "/assets/pricing/package-4.webp",
     alt: "Complete landscape design package",
     intro: [
       "The Complete Design Package is designed for clients who have recently built their new home or want to redesign their existing outdoor area.",

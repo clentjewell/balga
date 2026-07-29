@@ -12,14 +12,14 @@ import { heroFeatures } from "../data/content";
 <BaseLayout
   title="Balga Designs | Native & Sustainable Garden Design"
   description="Balga Designs creates beautiful, regenerative native gardens from the Northern Rivers to the Southern Gold Coast — sustainable design that works with nature."
-  preloadImage="/assets/home/hero/balga-designs-garden.jpeg"
+  preloadImage="/assets/home/hero/balga-designs-garden.webp"
 >
   <!-- HERO -->
   <section class="hero">
     <div class="hero__slideshow" aria-hidden="true">
-      <div class="hero__slide" style="--img:url('/assets/home/hero/balga-designs-garden.jpeg')"></div>
-      <div class="hero__slide" style="--img:url('/assets/home/hero/balga-designs.jpeg')"></div>
-      <div class="hero__slide" style="--img:url('/assets/home/hero/balga-design-work.jpeg')"></div>
+      <div class="hero__slide" style="--img:url('/assets/home/hero/balga-designs-garden.webp')"></div>
+      <div class="hero__slide" data-hero-img="url('/assets/home/hero/balga-designs.webp')"></div>
+      <div class="hero__slide" data-hero-img="url('/assets/home/hero/balga-design-work.webp')"></div>
     </div>
     <div class="hero__overlay" aria-hidden="true"></div>
     <div class="container hero__inner">
@@ -68,8 +68,8 @@ import { heroFeatures } from "../data/content";
         <a href="/about/" class="btn btn--primary home-about__btn">Read More</a>
       </div>
       <div class="home-about__imgs reveal">
-        <img src="/assets/home/feature-1.jpeg" alt="Native garden with a water feature and yellow wildflowers" width="1000" height="750" loading="lazy" />
-        <img src="/assets/home/feature-2.jpeg" alt="Stone water bowl set among native grasses" width="1000" height="750" loading="lazy" />
+        <img src="/assets/home/feature-1.webp" alt="Native garden with a water feature and yellow wildflowers" width="1000" height="750" loading="lazy" />
+        <img src="/assets/home/feature-2.webp" alt="Stone water bowl set among native grasses" width="1000" height="750" loading="lazy" />
       </div>
     </div>
   </section>
@@ -176,3 +176,15 @@ import { heroFeatures } from "../data/content";
     .home-services__grid { grid-template-columns: 1fr 1fr; max-width: none; }
   }
 </style>
+
+<script>
+  // Defer hero slides 2–3 until after load so they don't compete with the LCP image.
+  const hydrateHero = () => {
+    document.querySelectorAll<HTMLElement>(".hero__slide[data-hero-img]").forEach((el) => {
+      el.style.setProperty("--img", el.dataset.heroImg!);
+      el.removeAttribute("data-hero-img");
+    });
+  };
+  if (document.readyState === "complete") hydrateHero();
+  else window.addEventListener("load", hydrateHero);
+</script>

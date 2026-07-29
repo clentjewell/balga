@@ -28,8 +28,8 @@ const offerSchema = {
   })),
 };
 ---
-<BaseLayout title="Garden Design Pricing & Packages" description="Transparent pricing from Balga Designs — four native garden design packages, from Small NativeScapes to the Complete Design Package. Find your plan." preloadImage="/assets/pricing/hero.jpg">
-  <PageHero title="Pricing Plans" image="/assets/pricing/hero.jpg" crumbs={[{ label: "Home", href: "/" }, { label: "Pricing" }]} />
+<BaseLayout title="Garden Design Pricing & Packages" description="Transparent pricing from Balga Designs — four native garden design packages, from Small NativeScapes to the Complete Design Package. Find your plan." preloadImage="/assets/pricing/hero.webp">
+  <PageHero title="Pricing Plans" image="/assets/pricing/hero.webp" crumbs={[{ label: "Home", href: "/" }, { label: "Pricing" }]} />
   <script type="application/ld+json" set:html={JSON.stringify(offerSchema)} is:inline />
 
   <section class="section section--white">
@@ -69,10 +69,10 @@ const offerSchema = {
     </div>
   </section>
 
-  <VideoBand image="/assets/home/sunset.jpg" eyebrow="Why Balga Designs" title="We Treat Your Garden Like Our Own" />
+  <VideoBand image="/assets/home/sunset.webp" eyebrow="Why Balga Designs" title="We Treat Your Garden Like Our Own" />
   <TestimonialSlider count={5} />
-  <FAQAccordion id="faqs" title="Pricing FAQs" image="/assets/pricing/faqs-bg.jpg" items={faqsByCategory(["Cost & packages", "Payment"])} schema={false} viewAllHref="/faqs/" />
-  <CTASection title="Beautiful Landscapes Start Here" image="/assets/pricing/cta-footer.png" />
+  <FAQAccordion id="faqs" title="Pricing FAQs" image="/assets/pricing/faqs-bg.webp" items={faqsByCategory(["Cost & packages", "Payment"])} schema={false} viewAllHref="/faqs/" />
+  <CTASection title="Beautiful Landscapes Start Here" image="/assets/pricing/cta-footer.webp" />
   <VideoModal />
 </BaseLayout>
 
