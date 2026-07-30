@@ -144,6 +144,16 @@ function getCol(name){ return CONFIG.collections.find(c=>c.name===name); }
 async function collectionView(name){
   const col = getCol(name);
   const main = appShell(name);
+  if(col.type==="files"){
+    main.append(el("div",{class:"topbar"},[ el("h2",{},col.label) ]));
+    const fl=el("div",{class:"list"});
+    col.files.forEach(fe=> fl.append(el("div",{class:"row"},[
+      el("div",{},[el("div",{class:"row__t"},fe.label)]),
+      el("div",{class:"actions"},[ el("button",{class:"secondary",onclick:()=>editorView(name,null,fe)},"Edit") ])
+    ])));
+    main.append(fl);
+    return;
+  }
   const top = el("div",{class:"topbar"},[ el("h2",{},col.label) ]);
   if(col.create) top.append(el("button",{onclick:()=>editorView(name,null)},"+ New "+(col.labelSingular||"item")));
   main.append(top);
@@ -186,27 +196,34 @@ async function loadRelation(name){
   relCache[name]=out; return out;
 }
 
-async function editorView(name, item){
+async function editorView(name, item, fileEntry){
   const col=getCol(name);
+  const spec = fileEntry
+    ? { fields:fileEntry.fields, format:fileEntry.format||"json", extension:"json", bodyField:fileEntry.bodyField,
+        mediaFolder:fileEntry.mediaFolder||col.mediaFolder||"public/assets/uploads", identifier:null,
+        summaryField:null, folder:null, isFile:true, path:fileEntry.path, label:fileEntry.label }
+    : { fields:col.fields, format:col.format, extension:col.extension, bodyField:col.bodyField,
+        mediaFolder:col.mediaFolder, identifier:col.identifier, summaryField:col.summaryField,
+        folder:col.folder, isFile:false, path:item?item.path:null, label:col.labelSingular };
   const main=appShell(name);
   main.append(el("div",{class:"crumb"},col.label+" ›"));
-  const isNew=!item;
-  let fields={}, body="", sha=null, path=item?item.path:null;
-  if(item){ try{ const f=await api("/file?path="+encodeURIComponent(item.path)); const p=parseContent(col,f.content); fields=p.fields; body=p.body; sha=f.sha; }catch(ex){ main.append(el("div",{class:"msg err"},ex.message)); return; } }
+  const isNew = !spec.isFile && !item;
+  let fields={}, body="", sha=null, path=spec.path;
+  if(spec.isFile || item){ try{ const f=await api("/file?path="+encodeURIComponent(spec.path)); const p=parseContent(spec,f.content); fields=p.fields; body=p.body; sha=f.sha; }catch(ex){ main.append(el("div",{class:"msg err"},ex.message)); return; } }
 
-  const top=el("div",{class:"topbar"},[ el("h2",{},isNew?("New "+(col.labelSingular||"item")):(fields[col.summaryField]||"Edit")), el("button",{class:"secondary",onclick:()=>collectionView(name)},"← Back") ]);
+  const top=el("div",{class:"topbar"},[ el("h2",{},isNew?("New "+(spec.label||"item")):(spec.isFile?spec.label:(fields[spec.summaryField]||"Edit"))), el("button",{class:"secondary",onclick:()=>collectionView(name)},"← Back") ]);
   main.append(top);
   const form=el("form",{class:"form",onsubmit:(e)=>e.preventDefault()});
   const getVal={}; // name -> fn returning value
 
-  for(const f of col.fields){
+  for(const f of spec.fields){
     const wrap=el("div",{});
     const idAttr="f_"+f.name;
     if(f.widget!=="object") wrap.append(el("label",{for:idAttr},f.label+(f.required?" *":"")));
     const cur = fields[f.name];
 
     if(f.widget==="slug"){
-      const inp=el("input",{id:idAttr,value:cur??(isNew?"":""),readonly:(f.readonly||(!isNew&&f.name===col.identifier))?"":null});
+      const inp=el("input",{id:idAttr,value:cur??(isNew?"":""),readonly:(f.readonly||(!isNew&&f.name===spec.identifier))?"":null});
       if(!isNew) inp.readOnly=true;
       wrap.append(inp); getVal[f.name]=()=>inp.value.trim().toLowerCase().replace(/[^a-z0-9-]+/g,"-").replace(/^-+|-+$/g,"");
     }
@@ -219,7 +236,7 @@ async function editorView(name, item){
       const status=el("span",{class:"hint"});
       file.addEventListener("change",async()=>{ const fl=file.files[0]; if(!fl)return; status.textContent="Uploading…";
         const b64=await new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(String(fr.result).split(",")[1]);fr.readAsDataURL(fl);});
-        try{ const up=await api("/upload",{method:"POST",body:JSON.stringify({folder:col.mediaFolder,filename:fl.name,dataBase64:b64})}); urlInp.value=up.path; prev.src=up.path; prev.style.visibility="visible"; status.textContent="Uploaded ✓"; }
+        try{ const up=await api("/upload",{method:"POST",body:JSON.stringify({folder:spec.mediaFolder,filename:fl.name,dataBase64:b64})}); urlInp.value=up.path; prev.src=up.path; prev.style.visibility="visible"; status.textContent="Uploaded ✓"; }
         catch(ex){ status.textContent=""; toast(ex.message,"err"); }
       });
       wrap.append(el("div",{class:"imgwrap"},[prev, el("div",{style:"flex:1;min-width:200px;display:grid;gap:.5rem"},[urlInp,file,status])]));
@@ -260,17 +277,21 @@ async function editorView(name, item){
 
   async function save(){
     msg.classList.add("hidden");
-    const out={}; for(const f of col.fields){ if(f.widget==="markdown"&&f.name===col.bodyField) continue; out[f.name]=getVal[f.name](); }
+    const out={}; for(const f of spec.fields){ if(f.widget==="markdown"&&f.name===spec.bodyField) continue; out[f.name]=getVal[f.name](); }
     // validate required
-    for(const f of col.fields){ if(f.required){ const v=out[f.name]; if(v===undefined||v===""||(Array.isArray(v)&&!v.length)){ msg.textContent="Please fill in: "+f.label; msg.classList.remove("hidden"); return; } } }
-    const idVal=getVal[col.identifier]();
-    if(!idVal){ msg.textContent="Please provide an ID / slug."; msg.classList.remove("hidden"); return; }
-    const bodyVal = col.bodyField ? getVal[col.bodyField]() : "";
+    for(const f of spec.fields){ if(f.required){ const v=out[f.name]; if(v===undefined||v===""||(Array.isArray(v)&&!v.length)){ msg.textContent="Please fill in: "+f.label; msg.classList.remove("hidden"); return; } } }
+    let targetPath;
+    if(spec.isFile){ targetPath=spec.path; }
+    else {
+      const idVal=getVal[spec.identifier]();
+      if(!idVal){ msg.textContent="Please provide an ID / slug."; msg.classList.remove("hidden"); return; }
+      targetPath = isNew ? `${spec.folder}/${idVal}.${spec.extension}` : path;
+    }
+    const bodyVal = spec.bodyField ? getVal[spec.bodyField]() : "";
     // build fields object for serialization (exclude body for frontmatter handled in emit)
     const fieldsOut={...out};
-    if(col.bodyField) delete fieldsOut[col.bodyField];
-    const content=emitContent(col, fieldsOut, bodyVal);
-    const targetPath = isNew ? `${col.folder}/${idVal}.${col.extension}` : path;
+    if(spec.bodyField) delete fieldsOut[spec.bodyField];
+    const content=emitContent(spec, fieldsOut, bodyVal);
     saveBtn.disabled=true; saveBtn.innerHTML='<span class="spin"></span> Saving…';
     try{
       await api("/file",{method:"PUT",body:JSON.stringify({path:targetPath, content, sha:isNew?undefined:sha, message:`CMS: ${isNew?"create":"update"} ${targetPath}`})});

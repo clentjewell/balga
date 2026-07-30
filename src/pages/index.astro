@@ -8,6 +8,7 @@ import CTASection from "../components/CTASection.astro";
 import VideoModal from "../components/VideoModal.astro";
 import { services } from "../data/services";
 import { heroFeatures } from "../data/content";
+import home from "../data/content/home.json";
 ---
 <BaseLayout
   title="Balga Designs | Native & Sustainable Garden Design"
@@ -24,9 +25,9 @@ import { heroFeatures } from "../data/content";
     <div class="hero__overlay" aria-hidden="true"></div>
     <div class="container hero__inner">
       <div class="hero__content">
-        <span class="eyebrow">Gardening Service</span>
-        <h1>Beautiful Native Landscapes with a regenerative perspective</h1>
-        <p class="hero__sub">Our approach blends aesthetic beauty with ecological harmony, ensuring your outdoor space not only looks stunning but also nurtures the local ecosystem.</p>
+        <span class="eyebrow">{home.heroEyebrow}</span>
+        <h1>{home.heroHeading}</h1>
+        <p class="hero__sub">{home.heroSub}</p>
         <div class="hero__actions">
           <a href="/contact/" class="btn btn--outline-light">Start Your Project</a>
         </div>
@@ -60,10 +61,10 @@ import { heroFeatures } from "../data/content";
     <div class="container">
       <div class="home-about__inner reveal">
         <span class="eyebrow">About Us</span>
-        <h2>Rooted in Nature, Driven by Passion</h2>
+        <h2>{home.aboutHeading}</h2>
         <div class="home-about__text stack">
-          <p>Balga Designs was founded with a simple yet profound mission: to create gardens that respect and enhance the natural environment. Our designs are inspired by the local landscape, focusing on native species and sustainable practices that support wildlife and promote biodiversity.</p>
-          <p>We believe that every garden, no matter how small, can make a significant impact on our community, cities, and the planet. By choosing Balga Designs, you're not just enhancing your outdoor space—you're contributing to a greener, more sustainable world.</p>
+          <p>{home.aboutPara1}</p>
+          <p>{home.aboutPara2}</p>
         </div>
         <a href="/about/" class="btn btn--primary home-about__btn">Read More</a>
       </div>

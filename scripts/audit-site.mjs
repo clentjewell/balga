@@ -50,7 +50,7 @@ let sawWebSite = false;
 for (const file of pages) {
   const rel = relative(dist, file);
   // Utility pages that aren't part of the public website (skip site-page checks).
-  if (/^review\//.test(rel)) continue;
+  if (/^(review|admin)\//.test(rel)) continue;
   const is404 = /(^|\/)404\.html$/.test(rel);
   const html = readFileSync(file, "utf8");
   const root = parse(html, { comment: false });

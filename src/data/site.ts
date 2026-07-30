@@ -1,29 +1,33 @@
+// Client-editable business details (via the CMS "Site settings" page).
+import settings from "./content/settings.json";
+
 export const site = {
   name: "Balga Designs",
   tagline: "Sustainable Landscapes",
-  slogan: "Creating sustainable beauty, one garden at a time.",
+  slogan: settings.slogan,
   brandLine: "Balga Designs – Sustainable Landscapes",
-  // Single source of truth for business NAP — schema, footer, sitemap, llms all read this.
+  // NAP source of truth — schema, footer, sitemap, llms all read this. Human-facing
+  // fields come from the CMS (settings.json); the technical SEO fields stay here.
   contact: {
-    address: "Lennox Head, NSW, 2478",
+    address: settings.address,
     addressLocality: "Lennox Head",
     addressRegion: "NSW",
     postalCode: "2478",
     addressCountry: "AU",
     geo: { latitude: -28.7876, longitude: 153.5942 },
-    email: "info@balgadesigns.com.au",
-    phone: "041 373 1670",
-    phoneHref: "tel:0413731670",
+    email: settings.email,
+    phone: settings.phone,
+    phoneHref: "tel:" + settings.phone.replace(/[^\d+]/g, ""),
     phoneE164: "+61413731670",
-    hours: "07.00 AM - 04.00 PM",
+    hours: settings.hours,
     openingHours: { days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], opens: "07:00", closes: "16:00" },
-    serviceArea: "Servicing the Northern Rivers to Southern Gold Coast",
+    serviceArea: settings.serviceArea,
     serviceAreas: ["Lennox Head", "Ballina", "Byron Bay", "Northern Rivers NSW", "Southern Gold Coast QLD"],
   },
   social: {
-    facebook: "https://www.facebook.com/profile.php?id=61572646869008",
-    instagram: "https://www.instagram.com/balgadesigns/",
-    google: "https://share.google/azgjHgEUmjfY9iOT9",
+    facebook: settings.facebook,
+    instagram: settings.instagram,
+    google: settings.google,
   },
   video: {
     youtubeId: "pY_lOt_Yogk",
@@ -35,8 +39,7 @@ export const site = {
     // uploadDate intentionally omitted until the real YouTube publish date is confirmed.
   },
   developer: { name: "Jewell Projects", url: "https://jewellprojects.com/" },
-  acknowledgement:
-    "Balga Designs respectfully acknowledges the Traditional Owners and Custodians of the land on which we work. We honour the Aboriginal and Torres Strait Islander peoples, their connection to land, water, and community, and we pay our respects to their Elders past, present, and emerging. We recognise that this land always was, and always will be, Aboriginal land.",
+  acknowledgement: settings.acknowledgement,
   logos: {
     white: "/assets/branding/logo-white.png",
     mark: "/assets/branding/logo-mark.png",

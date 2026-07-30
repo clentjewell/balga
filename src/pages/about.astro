@@ -6,6 +6,7 @@ import VideoBand from "../components/VideoBand.astro";
 import TestimonialSlider from "../components/TestimonialSlider.astro";
 import CTASection from "../components/CTASection.astro";
 import VideoModal from "../components/VideoModal.astro";
+import about from "../data/content/about.json";
 ---
 <BaseLayout title="About Us | Native Garden Design Studio" description="Meet Balga Designs — passionate advocates for nature creating naturalistic, ecologically rich native gardens across the Northern Rivers and Southern Gold Coast." preloadImage="/assets/about/hero.webp">
   <PageHero title="About Us" image="/assets/about/hero.webp" crumbs={[{ label: "Home", href: "/" }, { label: "About" }]} />
@@ -14,17 +15,17 @@ import VideoModal from "../components/VideoModal.astro";
     <div class="container">
       <div class="about-intro__head reveal">
         <span class="eyebrow">About Us</span>
-        <h2>Rooted in Nature, Driven by Passion</h2>
-        <p class="lead">At Balga Designs, we’re more than just garden designers—we’re passionate advocates for nature. Founded on the principle of creating outdoor spaces that respect and enhance the natural environment, Balga Designs is dedicated to bringing the beauty of the wild into your home. Our journey began with a simple yet powerful idea: to transform gardens into naturalistic havens that support local ecosystems, foster biodiversity, and offer a serene retreat for people and wildlife alike.</p>
+        <h2>{about.heading}</h2>
+        <p class="lead">{about.lead}</p>
       </div>
       <div class="about-intro__cols">
         <div class="reveal">
-          <h4>Our Vision</h4>
-          <p>We envision a world where every garden, regardless of size, serves as a sanctuary for nature. By promoting the use of native and non-invasive species, we aim to reconnect people with the natural beauty of their home garden and surroundings. Our designs are more than just visually appealing, they are a commitment to sustainability, a celebration of local flora, and a contribution to the broader environmental health of our communities.</p>
+          <h4>{about.visionTitle}</h4>
+          <p>{about.visionBody}</p>
         </div>
         <div class="reveal">
-          <h4>Our Approach</h4>
-          <p>At Balga Designs, our approach is holistic and thoughtful. We begin by understanding the unique characteristics of your site, considering its natural features, soil conditions, and existing plant life. This allows us to create sustainable designs that are not only beautiful but also ecologically sound, affordable and easy to maintain. We prioritise the use of native species, which thrive in the local climate and provide essential habitat for wildlife.</p>
+          <h4>{about.approachTitle}</h4>
+          <p>{about.approachBody}</p>
         </div>
       </div>
       <div class="about-intro__imgs reveal">
