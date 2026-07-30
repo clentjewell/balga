@@ -1,0 +1,94 @@
+{
+  "repoNote": "Edit content here. Saves commit to the site repo and go live in ~1–2 minutes.",
+  "collections": [
+    {
+      "name": "projects",
+      "label": "Projects",
+      "labelSingular": "Project",
+      "folder": "src/data/projects",
+      "format": "json",
+      "extension": "json",
+      "create": true,
+      "delete": true,
+      "identifier": "id",
+      "sortField": "order",
+      "summaryField": "title",
+      "mediaFolder": "public/assets/projects/uploads",
+      "fields": [
+        { "name": "id", "label": "ID / filename", "widget": "slug", "hint": "Lowercase, e.g. lennox-courtyard. Cannot be changed after creating." },
+        { "name": "order", "label": "Order", "widget": "number", "default": 99 },
+        { "name": "title", "label": "Title", "widget": "string", "required": true },
+        { "name": "before", "label": "Before image", "widget": "image", "required": true },
+        { "name": "after", "label": "After image", "widget": "image", "required": true },
+        { "name": "beforeAlt", "label": "Before image alt text", "widget": "string", "required": true },
+        { "name": "afterAlt", "label": "After image alt text", "widget": "string", "required": true },
+        { "name": "location", "label": "Location", "widget": "string", "required": false },
+        { "name": "date", "label": "Date", "widget": "string", "required": false, "hint": "e.g. 10-08-2024" },
+        { "name": "description", "label": "Description", "widget": "text", "required": false }
+      ]
+    },
+    {
+      "name": "services",
+      "label": "Services",
+      "labelSingular": "Service",
+      "folder": "src/data/services",
+      "format": "json",
+      "extension": "json",
+      "create": false,
+      "delete": false,
+      "identifier": "slug",
+      "sortField": "order",
+      "summaryField": "title",
+      "mediaFolder": "public/assets/services/uploads",
+      "fields": [
+        { "name": "slug", "label": "Slug", "widget": "slug", "readonly": true },
+        { "name": "order", "label": "Order", "widget": "number" },
+        { "name": "title", "label": "Title", "widget": "string", "required": true },
+        { "name": "description", "label": "Short description (cards)", "widget": "text", "required": true },
+        { "name": "image", "label": "Main image", "widget": "image", "required": true },
+        { "name": "alt", "label": "Main image alt text", "widget": "string", "required": true },
+        { "name": "width", "label": "Image width", "widget": "number" },
+        { "name": "height", "label": "Image height", "widget": "number" },
+        { "name": "relatedProjects", "label": "Related projects (shown on the page)", "widget": "relation", "collection": "projects", "multiple": true },
+        { "name": "contentProject", "label": "Photo project (right-column image)", "widget": "relation", "collection": "projects", "multiple": false },
+        {
+          "name": "detail", "label": "Page detail", "widget": "object", "fields": [
+            { "name": "seoTitle", "label": "SEO title", "widget": "string" },
+            { "name": "metaDescription", "label": "Meta description", "widget": "text" },
+            { "name": "whatItIs", "label": "What it is", "widget": "text" },
+            { "name": "whenYouNeed", "label": "When you need it", "widget": "text" },
+            { "name": "whatsInvolved", "label": "What's involved", "widget": "text" },
+            { "name": "whyBalga", "label": "Why Balga Designs", "widget": "text" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "blog",
+      "label": "Blog posts",
+      "labelSingular": "Blog post",
+      "folder": "src/content/blog",
+      "format": "frontmatter",
+      "extension": "md",
+      "create": true,
+      "delete": true,
+      "identifier": "id",
+      "sortField": "order",
+      "summaryField": "title",
+      "mediaFolder": "public/assets/blog/uploads",
+      "bodyField": "body",
+      "fields": [
+        { "name": "id", "label": "URL slug / filename", "widget": "slug", "hint": "Lowercase, e.g. autumn-native-planting. Becomes /autumn-native-planting/." },
+        { "name": "order", "label": "Order", "widget": "number", "default": 99 },
+        { "name": "title", "label": "Title", "widget": "string", "required": true },
+        { "name": "description", "label": "Meta description", "widget": "text", "required": true },
+        { "name": "excerpt", "label": "Excerpt (blog list)", "widget": "text", "required": true },
+        { "name": "date", "label": "Date (display)", "widget": "string", "required": true, "hint": "e.g. May 8, 2025" },
+        { "name": "dateISO", "label": "Date (ISO)", "widget": "string", "required": true, "hint": "e.g. 2025-05-08" },
+        { "name": "image", "label": "Header image", "widget": "image", "required": true },
+        { "name": "imageAlt", "label": "Header image alt text", "widget": "string", "required": true },
+        { "name": "body", "label": "Article body", "widget": "markdown", "required": true }
+      ]
+    }
+  ]
+}

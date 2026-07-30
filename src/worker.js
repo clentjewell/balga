@@ -6,6 +6,8 @@
  *  - add X-Robots-Tag: noindex, nofollow on the preview (toggle with PREVIEW_NOINDEX=false).
  */
 
+import { handleCms } from "./cms/handler.js";
+
 const SECURITY_HEADERS = {
   "X-Content-Type-Options": "nosniff",
   "X-Frame-Options": "SAMEORIGIN",
@@ -137,6 +139,15 @@ export default {
       for (const [k, v] of Object.entries(SECURITY_HEADERS)) headers.set(k, v);
       headers.set("Cache-Control", "no-store");
       if ((env.PREVIEW_NOINDEX ?? "true") !== "false") headers.set("X-Robots-Tag", "noindex, nofollow");
+      return new Response(res.body, { status: res.status, headers });
+    }
+
+    // Custom CMS backend (auth + GitHub commits). Admin UI is served as a static asset at /admin/.
+    if (url.pathname.startsWith("/cms-api/")) {
+      const res = await handleCms(request, env);
+      const headers = new Headers(res.headers);
+      for (const [k, v] of Object.entries(SECURITY_HEADERS)) headers.set(k, v);
+      headers.set("X-Robots-Tag", "noindex, nofollow");
       return new Response(res.body, { status: res.status, headers });
     }
 

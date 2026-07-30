@@ -13,7 +13,12 @@
   "vars": {
     // Preview clone: block search-engine indexing. Set to "false" (or override
     // per-environment) to allow indexing on a production domain.
-    "PREVIEW_NOINDEX": "true"
+    "PREVIEW_NOINDEX": "true",
+    // CMS commit target (the branch the site deploys from). Secrets CMS_EMAIL,
+    // CMS_PASSWORD, CMS_SESSION_SECRET and GITHUB_TOKEN are set with `wrangler secret put`.
+    "GH_OWNER": "clentjewell",
+    "GH_REPO": "balga",
+    "GH_BRANCH": "claude/balga-designs-static-rebuild-vbvcqa"
   },
   "observability": {
     "enabled": true

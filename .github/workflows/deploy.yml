@@ -1,0 +1,34 @@
+name: Build & Deploy
+
+# Auto-builds and deploys to Cloudflare on every content commit (e.g. a CMS save),
+# so an edit is live in ~1–2 minutes. Requires repo secret CLOUDFLARE_API_TOKEN
+# (Workers Scripts: Edit + Workers R2/Assets) and CLOUDFLARE_ACCOUNT_ID.
+on:
+  push:
+    branches:
+      - claude/balga-designs-static-rebuild-vbvcqa
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm run audit
+      - name: Deploy to Cloudflare
+        if: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy
