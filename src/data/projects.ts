@@ -11,77 +11,24 @@ export interface Project {
   description?: string;
 }
 
-// Seven before/after pairs, in the order shown on /projects/.
-export const projects: Project[] = [
-  {
-    id: "project-01",
-    title: "Kingsley Project: A Benchmark in Sustainable Landscaping Design",
-    before: "/assets/projects/project-01/before.webp",
-    after: "/assets/projects/project-01/after.webp",
-    beforeAlt: "Kingsley project site before landscaping",
-    afterAlt: "Kingsley project after sustainable landscaping",
-    location: "Northern Rivers",
-    service: "Gardening",
-    date: "10-08-2024",
-    description:
-      "The Kingsley Project in Byron Bay, NSW sets a new benchmark for sustainable and contemporary landscaping design. Explore how this innovative project seamlessly integrates eco-friendly elements with modern aesthetics to create a harmonious living space that perfectly complements its surroundings.",
-  },
-  {
-    id: "project-02",
-    title: "Bangalow Backyard Transformation",
-    before: "/assets/projects/project-02/before.webp",
-    after: "/assets/projects/project-02/after.webp",
-    beforeAlt: "Bangalow backyard before transformation",
-    afterAlt: "Bangalow backyard after transformation",
-    location: "Northern Rivers",
-    service: "Gardening",
-    date: "10-08-2024",
-    description:
-      "Through meticulous planning and execution, we transformed this Bangalow backyard outdoor space into a breathtaking oasis that harmonises with the area’s natural beauty.",
-  },
-  {
-    id: "project-03",
-    title: "Native Garden Renewal",
-    before: "/assets/projects/project-03/before.webp",
-    after: "/assets/projects/project-03/after.webp",
-    beforeAlt: "Garden before native planting renewal",
-    afterAlt: "Garden after native planting renewal",
-  },
-  {
-    id: "project-04",
-    title: "Coastal Courtyard Makeover",
-    before: "/assets/projects/project-04/before.webp",
-    after: "/assets/projects/project-04/after.webp",
-    beforeAlt: "Coastal courtyard before makeover",
-    afterAlt: "Coastal courtyard after makeover",
-  },
-  {
-    id: "project-05",
-    title: "Sloping Block Revival",
-    before: "/assets/projects/project-05/before.webp",
-    after: "/assets/projects/project-05/after.webp",
-    beforeAlt: "Sloping block before revival",
-    afterAlt: "Sloping block after revival",
-  },
-  {
-    id: "project-06",
-    title: "Front Garden Refresh",
-    before: "/assets/projects/project-06/before.webp",
-    after: "/assets/projects/project-06/after.webp",
-    beforeAlt: "Front garden before refresh",
-    afterAlt: "Front garden after refresh",
-  },
-  {
-    id: "project-07",
-    title: "Regenerative Landscape",
-    before: "/assets/projects/project-07/before.webp",
-    after: "/assets/projects/project-07/after.webp",
-    beforeAlt: "Regenerative landscape before works",
-    afterAlt: "Regenerative landscape after works",
-  },
-];
+// Projects are stored as one JSON file per project in ./projects/ so the CMS can
+// add / edit / delete them. Astro loads them all at build via import.meta.glob.
+type ProjectFile = Omit<Project, "id"> & { order?: number };
+const modules = import.meta.glob<ProjectFile>("./projects/*.json", { eager: true, import: "default" });
 
-// Home / Services projects-preview trio.
+export const projects: Project[] = Object.entries(modules)
+  .map(([path, data]) => {
+    const id = path.split("/").pop()!.replace(/\.json$/, "");
+    const { order, ...rest } = data as ProjectFile;
+    return { id, ...rest } as Project;
+  })
+  .sort((a, b) => {
+    const oa = (modules[`./projects/${a.id}.json`] as ProjectFile)?.order ?? 0;
+    const ob = (modules[`./projects/${b.id}.json`] as ProjectFile)?.order ?? 0;
+    return oa - ob;
+  });
+
+// Home / Services projects-preview trio (curated showcase — not CMS-managed).
 export const projectsPreview: Project[] = [
   {
     id: "preview-01",

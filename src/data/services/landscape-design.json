@@ -1,0 +1,24 @@
+{
+  "order": 1,
+  "slug": "landscape-design",
+  "relatedProjects": [
+    "project-01",
+    "project-02",
+    "project-07"
+  ],
+  "contentProject": "project-03",
+  "title": "Landscape Design",
+  "description": "Custom designs that blend aesthetic appeal with environmental consciousness.",
+  "image": "/assets/services/landscape-design.webp",
+  "alt": "Detailed landscape design plan for a native Australian garden",
+  "width": 800,
+  "height": 750,
+  "detail": {
+    "seoTitle": "Landscape Design | Native Garden Design",
+    "metaDescription": "Custom native landscape design across the Northern Rivers to Southern Gold Coast — water-wise, low-maintenance gardens from $2,500 with Balga Designs.",
+    "whatItIs": "A custom landscape design that blends aesthetic appeal with environmental consciousness, tailored to your space and your local ecosystem.",
+    "whenYouNeed": "When you want to reimagine a whole garden — a new outdoor area, a tired yard, or a blank canvas you want done thoughtfully and sustainably from the ground up.",
+    "whatsInvolved": "Our design packages range from the Small NativeScapes Package at $2,500 (small spaces up to about 40 m² within 30 km of Lennox Head — including an onsite assessment, mood-board, materials palette, tailored plant list, one revision round and 15 hours of install labour) through to the Complete Design Package at $4,500 for new builds and renovations, which can be staged over time. It all starts with a free consultation.",
+    "whyBalga": "We create naturalistic native gardens that are water-wise, low-maintenance and rooted in Country — beautiful spaces that also support the health of the land they sit on."
+  }
+}

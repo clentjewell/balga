@@ -1,0 +1,23 @@
+{
+  "order": 6,
+  "slug": "horticulture-consultation",
+  "relatedProjects": [
+    "project-07",
+    "project-03"
+  ],
+  "contentProject": "project-05",
+  "title": "Horticulture Consultation",
+  "description": "Expert advice on plant selection, soil health, and sustainable gardening practices.",
+  "image": "/assets/services/horticulture.webp",
+  "alt": "Established native garden bed",
+  "width": 1000,
+  "height": 750,
+  "detail": {
+    "seoTitle": "Horticulture Consultation | Plants & Soil",
+    "metaDescription": "Expert plant selection, soil health and sustainable gardening advice from Balga Designs — garden with confidence across the Northern Rivers to Southern Gold Coast.",
+    "whatItIs": "Expert advice on plant selection, soil health and sustainable gardening practices.",
+    "whenYouNeed": "When you want to garden with confidence — choosing the right plants, improving your soil, and adopting sustainable habits — without necessarily commissioning a full design.",
+    "whatsInvolved": "A consultation focused on your plants, soil and goals. Book a free consultation and we will tailor the advice to your garden.",
+    "whyBalga": "Our advice is grounded in local knowledge and ecological thinking, so your garden thrives naturally and sustainably."
+  }
+}
