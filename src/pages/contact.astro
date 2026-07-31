@@ -19,8 +19,8 @@ const info = [
   { label: "Service Area", value: "Serving Northern Rivers to Southern Gold Coast", icon: map },
 ];
 ---
-<BaseLayout title="Contact Us | Garden Design Consultation" description="Ready to transform your outdoor space? Contact Balga Designs for sustainable native garden design across the Northern Rivers to Southern Gold Coast." preloadImage="/assets/home/hero/balga-designs-garden.webp">
-  <PageHero title="Contact Us" image="/assets/home/hero/balga-designs-garden.webp" crumbs={[{ label: "Home", href: "/" }, { label: "Contact" }]} />
+<BaseLayout title="Contact Us | Garden Design Consultation" description="Ready to transform your outdoor space? Contact Balga Designs for sustainable native garden design across the Northern Rivers to Southern Gold Coast." preloadImage={contact.heroImage}>
+  <PageHero title={contact.heroTitle} image={contact.heroImage} crumbs={[{ label: "Home", href: "/" }, { label: "Contact" }]} />
 
   <section class="section section--white">
     <div class="container contact-grid">

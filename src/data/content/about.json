@@ -1,8 +1,14 @@
 {
+  "heroTitle": "About Us",
+  "heroImage": "/assets/about/hero.webp",
   "heading": "Rooted in Nature, Driven by Passion",
   "lead": "At Balga Designs, we’re more than just garden designers—we’re passionate advocates for nature. Founded on the principle of creating outdoor spaces that respect and enhance the natural environment, Balga Designs is dedicated to bringing the beauty of the wild into your home. Our journey began with a simple yet powerful idea: to transform gardens into naturalistic havens that support local ecosystems, foster biodiversity, and offer a serene retreat for people and wildlife alike.",
   "visionTitle": "Our Vision",
   "visionBody": "We envision a world where every garden, regardless of size, serves as a sanctuary for nature. By promoting the use of native and non-invasive species, we aim to reconnect people with the natural beauty of their home garden and surroundings. Our designs are more than just visually appealing, they are a commitment to sustainability, a celebration of local flora, and a contribution to the broader environmental health of our communities.",
   "approachTitle": "Our Approach",
-  "approachBody": "At Balga Designs, our approach is holistic and thoughtful. We begin by understanding the unique characteristics of your site, considering its natural features, soil conditions, and existing plant life. This allows us to create sustainable designs that are not only beautiful but also ecologically sound, affordable and easy to maintain. We prioritise the use of native species, which thrive in the local climate and provide essential habitat for wildlife."
+  "approachBody": "At Balga Designs, our approach is holistic and thoughtful. We begin by understanding the unique characteristics of your site, considering its natural features, soil conditions, and existing plant life. This allows us to create sustainable designs that are not only beautiful but also ecologically sound, affordable and easy to maintain. We prioritise the use of native species, which thrive in the local climate and provide essential habitat for wildlife.",
+  "image1": "/assets/about/fire.webp",
+  "image1Alt": "Evening fire pit in a landscaped native garden",
+  "image2": "/assets/about/evening-view.webp",
+  "image2Alt": "Misty evening view over water at a Balga Designs landscape"
 }

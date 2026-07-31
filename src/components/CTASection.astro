@@ -1,5 +1,6 @@
 ---
 import { site } from "../data/site";
+import { defaultCta } from "../data/content";
 export interface CTAButton { label: string; href: string; variant?: string; }
 export interface Props {
   title?: string;
@@ -7,9 +8,9 @@ export interface Props {
   image?: string;
 }
 const {
-  title = "Beautiful Landscapes Start Here",
+  title = defaultCta.title,
   buttons = [{ label: "Contact Us", href: "/contact/", variant: "btn--outline-light" }],
-  image = "/assets/home/cta-start-project.webp",
+  image = defaultCta.image,
 } = Astro.props;
 ---
 <section class="cta" style={`--cta-img: url('${image}')`}>

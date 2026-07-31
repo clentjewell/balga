@@ -87,6 +87,21 @@
               "widget": "text"
             },
             {
+              "name": "heroImage1",
+              "label": "Hero — slide 1 image",
+              "widget": "image"
+            },
+            {
+              "name": "heroImage2",
+              "label": "Hero — slide 2 image",
+              "widget": "image"
+            },
+            {
+              "name": "heroImage3",
+              "label": "Hero — slide 3 image",
+              "widget": "image"
+            },
+            {
               "name": "aboutHeading",
               "label": "About — heading",
               "widget": "string"
@@ -100,6 +115,148 @@
               "name": "aboutPara2",
               "label": "About — paragraph 2",
               "widget": "text"
+            },
+            {
+              "name": "aboutImage1",
+              "label": "About — photo 1",
+              "widget": "image"
+            },
+            {
+              "name": "aboutImage1Alt",
+              "label": "About — photo 1 alt text",
+              "widget": "string"
+            },
+            {
+              "name": "aboutImage2",
+              "label": "About — photo 2",
+              "widget": "image"
+            },
+            {
+              "name": "aboutImage2Alt",
+              "label": "About — photo 2 alt text",
+              "widget": "string"
+            }
+          ]
+        },
+        {
+          "name": "sections",
+          "label": "Shared sections (Why choose / How we work / Video / CTA / Hero cards)",
+          "path": "src/data/content/sections.json",
+          "format": "json",
+          "fields": [
+            {
+              "name": "whyChooseEyebrow",
+              "label": "Why choose us — eyebrow",
+              "widget": "string"
+            },
+            {
+              "name": "whyChooseTitle",
+              "label": "Why choose us — title",
+              "widget": "string"
+            },
+            {
+              "name": "whyChooseIntro",
+              "label": "Why choose us — intro",
+              "widget": "text"
+            },
+            {
+              "name": "whyChooseImage",
+              "label": "Why choose us — photo",
+              "widget": "image"
+            },
+            {
+              "name": "whyChooseImageAlt",
+              "label": "Why choose us — photo alt text",
+              "widget": "string"
+            },
+            {
+              "name": "whyChoosePillars",
+              "label": "Why choose us — pillars",
+              "widget": "list",
+              "addLabel": "pillar",
+              "fields": [
+                {
+                  "name": "title",
+                  "label": "Title",
+                  "widget": "string"
+                },
+                {
+                  "name": "text",
+                  "label": "Text",
+                  "widget": "text"
+                }
+              ]
+            },
+            {
+              "name": "howWeWorkEyebrow",
+              "label": "How we work — eyebrow",
+              "widget": "string"
+            },
+            {
+              "name": "howWeWorkSteps",
+              "label": "How we work — steps",
+              "widget": "list",
+              "addLabel": "step",
+              "fields": [
+                {
+                  "name": "title",
+                  "label": "Title",
+                  "widget": "string"
+                },
+                {
+                  "name": "text",
+                  "label": "Text",
+                  "widget": "text"
+                }
+              ]
+            },
+            {
+              "name": "videoBandEyebrow",
+              "label": "Video band — eyebrow",
+              "widget": "string"
+            },
+            {
+              "name": "videoBandTitle",
+              "label": "Video band — title",
+              "widget": "string"
+            },
+            {
+              "name": "videoBandImage",
+              "label": "Video band — background image",
+              "widget": "image"
+            },
+            {
+              "name": "ctaTitle",
+              "label": "Call-to-action — title",
+              "widget": "string"
+            },
+            {
+              "name": "ctaImage",
+              "label": "Call-to-action — background image",
+              "widget": "image"
+            },
+            {
+              "name": "heroFeatures",
+              "label": "Home hero feature cards",
+              "widget": "list",
+              "addLabel": "card",
+              "fields": [
+                {
+                  "name": "title",
+                  "label": "Title",
+                  "widget": "string"
+                },
+                {
+                  "name": "text",
+                  "label": "Text",
+                  "widget": "text"
+                },
+                {
+                  "name": "icon",
+                  "label": "Icon",
+                  "widget": "image"
+                }
+              ]
             }
           ]
         },
@@ -109,6 +266,16 @@
           "path": "src/data/content/about.json",
           "format": "json",
           "fields": [
+            {
+              "name": "heroTitle",
+              "label": "Hero — title",
+              "widget": "string"
+            },
+            {
+              "name": "heroImage",
+              "label": "Hero — background image",
+              "widget": "image"
+            },
             {
               "name": "heading",
               "label": "Heading",
@@ -138,6 +305,26 @@
               "name": "approachBody",
               "label": "Approach — body",
               "widget": "text"
+            },
+            {
+              "name": "image1",
+              "label": "Photo 1",
+              "widget": "image"
+            },
+            {
+              "name": "image1Alt",
+              "label": "Photo 1 alt text",
+              "widget": "string"
+            },
+            {
+              "name": "image2",
+              "label": "Photo 2",
+              "widget": "image"
+            },
+            {
+              "name": "image2Alt",
+              "label": "Photo 2 alt text",
+              "widget": "string"
             }
           ]
         },
@@ -147,6 +334,16 @@
           "path": "src/data/content/contact.json",
           "format": "json",
           "fields": [
+            {
+              "name": "heroTitle",
+              "label": "Hero — title",
+              "widget": "string"
+            },
+            {
+              "name": "heroImage",
+              "label": "Hero — background image",
+              "widget": "image"
+            },
             {
               "name": "eyebrow",
               "label": "Eyebrow",
@@ -166,6 +363,180 @@
               "name": "lead2",
               "label": "Lead line 2",
               "widget": "text"
+            }
+          ]
+        },
+        {
+          "name": "services-page",
+          "label": "Services page",
+          "path": "src/data/content/services.json",
+          "format": "json",
+          "fields": [
+            {
+              "name": "heroTitle",
+              "label": "Hero — title",
+              "widget": "string"
+            },
+            {
+              "name": "heroImage",
+              "label": "Hero — background image",
+              "widget": "image"
+            },
+            {
+              "name": "headEyebrow",
+              "label": "Section eyebrow",
+              "widget": "string"
+            },
+            {
+              "name": "headTitle",
+              "label": "Section heading",
+              "widget": "string"
+            }
+          ]
+        },
+        {
+          "name": "projects-page",
+          "label": "Projects page",
+          "path": "src/data/content/projects.json",
+          "format": "json",
+          "fields": [
+            {
+              "name": "heroTitle",
+              "label": "Hero — title",
+              "widget": "string"
+            },
+            {
+              "name": "heroImage",
+              "label": "Hero — background image",
+              "widget": "image"
+            },
+            {
+              "name": "headEyebrow",
+              "label": "Section eyebrow",
+              "widget": "string"
+            },
+            {
+              "name": "headTitle",
+              "label": "Section heading",
+              "widget": "string"
+            },
+            {
+              "name": "faqTitle",
+              "label": "FAQ section heading",
+              "widget": "string"
+            }
+          ]
+        },
+        {
+          "name": "pricing-page",
+          "label": "Pricing page",
+          "path": "src/data/content/pricing.json",
+          "format": "json",
+          "mediaFolder": "public/assets/pricing/uploads",
+          "fields": [
+            {
+              "name": "heroTitle",
+              "label": "Hero — title",
+              "widget": "string"
+            },
+            {
+              "name": "heroImage",
+              "label": "Hero — background image",
+              "widget": "image"
+            },
+            {
+              "name": "headEyebrow",
+              "label": "Section eyebrow",
+              "widget": "string"
+            },
+            {
+              "name": "headTitle",
+              "label": "Section heading",
+              "widget": "string"
+            },
+            {
+              "name": "faqTitle",
+              "label": "FAQ section heading",
+              "widget": "string"
+            },
+            {
+              "name": "faqImage",
+              "label": "FAQ section background image",
+              "widget": "image"
+            },
+            {
+              "name": "ctaImage",
+              "label": "Call-to-action background image",
+              "widget": "image"
+            }
+          ]
+        },
+        {
+          "name": "blog-page",
+          "label": "Blog page",
+          "path": "src/data/content/blog.json",
+          "format": "json",
+          "mediaFolder": "public/assets/blog/uploads",
+          "fields": [
+            {
+              "name": "heroTitle",
+              "label": "Hero — title",
+              "widget": "string"
+            },
+            {
+              "name": "heroImage",
+              "label": "Hero — background image",
+              "widget": "image"
+            },
+            {
+              "name": "introEyebrow",
+              "label": "Intro — eyebrow",
+              "widget": "string"
+            },
+            {
+              "name": "introTitle",
+              "label": "Intro — heading",
+              "widget": "string"
+            },
+            {
+              "name": "introText",
+              "label": "Intro — text",
+              "widget": "text"
+            },
+            {
+              "name": "ctaTitle",
+              "label": "Call-to-action — title",
+              "widget": "string"
+            },
+            {
+              "name": "ctaImage",
+              "label": "Call-to-action — background image",
+              "widget": "image"
+            }
+          ]
+        },
+        {
+          "name": "faqs-page",
+          "label": "FAQ page",
+          "path": "src/data/content/faqs.json",
+          "format": "json",
+          "mediaFolder": "public/assets/pricing/uploads",
+          "fields": [
+            {
+              "name": "heroTitle",
+              "label": "Hero — title",
+              "widget": "string"
+            },
+            {
+              "name": "heroImage",
+              "label": "Hero — background image",
+              "widget": "image"
+            },
+            {
+              "name": "intro",
+              "label": "Intro paragraph (supports links)",
+              "widget": "text",
+              "hint": "You can include a link like: <a href=\"/contact/\">Get in touch</a>"
             }
           ]
         }

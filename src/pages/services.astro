@@ -6,6 +6,7 @@ import ProjectsPreview from "../components/ProjectsPreview.astro";
 import WhyChooseUs from "../components/WhyChooseUs.astro";
 import TestimonialSlider from "../components/TestimonialSlider.astro";
 import { services } from "../data/services";
+import page from "../data/content/services.json";
 
 const siteUrl = Astro.site?.toString().replace(/\/$/, "") ?? "";
 const serviceSchema = {
@@ -25,15 +26,15 @@ const serviceSchema = {
   },
 };
 ---
-<BaseLayout title="Garden & Landscaping Services" description="Total care for your garden: native landscape design, garden facelifts, planting, pest and weed management and horticulture advice across the Northern Rivers." preloadImage="/assets/services/hero.webp">
-  <PageHero title="Services" image="/assets/services/hero.webp" crumbs={[{ label: "Home", href: "/" }, { label: "Services" }]} />
+<BaseLayout title="Garden & Landscaping Services" description="Total care for your garden: native landscape design, garden facelifts, planting, pest and weed management and horticulture advice across the Northern Rivers." preloadImage={page.heroImage}>
+  <PageHero title={page.heroTitle} image={page.heroImage} crumbs={[{ label: "Home", href: "/" }, { label: "Services" }]} />
   <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} is:inline />
 
   <section class="section section--white">
     <div class="container">
       <div class="svc-head reveal">
-        <span class="eyebrow">Our Services</span>
-        <h2>Total Care For Your Garden</h2>
+        <span class="eyebrow">{page.headEyebrow}</span>
+        <h2>{page.headTitle}</h2>
       </div>
       <div class="svc-grid">
         {services.map((s) => <ServiceCard service={s} />)}

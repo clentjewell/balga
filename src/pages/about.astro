@@ -8,8 +8,8 @@ import CTASection from "../components/CTASection.astro";
 import VideoModal from "../components/VideoModal.astro";
 import about from "../data/content/about.json";
 ---
-<BaseLayout title="About Us | Native Garden Design Studio" description="Meet Balga Designs — passionate advocates for nature creating naturalistic, ecologically rich native gardens across the Northern Rivers and Southern Gold Coast." preloadImage="/assets/about/hero.webp">
-  <PageHero title="About Us" image="/assets/about/hero.webp" crumbs={[{ label: "Home", href: "/" }, { label: "About" }]} />
+<BaseLayout title="About Us | Native Garden Design Studio" description="Meet Balga Designs — passionate advocates for nature creating naturalistic, ecologically rich native gardens across the Northern Rivers and Southern Gold Coast." preloadImage={about.heroImage}>
+  <PageHero title={about.heroTitle} image={about.heroImage} crumbs={[{ label: "Home", href: "/" }, { label: "About" }]} />
 
   <section class="section section--mint about-intro">
     <div class="container">
@@ -29,16 +29,16 @@ import about from "../data/content/about.json";
         </div>
       </div>
       <div class="about-intro__imgs reveal">
-        <img src="/assets/about/fire.webp" alt="Evening fire pit in a landscaped native garden" width="714" height="1102" loading="lazy" />
-        <img src="/assets/about/evening-view.webp" alt="Misty evening view over water at a Balga Designs landscape" width="900" height="1102" loading="lazy" />
+        <img src={about.image1} alt={about.image1Alt} width="714" height="1102" loading="lazy" />
+        <img src={about.image2} alt={about.image2Alt} width="900" height="1102" loading="lazy" />
       </div>
     </div>
   </section>
 
   <HowWeWork />
-  <VideoBand image="/assets/home/sunset.webp" eyebrow="Why Balga Designs" title="We Treat Your Garden Like Our Own" />
+  <VideoBand />
   <TestimonialSlider count={5} />
-  <CTASection title="Beautiful Landscapes Start Here" image="/assets/home/cta-start-project.webp" />
+  <CTASection />
   <VideoModal />
 </BaseLayout>
 

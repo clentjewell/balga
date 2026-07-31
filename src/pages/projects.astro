@@ -7,15 +7,16 @@ import FAQAccordion from "../components/FAQAccordion.astro";
 import VideoModal from "../components/VideoModal.astro";
 import { projects } from "../data/projects";
 import { faqsByCategory } from "../data/faqs";
+import page from "../data/content/projects.json";
 ---
-<BaseLayout title="Garden Projects & Transformations" description="Explore Balga Designs before-and-after garden transformations across the Northern Rivers — sustainable, contemporary native landscaping built to thrive." preloadImage="/assets/projects/hero.webp">
-  <PageHero title="Projects" image="/assets/projects/hero.webp" crumbs={[{ label: "Home", href: "/" }, { label: "Projects" }]} />
+<BaseLayout title="Garden Projects & Transformations" description="Explore Balga Designs before-and-after garden transformations across the Northern Rivers — sustainable, contemporary native landscaping built to thrive." preloadImage={page.heroImage}>
+  <PageHero title={page.heroTitle} image={page.heroImage} crumbs={[{ label: "Home", href: "/" }, { label: "Projects" }]} />
 
   <section class="section section--mint">
     <div class="container">
       <div class="proj-head reveal">
-        <span class="eyebrow">How we work</span>
-        <h2>Come Home to Paradise</h2>
+        <span class="eyebrow">{page.headEyebrow}</span>
+        <h2>{page.headTitle}</h2>
       </div>
       <div class="proj-grid">
         {projects.map((p, i) => (
@@ -33,9 +34,9 @@ import { faqsByCategory } from "../data/faqs";
     </div>
   </section>
 
-  <VideoBand image="/assets/home/sunset.webp" eyebrow="Why Balga Designs" title="We Treat Your Garden Like Our Own" />
+  <VideoBand />
 
-  <FAQAccordion id="faqs" title="Common Questions" items={faqsByCategory(["Timing & process", "Service area"])} schema={false} viewAllHref="/faqs/" />
+  <FAQAccordion id="faqs" title={page.faqTitle} items={faqsByCategory(["Timing & process", "Service area"])} schema={false} viewAllHref="/faqs/" />
   <VideoModal />
 </BaseLayout>
 

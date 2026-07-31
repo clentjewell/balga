@@ -1,0 +1,53 @@
+{
+  "whyChooseEyebrow": "Why Choose Us",
+  "whyChooseTitle": "We Treat Your Garden Like Our Own",
+  "whyChooseIntro": "Our designs are not just about aesthetics; they are about creating spaces that feel alive, that breathe with the rhythm of the natural world.",
+  "whyChooseImage": "/assets/home/margarida.webp",
+  "whyChooseImageAlt": "Margarida, the landscape designer behind Balga Designs, planting in a garden",
+  "whyChoosePillars": [
+    {
+      "title": "Personal Expertise",
+      "text": "With years of hands-on experience, I bring a personal touch and deep knowledge to every garden design project."
+    },
+    {
+      "title": "Dedicated Approach",
+      "text": "As the sole creator behind Balga Designs, I work closely with each client to ensure every garden is uniquely tailored to their needs."
+    },
+    {
+      "title": "Passion for Sustainability",
+      "text": "I am committed to sustainable practices, designing gardens that not only look beautiful but also support the local ecosystem."
+    }
+  ],
+  "howWeWorkEyebrow": "How we work",
+  "howWeWorkSteps": [
+    {
+      "title": "Consultation",
+      "text": "We begin by understanding your garden’s unique qualities and vision, ensuring the design harmonises with the natural ecosystem."
+    },
+    {
+      "title": "Planning",
+      "text": "We craft a detailed plan, blending aesthetic beauty with sustainable practices to create a garden that thrives long-term."
+    },
+    {
+      "title": "Execution",
+      "text": "We carefully bring the design to life using eco-friendly materials and methods, ensuring lasting beauty and sustainability."
+    }
+  ],
+  "videoBandEyebrow": "Why Balga Designs",
+  "videoBandTitle": "We Treat Your Garden Like Our Own",
+  "videoBandImage": "/assets/home/sunset.webp",
+  "ctaTitle": "Beautiful Landscapes Start Here",
+  "ctaImage": "/assets/home/cta-start-project.webp",
+  "heroFeatures": [
+    {
+      "title": "Gardens",
+      "text": "Sustainable, nature-inspired garden transformations.",
+      "icon": "/assets/icons/icon1.png"
+    },
+    {
+      "title": "Designing",
+      "text": "Affordable garden designs with a focus on Native plants.",
+      "icon": "/assets/icons/icon3.png"
+    }
+  ]
+}

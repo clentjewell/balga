@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import PageHero from "../components/PageHero.astro";
 import CTASection from "../components/CTASection.astro";
 import { faqs, faqCategories } from "../data/faqs";
+import page from "../data/content/faqs.json";
 
 const groups = faqCategories
   .map((cat) => ({ cat, items: faqs.filter((f) => f.category === cat) }))
@@ -21,14 +22,14 @@ const jsonLd = {
 <BaseLayout
   title="FAQs | Native Garden Design Questions"
   description="Answers to common questions about native garden design with Balga Designs — cost, packages, timing, service areas, sustainability and payment."
-  preloadImage="/assets/pricing/faqs-bg.webp"
+  preloadImage={page.heroImage}
 >
-  <PageHero title="Frequently Asked Questions" image="/assets/pricing/faqs-bg.webp" crumbs={[{ label: "Home", href: "/" }, { label: "FAQs" }]} />
+  <PageHero title={page.heroTitle} image={page.heroImage} crumbs={[{ label: "Home", href: "/" }, { label: "FAQs" }]} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
 
   <section class="section section--white">
     <div class="container container-narrow">
-      <p class="faqp__intro reveal">Everything you might want to know about working with Balga Designs — from cost and packages to timing, the areas we serve, and how we keep gardens sustainable. Can't find your answer? <a href="/contact/">Get in touch</a> and we'll help.</p>
+      <p class="faqp__intro reveal" set:html={page.intro} />
 
       {groups.map((g) => (
         <div class="faqp__group reveal">
@@ -51,7 +52,7 @@ const jsonLd = {
     </div>
   </section>
 
-  <CTASection title="Beautiful Landscapes Start Here" />
+  <CTASection />
 </BaseLayout>
 
 <style>

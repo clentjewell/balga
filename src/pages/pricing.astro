@@ -8,6 +8,7 @@ import CTASection from "../components/CTASection.astro";
 import VideoModal from "../components/VideoModal.astro";
 import { packages } from "../data/pricing";
 import { faqsByCategory } from "../data/faqs";
+import page from "../data/content/pricing.json";
 
 const siteUrl = Astro.site?.toString().replace(/\/$/, "") ?? "";
 const priceNum = (s: string) => s.replace(/[^0-9.]/g, "");
@@ -28,15 +29,15 @@ const offerSchema = {
   })),
 };
 ---
-<BaseLayout title="Garden Design Pricing & Packages" description="Transparent pricing from Balga Designs — four native garden design packages, from Small NativeScapes to the Complete Design Package. Find your plan." preloadImage="/assets/pricing/hero.webp">
-  <PageHero title="Pricing Plans" image="/assets/pricing/hero.webp" crumbs={[{ label: "Home", href: "/" }, { label: "Pricing" }]} />
+<BaseLayout title="Garden Design Pricing & Packages" description="Transparent pricing from Balga Designs — four native garden design packages, from Small NativeScapes to the Complete Design Package. Find your plan." preloadImage={page.heroImage}>
+  <PageHero title={page.heroTitle} image={page.heroImage} crumbs={[{ label: "Home", href: "/" }, { label: "Pricing" }]} />
   <script type="application/ld+json" set:html={JSON.stringify(offerSchema)} is:inline />
 
   <section class="section section--white">
     <div class="container">
       <div class="price-head reveal">
-        <span class="eyebrow">Pricing</span>
-        <h2>Choose Your Plan</h2>
+        <span class="eyebrow">{page.headEyebrow}</span>
+        <h2>{page.headTitle}</h2>
       </div>
 
       <div class="price-grid">
@@ -69,10 +70,10 @@ const offerSchema = {
     </div>
   </section>
 
-  <VideoBand image="/assets/home/sunset.webp" eyebrow="Why Balga Designs" title="We Treat Your Garden Like Our Own" />
+  <VideoBand />
   <TestimonialSlider count={5} />
-  <FAQAccordion id="faqs" title="Pricing FAQs" image="/assets/pricing/faqs-bg.webp" items={faqsByCategory(["Cost & packages", "Payment"])} schema={false} viewAllHref="/faqs/" />
-  <CTASection title="Beautiful Landscapes Start Here" image="/assets/pricing/cta-footer.webp" />
+  <FAQAccordion id="faqs" title={page.faqTitle} image={page.faqImage} items={faqsByCategory(["Cost & packages", "Payment"])} schema={false} viewAllHref="/faqs/" />
+  <CTASection image={page.ctaImage} />
   <VideoModal />
 </BaseLayout>
 

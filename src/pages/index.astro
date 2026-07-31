@@ -13,14 +13,14 @@ import home from "../data/content/home.json";
 <BaseLayout
   title="Balga Designs | Native & Sustainable Garden Design"
   description="Balga Designs creates beautiful, regenerative native gardens from the Northern Rivers to the Southern Gold Coast — sustainable design that works with nature."
-  preloadImage="/assets/home/hero/balga-designs-garden.webp"
+  preloadImage={home.heroImage1}
 >
   <!-- HERO -->
   <section class="hero">
     <div class="hero__slideshow" aria-hidden="true">
-      <div class="hero__slide" style="--img:url('/assets/home/hero/balga-designs-garden.webp')"></div>
-      <div class="hero__slide" data-hero-img="url('/assets/home/hero/balga-designs.webp')"></div>
-      <div class="hero__slide" data-hero-img="url('/assets/home/hero/balga-design-work.webp')"></div>
+      <div class="hero__slide" style={`--img:url('${home.heroImage1}')`}></div>
+      <div class="hero__slide" data-hero-img={`url('${home.heroImage2}')`}></div>
+      <div class="hero__slide" data-hero-img={`url('${home.heroImage3}')`}></div>
     </div>
     <div class="hero__overlay" aria-hidden="true"></div>
     <div class="container hero__inner">
@@ -69,8 +69,8 @@ import home from "../data/content/home.json";
         <a href="/about/" class="btn btn--primary home-about__btn">Read More</a>
       </div>
       <div class="home-about__imgs reveal">
-        <img src="/assets/home/feature-1.webp" alt="Native garden with a water feature and yellow wildflowers" width="1000" height="750" loading="lazy" />
-        <img src="/assets/home/feature-2.webp" alt="Stone water bowl set among native grasses" width="1000" height="750" loading="lazy" />
+        <img src={home.aboutImage1} alt={home.aboutImage1Alt} width="1000" height="750" loading="lazy" />
+        <img src={home.aboutImage2} alt={home.aboutImage2Alt} width="1000" height="750" loading="lazy" />
       </div>
     </div>
   </section>
@@ -91,7 +91,7 @@ import home from "../data/content/home.json";
   <WhyChooseUs />
   <HowWeWork />
   <ProjectsPreview />
-  <CTASection title="Beautiful Landscapes Start Here" />
+  <CTASection />
   <VideoModal />
 </BaseLayout>
 

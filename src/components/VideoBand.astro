@@ -1,13 +1,14 @@
 ---
+import { videoBand } from "../data/content";
 export interface Props {
   image?: string;
   eyebrow?: string;
   title?: string;
 }
 const {
-  image = "/assets/home/sunset.webp",
-  eyebrow = "Why Balga Designs",
-  title = "We Treat Your Garden Like Our Own",
+  image = videoBand.image,
+  eyebrow = videoBand.eyebrow,
+  title = videoBand.title,
 } = Astro.props;
 ---
 <section class="videoband" style={`--vb-img:url('${image}')`}>
