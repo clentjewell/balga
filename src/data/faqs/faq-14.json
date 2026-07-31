@@ -1,0 +1,9 @@
+{
+  "order": 14,
+  "category": "Payment",
+  "q": "How do I pay, and what payment methods do you accept?",
+  "a": [
+    "We accept direct deposit, bank transfer and cash.",
+    "Once you have chosen a package and we have confirmed the details, we will let you know how to settle payment via direct deposit, bank transfer or cash."
+  ]
+}

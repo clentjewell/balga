@@ -57,6 +57,9 @@
   .imgwrap{display:flex;gap:1rem;align-items:flex-start;flex-wrap:wrap}
   .imgprev{width:150px;height:110px;object-fit:cover;border-radius:8px;border:1px solid var(--line);background:#eee}
   .checks{display:grid;gap:.4rem;max-height:240px;overflow:auto;border:1px solid var(--line);border-radius:8px;padding:.6rem}
+  .listw{display:grid;gap:.5rem}
+  .listrow{display:flex;gap:.5rem;align-items:flex-start}
+  .listrow>.danger{flex:0 0 auto;padding:.5rem .7rem;line-height:1}
   .checks label{display:flex;gap:.5rem;align-items:center;font-weight:500;margin:0}
   .checks input{width:auto}
   .actions{display:flex;gap:.7rem;flex-wrap:wrap;align-items:center}
@@ -268,6 +271,39 @@ async function editorView(name, item, fileEntry){
         fs.append(sw);
       }
       wrap.append(fs); getVal[f.name]=()=>{ const o={}; for(const k in subVal)o[k]=subVal[k](); return o; };
+    }
+    else if(f.widget==="select"){
+      const sel=el("select",{id:idAttr}); (f.options||[]).forEach(o=>{ const opt=el("option",{value:o},o); if(cur===o)opt.selected=true; sel.append(opt); });
+      wrap.append(sel); getVal[f.name]=()=>sel.value;
+    }
+    else if(f.widget==="list"){
+      const listWrap=el("div",{class:"listw"});
+      const rowVals=[];
+      const mkRow=(val)=>{
+        const my=rowVals.length; let getter;
+        const row=el("div",{class:"listrow"});
+        if(f.fields){
+          const sub={}; const fs=el("div",{class:"card",style:"flex:1"});
+          for(const sf of f.fields){
+            const sw=el("div",{style:"margin-bottom:.6rem"},[el("label",{},sf.label)]);
+            if(sf.widget==="text"){ const ta=el("textarea",{rows:2},(val&&val[sf.name])||""); sw.append(ta); sub[sf.name]=()=>ta.value; }
+            else if(sf.widget==="image"){ const inp=el("input",{value:(val&&val[sf.name])||"",placeholder:"/assets/..."}); const fp=el("input",{type:"file",accept:"image/*",style:"margin-top:.3rem"}); fp.addEventListener("change",async()=>{const fl=fp.files[0];if(!fl)return;const b64=await new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(String(fr.result).split(",")[1]);fr.readAsDataURL(fl);});try{const up=await api("/upload",{method:"POST",body:JSON.stringify({folder:spec.mediaFolder,filename:fl.name,dataBase64:b64})});inp.value=up.path;}catch(ex){toast(ex.message,"err");}}); sw.append(inp,fp); sub[sf.name]=()=>inp.value; }
+            else { const inp=el("input",{value:(val&&val[sf.name])||""}); sw.append(inp); sub[sf.name]=()=>inp.value; }
+            fs.append(sw);
+          }
+          row.append(fs); getter=()=>{ const o={}; let has=false; for(const k in sub){o[k]=sub[k](); if(o[k])has=true;} return has?o:null; };
+        } else {
+          const iw=f.itemWidget||"string";
+          const inp = iw==="text"? el("textarea",{rows:2}, val||"") : el("input",{value:val||""});
+          inp.style.flex="1"; row.append(inp); getter=()=>inp.value;
+        }
+        row.append(el("button",{class:"danger",type:"button",title:"Remove",onclick:()=>{ row.remove(); rowVals[my]=null; }},"×"));
+        rowVals.push(getter); listWrap.append(row);
+      };
+      (Array.isArray(cur)?cur:[]).forEach(mkRow);
+      if(!(Array.isArray(cur)&&cur.length)) mkRow(f.fields?null:"");
+      wrap.append(listWrap, el("button",{class:"secondary",type:"button",style:"margin-top:.4rem",onclick:()=>mkRow(f.fields?null:"")}, "+ Add "+(f.addLabel||"item")));
+      getVal[f.name]=()=> rowVals.map(g=>g&&g()).filter(v=>v!==null&&v!==undefined&&v!=="");
     }
     else { const inp=el("input",{id:idAttr,value:cur??""}); wrap.append(inp); getVal[f.name]=()=>inp.value; }
 

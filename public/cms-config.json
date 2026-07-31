@@ -446,6 +446,102 @@
         }
       ],
       "thumbField": "image"
+    },
+    {
+      "name": "faqs",
+      "label": "FAQs",
+      "labelSingular": "FAQ",
+      "folder": "src/data/faqs",
+      "format": "json",
+      "extension": "json",
+      "create": true,
+      "delete": true,
+      "identifier": "id",
+      "sortField": "order",
+      "summaryField": "q",
+      "fields": [
+        {
+          "name": "id",
+          "label": "ID / filename",
+          "widget": "slug",
+          "hint": "e.g. faq-15"
+        },
+        {
+          "name": "order",
+          "label": "Order",
+          "widget": "number",
+          "default": 99
+        },
+        {
+          "name": "category",
+          "label": "Category",
+          "widget": "select",
+          "options": [
+            "Cost & packages",
+            "Timing & process",
+            "Service area",
+            "Plants, maintenance & sustainability",
+            "Payment"
+          ]
+        },
+        {
+          "name": "q",
+          "label": "Question",
+          "widget": "string",
+          "required": true
+        },
+        {
+          "name": "a",
+          "label": "Answer paragraphs",
+          "widget": "list",
+          "itemWidget": "text",
+          "required": true,
+          "hint": "First line is the short quotable answer; add more paragraphs below."
+        }
+      ]
+    },
+    {
+      "name": "testimonials",
+      "label": "Testimonials",
+      "labelSingular": "Testimonial",
+      "folder": "src/data/testimonials",
+      "format": "json",
+      "extension": "json",
+      "create": true,
+      "delete": true,
+      "identifier": "id",
+      "sortField": "order",
+      "summaryField": "author",
+      "fields": [
+        {
+          "name": "id",
+          "label": "ID / filename",
+          "widget": "slug",
+          "hint": "e.g. testimonial-07"
+        },
+        {
+          "name": "order",
+          "label": "Order",
+          "widget": "number",
+          "default": 99
+        },
+        {
+          "name": "quote",
+          "label": "Quote",
+          "widget": "text",
+          "required": true
+        },
+        {
+          "name": "author",
+          "label": "Author name",
+          "widget": "string"
+        },
+        {
+          "name": "role",
+          "label": "Author role (optional)",
+          "widget": "string"
+        }
+      ]
     }
   ]
 }
