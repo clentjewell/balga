@@ -739,6 +739,100 @@
       "thumbField": "image"
     },
     {
+      "name": "pricing",
+      "label": "Pricing packages",
+      "labelSingular": "Package",
+      "folder": "src/data/pricing",
+      "format": "json",
+      "extension": "json",
+      "create": true,
+      "delete": true,
+      "identifier": "id",
+      "sortField": "number",
+      "summaryField": "title",
+      "mediaFolder": "public/assets/pricing/uploads",
+      "thumbField": "image",
+      "fields": [
+        {
+          "name": "id",
+          "label": "ID / filename",
+          "widget": "slug",
+          "hint": "e.g. package-5. Cannot be changed after creating."
+        },
+        {
+          "name": "number",
+          "label": "Order number",
+          "widget": "number",
+          "default": 99
+        },
+        {
+          "name": "title",
+          "label": "Title",
+          "widget": "string",
+          "required": true
+        },
+        {
+          "name": "subtitle",
+          "label": "Subtitle",
+          "widget": "string",
+          "required": true
+        },
+        {
+          "name": "price",
+          "label": "Price",
+          "widget": "string",
+          "required": true,
+          "hint": "e.g. $2,500.00"
+        },
+        {
+          "name": "hours",
+          "label": "Hours line",
+          "widget": "string",
+          "hint": "e.g. Approximately 20 Hour Job"
+        },
+        {
+          "name": "radius",
+          "label": "Service radius line",
+          "widget": "string"
+        },
+        {
+          "name": "image",
+          "label": "Package image",
+          "widget": "image",
+          "required": true
+        },
+        {
+          "name": "alt",
+          "label": "Package image alt text",
+          "widget": "string",
+          "required": true
+        },
+        {
+          "name": "intro",
+          "label": "Intro paragraphs",
+          "widget": "list",
+          "itemWidget": "text"
+        },
+        {
+          "name": "includedIntro",
+          "label": "\"What's included\" intro line",
+          "widget": "string"
+        },
+        {
+          "name": "included",
+          "label": "Included items",
+          "widget": "list",
+          "itemWidget": "text"
+        },
+        {
+          "name": "notes",
+          "label": "Fine-print notes",
+          "widget": "list",
+          "itemWidget": "text"
+        }
+      ]
+    },
+    {
       "name": "blog",
       "label": "Blog posts",
       "labelSingular": "Blog post",

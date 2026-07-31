@@ -1,0 +1,29 @@
+{
+  "id": "package-1",
+  "number": 1,
+  "title": "Package 1 - The Small NativeScapes Package",
+  "subtitle": "The Small Spaces Design Package",
+  "price": "$2,500.00",
+  "hours": "Approximately 20 Hour Job",
+  "radius": "Within 30km radius from Lennox Head",
+  "image": "/assets/pricing/package-1.webp",
+  "alt": "Small native garden design",
+  "intro": [
+    "The Small NativeScapes Package is designed for those looking to revamp their front/backyards without the guesswork.",
+    "If you desire a practical and visually pleasing transformation in an area up to 40m2, but aren’t sure where to start, this package is for you.",
+    "We specialise in creating functional native orientated designs, incorporating cost- effective elements and low-maintenance species to allow you to reconnect with your garden."
+  ],
+  "includedIntro": "Let us simplify the process and bring your vision to life. What’s included:",
+  "included": [
+    "Onsite Assessment – We’ll meet on-site, measure up, and get a feel for your space;",
+    "Mood-board Presentation;",
+    "Materials Palette suited to your budget – This may include furniture, pots and hardscape materials;",
+    "Plant species – We will develop a list of native plants suitable to your site;",
+    "Refinement Round – One round of revisions to ensure the design meets your needs;",
+    "15H Labour included for design installation."
+  ],
+  "notes": [
+    "*Steep/complex sites may require additional fees – To be discussed at the first meeting.",
+    "**Adding in extra garden beds and expanding the area may require additional fees."
+  ]
+}

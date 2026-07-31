@@ -1,0 +1,26 @@
+{
+  "id": "package-2",
+  "number": 2,
+  "title": "Package 2 - The Potted Greenery Package",
+  "subtitle": "Pot Styling and Decorative Plants Package",
+  "price": "$2,000.00",
+  "hours": "Approximately 20 Hour Job",
+  "radius": "Within 30km radius from Lennox Head",
+  "image": "/assets/pricing/package-2.webp",
+  "alt": "Pot styling and decorative plants",
+  "intro": [
+    "Ideal for those who are renting a property, our pot styling consultation is perfect for clients who are wanting to incorporate potted greenery in an indoor or outdoor space but aren’t sure where to begin.",
+    "Also, for homeowners who are selling their home and want to elevate their space by styling their home garden.",
+    "After the consultation, you will receive a plan that identifies the selected pots, location of pots, and specifies plants for each pot."
+  ],
+  "includedIntro": "What’s included:",
+  "included": [
+    "Onsite Assessment – in person consultation;",
+    "Pot styling design package – selecting plants, pots and location for each one of these elements in the space;",
+    "Quotation for pots, plants and materials;",
+    "Refinement Round – One round of revisions to ensure the design meets your needs;",
+    "Installation and styling – Adhering to horticultural good practices planting and styling;",
+    "Follow up Appointment – One time follow up appointment for a plant check and further recommendations."
+  ],
+  "notes": []
+}

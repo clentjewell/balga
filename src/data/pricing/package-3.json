@@ -1,0 +1,28 @@
+{
+  "id": "package-3",
+  "number": 3,
+  "title": "Package 3 - Balga Inspo Package",
+  "subtitle": "The Inspiration landscape Design Package",
+  "price": "$2,000.00",
+  "hours": "Approximately 10 Hour Job",
+  "radius": "Within 30km radius from Lennox Head",
+  "image": "/assets/pricing/package-3.webp",
+  "alt": "Inspiration landscape design mood board",
+  "intro": [
+    "You are willing to do all the hard work but you;re just lacking a bit of imagination. Getting overwhelmed with how to get started and need a plan?",
+    "Our Balga Inspiration Package will help with budget, hard landscaping layout and materials selection, plant selection and recommend contractors – for anywhere in your garden that is a priority.",
+    "At the end of this process, you will have the confidence to move forward and design your own landscape, including creating a base plan on which to develop your design."
+  ],
+  "includedIntro": "What’s included:",
+  "included": [
+    "Onsite Assessment – in person consultation and site assessment;",
+    "Advice writing – Step by step plan for you to follow;",
+    "Mood-Board – presentation with a sketch design, photos and inspirational images for your guidance;",
+    "Plants & Materials list;",
+    "Recommended Contractors – Recommend contractors to bring the design to life."
+  ],
+  "notes": [
+    "* Please note no drawings are provided within this service.",
+    "** In case you would like some assistance with the planting or getting plants from our awesome suppliers, an additional hourly rate applies."
+  ]
+}
