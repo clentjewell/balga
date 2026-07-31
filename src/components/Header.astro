@@ -1,5 +1,5 @@
 ---
-import { site, nav } from "../data/site";
+import { site, nav, header } from "../data/site";
 const path = Astro.url.pathname;
 const isActive = (href: string) =>
   href === "/" ? path === "/" : path.startsWith(href);
@@ -36,7 +36,7 @@ const isActive = (href: string) =>
     </nav>
 
     <div class="site-header__actions">
-      <a href="/contact/" class="btn btn--outline-light site-header__cta">Contact Us</a>
+      <a href={header.ctaHref} class="btn btn--outline-light site-header__cta">{header.ctaLabel}</a>
       <button
         type="button"
         class="menu-toggle"

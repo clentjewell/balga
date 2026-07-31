@@ -66,6 +66,104 @@
           ]
         },
         {
+          "name": "navigation",
+          "label": "Header & footer (logo, menus, CTA)",
+          "path": "src/data/content/navigation.json",
+          "format": "json",
+          "mediaFolder": "public/assets/branding/uploads",
+          "fields": [
+            {
+              "name": "logo",
+              "label": "Logo (header & footer)",
+              "widget": "image"
+            },
+            {
+              "name": "headerCtaLabel",
+              "label": "Header button — label",
+              "widget": "string"
+            },
+            {
+              "name": "headerCtaHref",
+              "label": "Header button — link",
+              "widget": "string"
+            },
+            {
+              "name": "nav",
+              "label": "Header menu links",
+              "widget": "list",
+              "addLabel": "menu link",
+              "fields": [
+                {
+                  "name": "label",
+                  "label": "Label",
+                  "widget": "string"
+                },
+                {
+                  "name": "href",
+                  "label": "Link",
+                  "widget": "string"
+                }
+              ]
+            },
+            {
+              "name": "footerContactHeading",
+              "label": "Footer — contact column heading",
+              "widget": "string"
+            },
+            {
+              "name": "quicklinksHeading",
+              "label": "Footer — quicklinks heading",
+              "widget": "string"
+            },
+            {
+              "name": "quicklinks",
+              "label": "Footer — quicklinks",
+              "widget": "list",
+              "addLabel": "link",
+              "fields": [
+                {
+                  "name": "label",
+                  "label": "Label",
+                  "widget": "string"
+                },
+                {
+                  "name": "href",
+                  "label": "Link",
+                  "widget": "string"
+                }
+              ]
+            },
+            {
+              "name": "supportHeading",
+              "label": "Footer — support heading",
+              "widget": "string"
+            },
+            {
+              "name": "support",
+              "label": "Footer — support links",
+              "widget": "list",
+              "addLabel": "link",
+              "fields": [
+                {
+                  "name": "label",
+                  "label": "Label",
+                  "widget": "string"
+                },
+                {
+                  "name": "href",
+                  "label": "Link",
+                  "widget": "string"
+                }
+              ]
+            },
+            {
+              "name": "copyrightName",
+              "label": "Footer — copyright name",
+              "widget": "string"
+            }
+          ]
+        },
+        {
           "name": "home",
           "label": "Home page",
           "path": "src/data/content/home.json",

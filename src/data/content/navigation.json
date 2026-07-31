@@ -1,0 +1,29 @@
+{
+  "logo": "/assets/branding/logo-white.png",
+  "headerCtaLabel": "Contact Us",
+  "headerCtaHref": "/contact/",
+  "nav": [
+    { "label": "Home", "href": "/" },
+    { "label": "About", "href": "/about/" },
+    { "label": "Services", "href": "/services/" },
+    { "label": "Projects", "href": "/projects/" },
+    { "label": "Pricing", "href": "/pricing/" },
+    { "label": "FAQs", "href": "/faqs/" },
+    { "label": "Blog", "href": "/balga-blog/" }
+  ],
+  "footerContactHeading": "Get In Touch",
+  "quicklinksHeading": "Quicklinks",
+  "quicklinks": [
+    { "label": "Home", "href": "/" },
+    { "label": "About", "href": "/about/" },
+    { "label": "Services", "href": "/services/" },
+    { "label": "Projects", "href": "/projects/" },
+    { "label": "Blog", "href": "/balga-blog/" }
+  ],
+  "supportHeading": "Support",
+  "support": [
+    { "label": "FAQs", "href": "/faqs/" },
+    { "label": "Contact", "href": "/contact/" }
+  ],
+  "copyrightName": "Balga Designs"
+}

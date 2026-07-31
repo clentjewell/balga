@@ -1,5 +1,7 @@
 // Client-editable business details (via the CMS "Site settings" page).
 import settings from "./content/settings.json";
+// Header/footer chrome — logo, menus, CTA, footer headings (CMS "Header & footer").
+import navigation from "./content/navigation.json";
 
 export const site = {
   name: "Balga Designs",
@@ -41,31 +43,29 @@ export const site = {
   developer: { name: "Jewell Projects", url: "https://jewellprojects.com/" },
   acknowledgement: settings.acknowledgement,
   logos: {
-    white: "/assets/branding/logo-white.png",
+    white: navigation.logo,
     mark: "/assets/branding/logo-mark.png",
   },
 };
 
-export const nav = [
-  { label: "Home", href: "/" },
-  { label: "About", href: "/about/" },
-  { label: "Services", href: "/services/" },
-  { label: "Projects", href: "/projects/" },
-  { label: "Pricing", href: "/pricing/" },
-  { label: "FAQs", href: "/faqs/" },
-  { label: "Blog", href: "/balga-blog/" },
-];
+export interface NavLink { label: string; href: string; }
+
+export const nav = navigation.nav as NavLink[];
 
 export const footerLinks = {
-  quicklinks: [
-    { label: "Home", href: "/" },
-    { label: "About", href: "/about/" },
-    { label: "Services", href: "/services/" },
-    { label: "Projects", href: "/projects/" },
-    { label: "Blog", href: "/balga-blog/" },
-  ],
-  support: [
-    { label: "FAQs", href: "/faqs/" },
-    { label: "Contact", href: "/contact/" },
-  ],
+  quicklinks: navigation.quicklinks as NavLink[],
+  support: navigation.support as NavLink[],
+};
+
+// Editable labels/headings for the header and footer chrome.
+export const header = {
+  ctaLabel: navigation.headerCtaLabel,
+  ctaHref: navigation.headerCtaHref,
+};
+
+export const footer = {
+  contactHeading: navigation.footerContactHeading,
+  quicklinksHeading: navigation.quicklinksHeading,
+  supportHeading: navigation.supportHeading,
+  copyrightName: navigation.copyrightName,
 };
