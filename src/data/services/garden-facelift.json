@@ -6,7 +6,6 @@
     "project-02",
     "project-04"
   ],
-  "contentProject": "project-01",
   "title": "Garden Facelift",
   "description": "Tailored to harmonise with the natural environment, creating spaces that are both functional and beautiful.",
   "image": "/assets/services/garden-facelift.webp",
@@ -20,5 +19,7 @@
     "whenYouNeed": "When your garden has good bones but has become overgrown, dated or unloved, and you want to bring it back to life without starting completely from scratch.",
     "whatsInvolved": "Every facelift is shaped around your space and goals — we work with what is already there. Book a free consultation and we will scope the work and give you a tailored quote.",
     "whyBalga": "We work with what is already there and with the local ecosystem, so your revived garden feels natural, sustainable and easy to care for."
-  }
+  },
+  "contentImage": "/assets/projects/project-01/after.webp",
+  "contentImageAlt": "Kingsley project after sustainable landscaping"
 }

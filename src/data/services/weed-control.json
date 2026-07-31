@@ -5,7 +5,6 @@
     "project-05",
     "project-03"
   ],
-  "contentProject": "project-04",
   "title": "Weed Control Consultation",
   "description": "Get expert advice on sustainable methods to manage and prevent weeds without harming your garden's ecosystem.",
   "image": "/assets/services/weed-control.webp",
@@ -19,5 +18,7 @@
     "whenYouNeed": "When weeds keep taking over and you want a lasting, low-harm strategy rather than a quick chemical fix.",
     "whatsInvolved": "We review your weed issues and advise on sustainable prevention and control tailored to your garden. Start with a free consultation and we will recommend a plan.",
     "whyBalga": "We help you keep weeds in check while protecting your soil, your plants and the native ecosystem around them."
-  }
+  },
+  "contentImage": "/assets/projects/project-04/after.webp",
+  "contentImageAlt": "Coastal courtyard after makeover"
 }

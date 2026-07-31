@@ -5,7 +5,6 @@
     "project-04",
     "project-02"
   ],
-  "contentProject": "project-06",
   "title": "Decorative Plants",
   "description": "Enhance your space by incorporating potted greenery, bringing an organic and stylish feel to your indoor & outdoor area.",
   "image": "/assets/services/decorative-plants.webp",
@@ -19,5 +18,7 @@
     "whenYouNeed": "When you want greenery and warmth without a full garden build — perfect for balconies, courtyards, entrances, patios and interiors.",
     "whatsInvolved": "Our Potted Greenery / Pot Styling Package is $2,000 and centres on selecting and arranging potted plants to suit your space and style.",
     "whyBalga": "We choose plants that thrive in your conditions and pair them beautifully with your space, so the result looks considered and stays healthy."
-  }
+  },
+  "contentImage": "/assets/projects/project-06/after.webp",
+  "contentImageAlt": "Front garden after refresh"
 }

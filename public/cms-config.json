@@ -8,49 +8,165 @@
       "mediaFolder": "public/assets/uploads",
       "files": [
         {
-          "name": "settings", "label": "Site settings (contact, socials)", "path": "src/data/content/settings.json", "format": "json",
+          "name": "settings",
+          "label": "Site settings (contact, socials)",
+          "path": "src/data/content/settings.json",
+          "format": "json",
           "fields": [
-            { "name": "slogan", "label": "Slogan", "widget": "string" },
-            { "name": "address", "label": "Address", "widget": "string" },
-            { "name": "email", "label": "Email", "widget": "string" },
-            { "name": "phone", "label": "Phone", "widget": "string" },
-            { "name": "hours", "label": "Opening hours", "widget": "string" },
-            { "name": "serviceArea", "label": "Service-area line", "widget": "string" },
-            { "name": "facebook", "label": "Facebook URL", "widget": "string" },
-            { "name": "instagram", "label": "Instagram URL", "widget": "string" },
-            { "name": "google", "label": "Google Business URL", "widget": "string" },
-            { "name": "acknowledgement", "label": "Acknowledgement of Country", "widget": "text" }
+            {
+              "name": "slogan",
+              "label": "Slogan",
+              "widget": "string"
+            },
+            {
+              "name": "address",
+              "label": "Address",
+              "widget": "string"
+            },
+            {
+              "name": "email",
+              "label": "Email",
+              "widget": "string"
+            },
+            {
+              "name": "phone",
+              "label": "Phone",
+              "widget": "string"
+            },
+            {
+              "name": "hours",
+              "label": "Opening hours",
+              "widget": "string"
+            },
+            {
+              "name": "serviceArea",
+              "label": "Service-area line",
+              "widget": "string"
+            },
+            {
+              "name": "facebook",
+              "label": "Facebook URL",
+              "widget": "string"
+            },
+            {
+              "name": "instagram",
+              "label": "Instagram URL",
+              "widget": "string"
+            },
+            {
+              "name": "google",
+              "label": "Google Business URL",
+              "widget": "string"
+            },
+            {
+              "name": "acknowledgement",
+              "label": "Acknowledgement of Country",
+              "widget": "text"
+            }
           ]
         },
         {
-          "name": "home", "label": "Home page", "path": "src/data/content/home.json", "format": "json",
+          "name": "home",
+          "label": "Home page",
+          "path": "src/data/content/home.json",
+          "format": "json",
           "fields": [
-            { "name": "heroEyebrow", "label": "Hero — eyebrow", "widget": "string" },
-            { "name": "heroHeading", "label": "Hero — heading", "widget": "text" },
-            { "name": "heroSub", "label": "Hero — subtext", "widget": "text" },
-            { "name": "aboutHeading", "label": "About — heading", "widget": "string" },
-            { "name": "aboutPara1", "label": "About — paragraph 1", "widget": "text" },
-            { "name": "aboutPara2", "label": "About — paragraph 2", "widget": "text" }
+            {
+              "name": "heroEyebrow",
+              "label": "Hero — eyebrow",
+              "widget": "string"
+            },
+            {
+              "name": "heroHeading",
+              "label": "Hero — heading",
+              "widget": "text"
+            },
+            {
+              "name": "heroSub",
+              "label": "Hero — subtext",
+              "widget": "text"
+            },
+            {
+              "name": "aboutHeading",
+              "label": "About — heading",
+              "widget": "string"
+            },
+            {
+              "name": "aboutPara1",
+              "label": "About — paragraph 1",
+              "widget": "text"
+            },
+            {
+              "name": "aboutPara2",
+              "label": "About — paragraph 2",
+              "widget": "text"
+            }
           ]
         },
         {
-          "name": "about", "label": "About page", "path": "src/data/content/about.json", "format": "json",
+          "name": "about",
+          "label": "About page",
+          "path": "src/data/content/about.json",
+          "format": "json",
           "fields": [
-            { "name": "heading", "label": "Heading", "widget": "string" },
-            { "name": "lead", "label": "Intro", "widget": "text" },
-            { "name": "visionTitle", "label": "Vision — title", "widget": "string" },
-            { "name": "visionBody", "label": "Vision — body", "widget": "text" },
-            { "name": "approachTitle", "label": "Approach — title", "widget": "string" },
-            { "name": "approachBody", "label": "Approach — body", "widget": "text" }
+            {
+              "name": "heading",
+              "label": "Heading",
+              "widget": "string"
+            },
+            {
+              "name": "lead",
+              "label": "Intro",
+              "widget": "text"
+            },
+            {
+              "name": "visionTitle",
+              "label": "Vision — title",
+              "widget": "string"
+            },
+            {
+              "name": "visionBody",
+              "label": "Vision — body",
+              "widget": "text"
+            },
+            {
+              "name": "approachTitle",
+              "label": "Approach — title",
+              "widget": "string"
+            },
+            {
+              "name": "approachBody",
+              "label": "Approach — body",
+              "widget": "text"
+            }
           ]
         },
         {
-          "name": "contact", "label": "Contact page", "path": "src/data/content/contact.json", "format": "json",
+          "name": "contact",
+          "label": "Contact page",
+          "path": "src/data/content/contact.json",
+          "format": "json",
           "fields": [
-            { "name": "eyebrow", "label": "Eyebrow", "widget": "string" },
-            { "name": "heading", "label": "Heading", "widget": "string" },
-            { "name": "lead1", "label": "Lead line 1", "widget": "text" },
-            { "name": "lead2", "label": "Lead line 2", "widget": "text" }
+            {
+              "name": "eyebrow",
+              "label": "Eyebrow",
+              "widget": "string"
+            },
+            {
+              "name": "heading",
+              "label": "Heading",
+              "widget": "string"
+            },
+            {
+              "name": "lead1",
+              "label": "Lead line 1",
+              "widget": "text"
+            },
+            {
+              "name": "lead2",
+              "label": "Lead line 2",
+              "widget": "text"
+            }
           ]
         }
       ]
@@ -69,17 +185,69 @@
       "summaryField": "title",
       "mediaFolder": "public/assets/projects/uploads",
       "fields": [
-        { "name": "id", "label": "ID / filename", "widget": "slug", "hint": "Lowercase, e.g. lennox-courtyard. Cannot be changed after creating." },
-        { "name": "order", "label": "Order", "widget": "number", "default": 99 },
-        { "name": "title", "label": "Title", "widget": "string", "required": true },
-        { "name": "before", "label": "Before image", "widget": "image", "required": true },
-        { "name": "after", "label": "After image", "widget": "image", "required": true },
-        { "name": "beforeAlt", "label": "Before image alt text", "widget": "string", "required": true },
-        { "name": "afterAlt", "label": "After image alt text", "widget": "string", "required": true },
-        { "name": "location", "label": "Location", "widget": "string", "required": false },
-        { "name": "date", "label": "Date", "widget": "string", "required": false, "hint": "e.g. 10-08-2024" },
-        { "name": "description", "label": "Description", "widget": "text", "required": false }
-      ]
+        {
+          "name": "id",
+          "label": "ID / filename",
+          "widget": "slug",
+          "hint": "Lowercase, e.g. lennox-courtyard. Cannot be changed after creating."
+        },
+        {
+          "name": "order",
+          "label": "Order",
+          "widget": "number",
+          "default": 99
+        },
+        {
+          "name": "title",
+          "label": "Title",
+          "widget": "string",
+          "required": true
+        },
+        {
+          "name": "before",
+          "label": "Before image",
+          "widget": "image",
+          "required": true
+        },
+        {
+          "name": "after",
+          "label": "After image",
+          "widget": "image",
+          "required": true
+        },
+        {
+          "name": "beforeAlt",
+          "label": "Before image alt text",
+          "widget": "string",
+          "required": true
+        },
+        {
+          "name": "afterAlt",
+          "label": "After image alt text",
+          "widget": "string",
+          "required": true
+        },
+        {
+          "name": "location",
+          "label": "Location",
+          "widget": "string",
+          "required": false
+        },
+        {
+          "name": "date",
+          "label": "Date",
+          "widget": "string",
+          "required": false,
+          "hint": "e.g. 10-08-2024"
+        },
+        {
+          "name": "description",
+          "label": "Description",
+          "widget": "text",
+          "required": false
+        }
+      ],
+      "thumbField": "after"
     },
     {
       "name": "services",
@@ -95,27 +263,109 @@
       "summaryField": "title",
       "mediaFolder": "public/assets/services/uploads",
       "fields": [
-        { "name": "slug", "label": "Slug", "widget": "slug", "readonly": true },
-        { "name": "order", "label": "Order", "widget": "number" },
-        { "name": "title", "label": "Title", "widget": "string", "required": true },
-        { "name": "description", "label": "Short description (cards)", "widget": "text", "required": true },
-        { "name": "image", "label": "Main image", "widget": "image", "required": true },
-        { "name": "alt", "label": "Main image alt text", "widget": "string", "required": true },
-        { "name": "width", "label": "Image width", "widget": "number" },
-        { "name": "height", "label": "Image height", "widget": "number" },
-        { "name": "relatedProjects", "label": "Related projects (shown on the page)", "widget": "relation", "collection": "projects", "multiple": true },
-        { "name": "contentProject", "label": "Photo project (right-column image)", "widget": "relation", "collection": "projects", "multiple": false },
         {
-          "name": "detail", "label": "Page detail", "widget": "object", "fields": [
-            { "name": "seoTitle", "label": "SEO title", "widget": "string" },
-            { "name": "metaDescription", "label": "Meta description", "widget": "text" },
-            { "name": "whatItIs", "label": "What it is", "widget": "text" },
-            { "name": "whenYouNeed", "label": "When you need it", "widget": "text" },
-            { "name": "whatsInvolved", "label": "What's involved", "widget": "text" },
-            { "name": "whyBalga", "label": "Why Balga Designs", "widget": "text" }
+          "name": "slug",
+          "label": "Slug",
+          "widget": "slug",
+          "readonly": true
+        },
+        {
+          "name": "order",
+          "label": "Order",
+          "widget": "number"
+        },
+        {
+          "name": "title",
+          "label": "Title",
+          "widget": "string",
+          "required": true
+        },
+        {
+          "name": "description",
+          "label": "Short description (cards)",
+          "widget": "text",
+          "required": true
+        },
+        {
+          "name": "image",
+          "label": "Main image",
+          "widget": "image",
+          "required": true
+        },
+        {
+          "name": "alt",
+          "label": "Main image alt text",
+          "widget": "string",
+          "required": true
+        },
+        {
+          "name": "width",
+          "label": "Image width",
+          "widget": "number"
+        },
+        {
+          "name": "height",
+          "label": "Image height",
+          "widget": "number"
+        },
+        {
+          "name": "relatedProjects",
+          "label": "Related projects (shown on the page)",
+          "widget": "relation",
+          "collection": "projects",
+          "multiple": true
+        },
+        {
+          "name": "contentImage",
+          "label": "Content image (right-column photo)",
+          "widget": "image",
+          "required": true
+        },
+        {
+          "name": "contentImageAlt",
+          "label": "Content image alt text",
+          "widget": "string",
+          "required": true
+        },
+        {
+          "name": "detail",
+          "label": "Page detail",
+          "widget": "object",
+          "fields": [
+            {
+              "name": "seoTitle",
+              "label": "SEO title",
+              "widget": "string"
+            },
+            {
+              "name": "metaDescription",
+              "label": "Meta description",
+              "widget": "text"
+            },
+            {
+              "name": "whatItIs",
+              "label": "What it is",
+              "widget": "text"
+            },
+            {
+              "name": "whenYouNeed",
+              "label": "When you need it",
+              "widget": "text"
+            },
+            {
+              "name": "whatsInvolved",
+              "label": "What's involved",
+              "widget": "text"
+            },
+            {
+              "name": "whyBalga",
+              "label": "Why Balga Designs",
+              "widget": "text"
+            }
           ]
         }
-      ]
+      ],
+      "thumbField": "image"
     },
     {
       "name": "blog",
@@ -132,17 +382,70 @@
       "mediaFolder": "public/assets/blog/uploads",
       "bodyField": "body",
       "fields": [
-        { "name": "id", "label": "URL slug / filename", "widget": "slug", "hint": "Lowercase, e.g. autumn-native-planting. Becomes /autumn-native-planting/." },
-        { "name": "order", "label": "Order", "widget": "number", "default": 99 },
-        { "name": "title", "label": "Title", "widget": "string", "required": true },
-        { "name": "description", "label": "Meta description", "widget": "text", "required": true },
-        { "name": "excerpt", "label": "Excerpt (blog list)", "widget": "text", "required": true },
-        { "name": "date", "label": "Date (display)", "widget": "string", "required": true, "hint": "e.g. May 8, 2025" },
-        { "name": "dateISO", "label": "Date (ISO)", "widget": "string", "required": true, "hint": "e.g. 2025-05-08" },
-        { "name": "image", "label": "Header image", "widget": "image", "required": true },
-        { "name": "imageAlt", "label": "Header image alt text", "widget": "string", "required": true },
-        { "name": "body", "label": "Article body", "widget": "markdown", "required": true }
-      ]
+        {
+          "name": "id",
+          "label": "URL slug / filename",
+          "widget": "slug",
+          "hint": "Lowercase, e.g. autumn-native-planting. Becomes /autumn-native-planting/."
+        },
+        {
+          "name": "order",
+          "label": "Order",
+          "widget": "number",
+          "default": 99
+        },
+        {
+          "name": "title",
+          "label": "Title",
+          "widget": "string",
+          "required": true
+        },
+        {
+          "name": "description",
+          "label": "Meta description",
+          "widget": "text",
+          "required": true
+        },
+        {
+          "name": "excerpt",
+          "label": "Excerpt (blog list)",
+          "widget": "text",
+          "required": true
+        },
+        {
+          "name": "date",
+          "label": "Date (display)",
+          "widget": "string",
+          "required": true,
+          "hint": "e.g. May 8, 2025"
+        },
+        {
+          "name": "dateISO",
+          "label": "Date (ISO)",
+          "widget": "string",
+          "required": true,
+          "hint": "e.g. 2025-05-08"
+        },
+        {
+          "name": "image",
+          "label": "Header image",
+          "widget": "image",
+          "required": true
+        },
+        {
+          "name": "imageAlt",
+          "label": "Header image alt text",
+          "widget": "string",
+          "required": true
+        },
+        {
+          "name": "body",
+          "label": "Article body",
+          "widget": "markdown",
+          "required": true
+        }
+      ],
+      "thumbField": "image"
     }
   ]
 }

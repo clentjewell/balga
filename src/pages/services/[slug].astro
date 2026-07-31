@@ -18,10 +18,9 @@ const related = services.filter((s) => s.slug !== service.slug);
 const relatedProjects = service.relatedProjects
   .map((id) => projects.find((p) => p.id === id))
   .filter((p) => p !== undefined);
-// Distinct photo for the two-column content (not the hero, not the related grid).
-const contentProject = projects.find((p) => p.id === service.contentProject);
-const contentImg = contentProject
-  ? { src: contentProject.after, alt: contentProject.afterAlt }
+// Photo for the two-column content (set directly in the CMS).
+const contentImg = service.contentImage
+  ? { src: service.contentImage, alt: service.contentImageAlt || service.alt }
   : { src: service.image, alt: service.alt };
 
 const blocks = [

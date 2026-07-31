@@ -46,6 +46,8 @@
 
   .list{display:grid;gap:.6rem}
   .row{display:flex;align-items:center;justify-content:space-between;gap:1rem;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:.8rem 1rem}
+  .rowmain{display:flex;align-items:center;gap:.9rem;min-width:0}
+  .rowthumb{width:66px;height:48px;object-fit:cover;border-radius:6px;border:1px solid var(--line);background:#eee;flex:0 0 auto}
   .row__t{font-weight:600}
   .row__s{color:var(--muted);font-size:.85rem}
 
@@ -163,7 +165,7 @@ async function collectionView(name){
     const {items} = await api("/list?folder="+encodeURIComponent(col.folder));
     const withTitles = await Promise.all(items.map(async(it)=>{
       let title=it.name;
-      try{ const f=await api("/file?path="+encodeURIComponent(it.path)); const p=parseContent(col,f.content); title=p.fields[col.summaryField]||it.name; it._order=p.fields[col.sortField]??999; }catch{}
+      try{ const f=await api("/file?path="+encodeURIComponent(it.path)); const p=parseContent(col,f.content); title=p.fields[col.summaryField]||it.name; it._order=p.fields[col.sortField]??999; it._thumb=col.thumbField?p.fields[col.thumbField]:null; }catch{}
       return {...it, title};
     }));
     withTitles.sort((a,b)=>(a._order??999)-(b._order??999));
@@ -172,7 +174,10 @@ async function collectionView(name){
     withTitles.forEach(it=>{
       const idv = it.name.replace(/\.(json|md)$/,"");
       listEl.append(el("div",{class:"row"},[
-        el("div",{},[el("div",{class:"row__t"},it.title), el("div",{class:"row__s"},idv)]),
+        el("div",{class:"rowmain"},[
+          (it._thumb? el("img",{class:"rowthumb",src:it._thumb,alt:"",loading:"lazy"}):null),
+          el("div",{},[el("div",{class:"row__t"},it.title), el("div",{class:"row__s"},idv)])
+        ]),
         el("div",{class:"actions"},[
           el("button",{class:"secondary",onclick:()=>editorView(name,it)},"Edit"),
           col.delete?el("button",{class:"danger",onclick:()=>del(col,it)},"Delete"):null

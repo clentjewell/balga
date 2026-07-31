@@ -18,8 +18,9 @@ export interface Service {
   height: number;
   /** ids of related projects (see src/data/projects) to showcase; empty = no section. */
   relatedProjects: string[];
-  /** project id whose photo illustrates the two-column content (distinct from hero + related). */
-  contentProject: string;
+  /** photo shown in the two-column content (right side). */
+  contentImage: string;
+  contentImageAlt: string;
   detail: ServiceDetail;
 }
 

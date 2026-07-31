@@ -5,7 +5,6 @@
     "project-03",
     "project-07"
   ],
-  "contentProject": "project-02",
   "title": "Integrated Pest Management",
   "description": "Restoring native ecosystems and promoting biodiversity within your garden.",
   "image": "/assets/services/pest-management.webp",
@@ -19,5 +18,7 @@
     "whenYouNeed": "When pests are affecting your garden and you want them managed without harsh chemicals that damage soil, plants and local wildlife.",
     "whatsInvolved": "We assess your garden and apply integrated, ecological pest-management methods suited to your site. Book a free consultation and we will tailor a plan and quote to your garden.",
     "whyBalga": "Our methods work with nature, not against it — protecting the biodiversity that keeps your garden resilient over the long term."
-  }
+  },
+  "contentImage": "/assets/projects/project-02/after.webp",
+  "contentImageAlt": "Bangalow backyard after transformation"
 }
