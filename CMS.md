@@ -58,14 +58,29 @@ Until these exist, the workflow still builds/audits but skips the deploy step.
 - The audit gate means a broken save can't take the site down — a bad edit fails CI
   and the previous version stays live.
 
-## Rotating the password
+## Users & passwords (multi-user)
 
-`npx wrangler secret put CMS_PASSWORD` again with the new value. Sessions last 8 hours.
+User accounts live in a Cloudflare **KV namespace** (binding `CMS_USERS` in
+`wrangler.jsonc`). On first login the store seeds itself from the `CMS_EMAIL` /
+`CMS_PASSWORD` secrets as the first **admin**, so the original login keeps working.
+
+- **Roles:** *Admin* (edit content **and** manage users) and *Editor* (edit content only).
+- **My account** (everyone): change your own password.
+- **Users** (admins only): add a user, delete a user, switch a user's role, and
+  reset any user's password. Guards stop you deleting your own account or removing
+  the last admin.
+- **Forgot password:** an admin resets it from **Users**. If the *only* admin is
+  locked out, reset the seed by clearing the KV record (or `wrangler kv key delete
+  "user:<email>" --binding CMS_USERS`) — it re-seeds from `CMS_PASSWORD` on next login.
+
+Passwords are stored only as PBKDF2-SHA256 hashes; the `CMS_PASSWORD` secret is just
+the seed. Sessions last 8 hours and carry the role.
 
 ## Notes / limits
 
-- Single editor account (one email/password). Multiple editors = add more credential
-  checks in `handler.js`.
-- Page-level text/hero editing (home/about copy) is not wired yet — Projects, Services
-  and Blog are. That's the next collection to add to `cms-config.json` once the page
-  copy is extracted into a data file.
+- Editable content: **every page** (hero, headings, CTAs, images) + shared sections
+  (Why choose us, How we work, Video band, CTA, hero cards) + Projects, Services,
+  Pricing packages, Blog posts, FAQs, Testimonials, and the **Header & footer**
+  (logo, menus, footer links). All schema-driven from `public/cms-config.json`.
+- Password reset is admin-managed (no email service required). Self-service email
+  reset would need an email provider (API key + verified sender domain).
