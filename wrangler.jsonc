@@ -20,6 +20,11 @@
     "GH_REPO": "balga",
     "GH_BRANCH": "claude/balga-designs-static-rebuild-vbvcqa"
   },
+  "kv_namespaces": [
+    // Stores CMS user accounts (email → hashed password + role). Seeded on first
+    // login from the CMS_EMAIL / CMS_PASSWORD secrets if empty.
+    { "binding": "CMS_USERS", "id": "7473a29a4d6640d180d56a9ac2cb352a" }
+  ],
   "observability": {
     "enabled": true
   }

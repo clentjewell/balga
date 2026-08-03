@@ -1,21 +1,30 @@
 /**
- * Balga CMS — Cloudflare Worker backend (custom, email/password).
+ * Balga CMS — Cloudflare Worker backend (custom, email/password, multi-user).
  *
- * Mirrors the Pottsville pattern: the client logs in with email + password;
- * this Worker verifies them, holds a GitHub bot token as a secret, and commits
- * content changes to the repo on their behalf. A push then triggers the deploy
- * workflow, so a save is live in ~1–2 minutes.
+ * The client logs in with email + password; this Worker verifies them, holds a
+ * GitHub bot token as a secret, and commits content changes to the repo on
+ * their behalf. A push then triggers the deploy workflow, so a save is live in
+ * ~1–2 minutes.
+ *
+ * User accounts live in a Cloudflare KV namespace (binding CMS_USERS): each
+ * record is `user:<email>` → { email, role, pass, createdAt, updatedAt } where
+ * `pass` is a PBKDF2-SHA256 hash. On first use the store is seeded from the
+ * CMS_EMAIL / CMS_PASSWORD secrets as the initial admin. Admins can add,
+ * remove, re-role and reset other users; everyone can change their own password.
  *
  * Required Worker secrets / vars (set with `wrangler secret put ...`):
- *   CMS_EMAIL          admin login email
- *   CMS_PASSWORD       admin login password (encrypted at rest by Cloudflare)
+ *   CMS_EMAIL          initial admin email (seed only)
+ *   CMS_PASSWORD       initial admin password (seed only, encrypted at rest)
  *   CMS_SESSION_SECRET random string used to sign session cookies
  *   GITHUB_TOKEN       fine-grained PAT with Contents: read/write on the repo
  *   GH_OWNER, GH_REPO, GH_BRANCH   repo target (vars, not secret)
+ *   CMS_USERS          KV namespace binding (user accounts)
  */
 
 const COOKIE = "cms_session";
 const SESSION_TTL = 60 * 60 * 8; // 8 hours
+const PBKDF2_ITERATIONS = 100000;
+const MIN_PASSWORD = 8;
 const enc = new TextEncoder();
 
 const json = (data, status = 200, headers = {}) =>
@@ -37,8 +46,8 @@ function b64urlToBytes(s) {
 async function hmacKey(secret) {
   return crypto.subtle.importKey("raw", enc.encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign", "verify"]);
 }
-async function signSession(env, email) {
-  const payload = b64url(enc.encode(JSON.stringify({ e: email, exp: Math.floor(Date.now() / 1000) + SESSION_TTL })));
+async function signSession(env, email, role) {
+  const payload = b64url(enc.encode(JSON.stringify({ e: email, r: role || "editor", exp: Math.floor(Date.now() / 1000) + SESSION_TTL })));
   const key = await hmacKey(env.CMS_SESSION_SECRET || "dev-secret");
   const sig = b64url(await crypto.subtle.sign("HMAC", key, enc.encode(payload)));
   return `${payload}.${sig}`;
@@ -67,6 +76,73 @@ function timingSafeEqual(a, b) {
   let r = 0;
   for (let i = 0; i < a.length; i++) r |= a.charCodeAt(i) ^ b.charCodeAt(i);
   return r === 0;
+}
+
+// ---- password hashing (PBKDF2-SHA256) ----
+async function hashPassword(password, iterations = PBKDF2_ITERATIONS) {
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const key = await crypto.subtle.importKey("raw", enc.encode(password), "PBKDF2", false, ["deriveBits"]);
+  const bits = await crypto.subtle.deriveBits({ name: "PBKDF2", salt, iterations, hash: "SHA-256" }, key, 256);
+  return `pbkdf2$${iterations}$${b64url(salt)}$${b64url(bits)}`;
+}
+async function verifyPassword(password, stored) {
+  try {
+    const [scheme, iterStr, saltB64, hashB64] = String(stored || "").split("$");
+    if (scheme !== "pbkdf2") return false;
+    const salt = b64urlToBytes(saltB64);
+    const key = await crypto.subtle.importKey("raw", enc.encode(password), "PBKDF2", false, ["deriveBits"]);
+    const bits = await crypto.subtle.deriveBits({ name: "PBKDF2", salt, iterations: parseInt(iterStr, 10), hash: "SHA-256" }, key, 256);
+    return timingSafeEqual(b64url(bits), hashB64);
+  } catch {
+    return false;
+  }
+}
+
+// ---- user store (Cloudflare KV) ----
+const USER_PREFIX = "user:";
+const normEmail = (e) => String(e || "").trim().toLowerCase();
+const validEmail = (e) => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e);
+const userKey = (email) => USER_PREFIX + normEmail(email);
+const publicUser = (u) => ({ email: u.email, role: u.role, createdAt: u.createdAt, updatedAt: u.updatedAt });
+
+async function getUser(env, email) {
+  if (!env.CMS_USERS) return null;
+  const raw = await env.CMS_USERS.get(userKey(email));
+  return raw ? JSON.parse(raw) : null;
+}
+async function putUser(env, user) {
+  await env.CMS_USERS.put(userKey(user.email), JSON.stringify(user));
+}
+async function listUsers(env) {
+  if (!env.CMS_USERS) return [];
+  const out = [];
+  let cursor;
+  do {
+    const page = await env.CMS_USERS.list({ prefix: USER_PREFIX, cursor });
+    for (const k of page.keys) {
+      const raw = await env.CMS_USERS.get(k.name);
+      if (raw) out.push(JSON.parse(raw));
+    }
+    cursor = page.list_complete ? undefined : page.cursor;
+  } while (cursor);
+  return out;
+}
+async function countAdmins(env) {
+  return (await listUsers(env)).filter((u) => u.role === "admin").length;
+}
+// Seed the first admin from the CMS_EMAIL / CMS_PASSWORD secrets if the store is empty.
+async function ensureSeed(env) {
+  if (!env.CMS_USERS || !env.CMS_EMAIL || !env.CMS_PASSWORD) return;
+  const probe = await env.CMS_USERS.list({ prefix: USER_PREFIX, limit: 1 });
+  if (probe.keys.length) return;
+  const now = Date.now();
+  await putUser(env, {
+    email: normEmail(env.CMS_EMAIL),
+    role: "admin",
+    pass: await hashPassword(env.CMS_PASSWORD),
+    createdAt: now,
+    updatedAt: now,
+  });
 }
 
 // ---- GitHub REST helpers ----
@@ -142,12 +218,20 @@ export async function handleCms(request, env) {
   // --- login / logout / me ---
   if (path === "login" && method === "POST") {
     const body = await request.json().catch(() => ({}));
-    const emailOk = timingSafeEqual((body.email || "").toLowerCase(), (env.CMS_EMAIL || "").toLowerCase());
-    const passOk = timingSafeEqual(body.password || "", env.CMS_PASSWORD || "");
-    if (!emailOk || !passOk) return json({ error: "Incorrect email or password." }, 401);
-    const token = await signSession(env, env.CMS_EMAIL);
+    const email = normEmail(body.email);
+    await ensureSeed(env);
+    let user = await getUser(env, email);
+    // Legacy fallback: if KV isn't bound, verify against the seed secrets directly.
+    if (!user && !env.CMS_USERS) {
+      if (timingSafeEqual(email, normEmail(env.CMS_EMAIL)) && timingSafeEqual(body.password || "", env.CMS_PASSWORD || "")) {
+        user = { email: normEmail(env.CMS_EMAIL), role: "admin" };
+      }
+    }
+    const ok = user && user.pass ? await verifyPassword(body.password || "", user.pass) : !!(user && !user.pass);
+    if (!user || !ok) return json({ error: "Incorrect email or password." }, 401);
+    const token = await signSession(env, user.email, user.role);
     const cookie = `${COOKIE}=${encodeURIComponent(token)}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=${SESSION_TTL}`;
-    return json({ ok: true, email: env.CMS_EMAIL }, 200, { "Set-Cookie": cookie });
+    return json({ ok: true, email: user.email, role: user.role }, 200, { "Set-Cookie": cookie });
   }
   if (path === "logout" && method === "POST") {
     return json({ ok: true }, 200, { "Set-Cookie": `${COOKIE}=; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=0` });
@@ -155,8 +239,82 @@ export async function handleCms(request, env) {
 
   // --- everything below requires a valid session ---
   const session = await verifySession(env, getCookie(request, COOKIE));
-  if (path === "me") return session ? json({ email: session.e }) : json({ error: "Not signed in." }, 401);
+  if (path === "me") return session ? json({ email: session.e, role: session.r || "editor" }) : json({ error: "Not signed in." }, 401);
   if (!session) return json({ error: "Not signed in." }, 401);
+  const isAdmin = (session.r || "editor") === "admin";
+
+  // --- change own password ---
+  if (path === "password" && method === "POST") {
+    const body = await request.json().catch(() => ({}));
+    if (!env.CMS_USERS) return json({ error: "User store not configured." }, 501);
+    const user = await getUser(env, session.e);
+    if (!user) return json({ error: "Account not found." }, 404);
+    if (!(await verifyPassword(body.currentPassword || "", user.pass))) return json({ error: "Current password is incorrect." }, 401);
+    if ((body.newPassword || "").length < MIN_PASSWORD) return json({ error: `New password must be at least ${MIN_PASSWORD} characters.` }, 400);
+    user.pass = await hashPassword(body.newPassword);
+    user.updatedAt = Date.now();
+    await putUser(env, user);
+    return json({ ok: true });
+  }
+
+  // --- user management (admin only) ---
+  if (path === "users" || path.startsWith("users/")) {
+    if (!env.CMS_USERS) return json({ error: "User store not configured." }, 501);
+    if (!isAdmin) return json({ error: "Admins only." }, 403);
+    await ensureSeed(env);
+
+    if (path === "users" && method === "GET") {
+      const users = (await listUsers(env)).map(publicUser).sort((a, b) => a.email.localeCompare(b.email));
+      return json({ users, me: session.e });
+    }
+    if (path === "users" && method === "POST") {
+      const body = await request.json().catch(() => ({}));
+      const email = normEmail(body.email);
+      const role = body.role === "admin" ? "admin" : "editor";
+      if (!validEmail(email)) return json({ error: "Please enter a valid email address." }, 400);
+      if ((body.password || "").length < MIN_PASSWORD) return json({ error: `Password must be at least ${MIN_PASSWORD} characters.` }, 400);
+      if (await getUser(env, email)) return json({ error: "A user with that email already exists." }, 409);
+      const now = Date.now();
+      await putUser(env, { email, role, pass: await hashPassword(body.password), createdAt: now, updatedAt: now });
+      return json({ ok: true });
+    }
+    if (path === "users/role" && method === "POST") {
+      const body = await request.json().catch(() => ({}));
+      const email = normEmail(body.email);
+      const role = body.role === "admin" ? "admin" : "editor";
+      const user = await getUser(env, email);
+      if (!user) return json({ error: "User not found." }, 404);
+      if (user.role === "admin" && role !== "admin" && (await countAdmins(env)) <= 1) {
+        return json({ error: "You can't remove the last admin." }, 400);
+      }
+      user.role = role;
+      user.updatedAt = Date.now();
+      await putUser(env, user);
+      return json({ ok: true });
+    }
+    if (path === "users/reset" && method === "POST") {
+      const body = await request.json().catch(() => ({}));
+      const email = normEmail(body.email);
+      const user = await getUser(env, email);
+      if (!user) return json({ error: "User not found." }, 404);
+      if ((body.newPassword || "").length < MIN_PASSWORD) return json({ error: `Password must be at least ${MIN_PASSWORD} characters.` }, 400);
+      user.pass = await hashPassword(body.newPassword);
+      user.updatedAt = Date.now();
+      await putUser(env, user);
+      return json({ ok: true });
+    }
+    if (path === "users" && method === "DELETE") {
+      const body = await request.json().catch(() => ({}));
+      const email = normEmail(body.email);
+      if (email === normEmail(session.e)) return json({ error: "You can't delete your own account." }, 400);
+      const user = await getUser(env, email);
+      if (!user) return json({ error: "User not found." }, 404);
+      if (user.role === "admin" && (await countAdmins(env)) <= 1) return json({ error: "You can't delete the last admin." }, 400);
+      await env.CMS_USERS.delete(userKey(email));
+      return json({ ok: true });
+    }
+    return json({ error: "Unknown endpoint." }, 404);
+  }
 
   if (path === "list" && method === "GET") {
     const dir = url.searchParams.get("folder");

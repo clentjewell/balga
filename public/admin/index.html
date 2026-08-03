@@ -120,28 +120,135 @@ function loginView(){
   const pass = el("input",{type:"password",placeholder:"Password",autocomplete:"current-password"});
   const btn = el("button",{type:"submit"},"Sign in");
   const form = el("form",{onsubmit:async(e)=>{ e.preventDefault(); err.classList.add("hidden"); btn.disabled=true; btn.textContent="Signing in…";
-    try{ const r=await api("/login",{method:"POST",body:JSON.stringify({email:email.value,password:pass.value})}); SESSION=r.email; await boot(); }
+    try{ const r=await api("/login",{method:"POST",body:JSON.stringify({email:email.value,password:pass.value})}); SESSION={email:r.email,role:r.role}; await boot(); }
     catch(ex){ err.textContent=ex.message; err.classList.remove("hidden"); btn.disabled=false; btn.textContent="Sign in"; }
   }},[
     el("div",{class:"field"},[el("label",{},"Email"),email]),
     el("div",{class:"field"},[el("label",{},"Password"),pass]),
     btn, err
   ]);
+  const forgot = el("p",{class:"hint",style:"margin-top:1rem"},"Forgot your password? Ask an admin to reset it under “Users”, or contact your developer if you're the only admin.");
   render(el("div",{class:"login"},[el("div",{class:"login__card"},[
-    el("h1",{},"Balga Content Manager"), el("p",{},"Sign in to edit the website."), form
+    el("h1",{},"Balga Content Manager"), el("p",{},"Sign in to edit the website."), form, forgot
   ])]));
 }
 
 function appShell(activeCollection){
   const nav = el("nav",{}, CONFIG.collections.map(c=>el("button",{class:c.name===activeCollection?"active":"",onclick:()=>collectionView(c.name)},c.label)));
+  const accountBtns = [ el("button",{class:activeCollection==="__account"?"active":"",onclick:()=>accountView()},"👤 My account") ];
+  if(SESSION && SESSION.role==="admin") accountBtns.push(el("button",{class:activeCollection==="__users"?"active":"",onclick:()=>usersView()},"🔑 Users"));
+  const extra = el("nav",{style:"margin-top:.6rem;border-top:1px solid rgba(255,255,255,.18);padding-top:.6rem"}, accountBtns);
+  const who = SESSION ? SESSION.email + (SESSION.role==="admin"?"  ·  admin":"") : "";
   const side = el("aside",{class:"side"},[
     el("div",{class:"side__brand"},[el("span",{},"🌿"),"Balga CMS"]),
-    nav,
-    el("div",{class:"side__foot"},[ el("div",{},SESSION||""), el("button",{onclick:async()=>{await api("/logout",{method:"POST"});location.reload();}},"Sign out") ])
+    nav, extra,
+    el("div",{class:"side__foot"},[ el("div",{},who), el("button",{onclick:async()=>{await api("/logout",{method:"POST"});location.reload();}},"Sign out") ])
   ]);
   const main = el("main",{class:"main",id:"main"});
   render(el("div",{class:"app"},[side,main]));
   return main;
+}
+
+// ---------- my account (change password) ----------
+function accountView(){
+  const main = appShell("__account");
+  main.append(el("div",{class:"topbar"},[ el("h2",{},"My account") ]));
+  const msg = el("div",{class:"msg err hidden"});
+  const cur = el("input",{type:"password",autocomplete:"current-password"});
+  const nw = el("input",{type:"password",autocomplete:"new-password"});
+  const cf = el("input",{type:"password",autocomplete:"new-password"});
+  const btn = el("button",{},"Update password");
+  const form = el("form",{class:"form",onsubmit:async(e)=>{ e.preventDefault(); msg.classList.add("hidden");
+    if(nw.value.length<8){ msg.textContent="New password must be at least 8 characters."; msg.classList.remove("hidden"); return; }
+    if(nw.value!==cf.value){ msg.textContent="New passwords do not match."; msg.classList.remove("hidden"); return; }
+    btn.disabled=true; btn.innerHTML='<span class="spin"></span> Saving…';
+    try{ await api("/password",{method:"POST",body:JSON.stringify({currentPassword:cur.value,newPassword:nw.value})});
+      toast("Password updated.","ok"); cur.value=nw.value=cf.value="";
+    }catch(ex){ msg.textContent=ex.message; msg.classList.remove("hidden"); }
+    btn.disabled=false; btn.textContent="Update password";
+  }},[
+    el("p",{class:"hint"},"Signed in as "+(SESSION?SESSION.email:"")+"."),
+    el("div",{},[el("label",{},"Current password"),cur]),
+    el("div",{},[el("label",{},"New password"),nw]),
+    el("div",{},[el("label",{},"Confirm new password"),cf]),
+    el("div",{class:"actions"},[btn]), msg
+  ]);
+  main.append(form);
+}
+
+// ---------- user management (admin) ----------
+async function usersView(){
+  const main = appShell("__users");
+  main.append(el("div",{class:"topbar"},[ el("h2",{},"Users") ]));
+
+  // Add-user card
+  const aMsg = el("div",{class:"msg err hidden"});
+  const aEmail = el("input",{type:"email",placeholder:"person@example.com"});
+  const aPass = el("input",{type:"password",placeholder:"At least 8 characters",autocomplete:"new-password"});
+  const aRole = el("select",{}, [el("option",{value:"editor"},"Editor — can edit content"), el("option",{value:"admin"},"Admin — can also manage users")]);
+  const aBtn = el("button",{},"Add user");
+  const addCard = el("form",{class:"card",onsubmit:async(e)=>{ e.preventDefault(); aMsg.classList.add("hidden"); aBtn.disabled=true;
+    try{ await api("/users",{method:"POST",body:JSON.stringify({email:aEmail.value,password:aPass.value,role:aRole.value})});
+      toast("User added.","ok"); aEmail.value=aPass.value=""; aRole.value="editor"; usersView();
+    }catch(ex){ aMsg.textContent=ex.message; aMsg.classList.remove("hidden"); aBtn.disabled=false; }
+  }},[
+    el("h3",{},"Add a user"),
+    el("div",{style:"display:grid;gap:.7rem"},[
+      el("div",{},[el("label",{},"Email"),aEmail]),
+      el("div",{},[el("label",{},"Temporary password"),aPass]),
+      el("div",{},[el("label",{},"Role"),aRole]),
+      el("div",{class:"actions"},[aBtn]), aMsg
+    ])
+  ]);
+  main.append(addCard);
+
+  const listEl = el("div",{class:"list",style:"margin-top:1.2rem"}, el("p",{},[el("span",{class:"spin"})," Loading users…"]));
+  main.append(listEl);
+  try{
+    const { users, me } = await api("/users");
+    listEl.innerHTML="";
+    users.forEach(u=>{
+      const isMe = u.email===me;
+      const badge = el("span",{class:"row__s"}, u.role==="admin"?"Admin":"Editor");
+      const rowMsg = el("div",{class:"msg err hidden",style:"width:100%"});
+      const actions = el("div",{class:"actions"});
+      // reset password (inline)
+      const rBtn = el("button",{class:"secondary"},"Reset password");
+      rBtn.addEventListener("click",()=>{
+        if(actions.querySelector(".resetbox")) return;
+        const np = el("input",{type:"password",placeholder:"New password (min 8)",style:"width:200px"});
+        const save = el("button",{},"Save");
+        const box = el("span",{class:"resetbox",style:"display:inline-flex;gap:.4rem;align-items:center;flex-wrap:wrap"},[np,save,
+          el("button",{class:"secondary",type:"button",onclick:()=>box.remove()},"Cancel")]);
+        save.addEventListener("click",async()=>{ rowMsg.classList.add("hidden"); save.disabled=true;
+          try{ await api("/users/reset",{method:"POST",body:JSON.stringify({email:u.email,newPassword:np.value})}); toast("Password reset for "+u.email,"ok"); box.remove(); }
+          catch(ex){ rowMsg.textContent=ex.message; rowMsg.classList.remove("hidden"); save.disabled=false; }
+        });
+        actions.append(box);
+      });
+      actions.append(rBtn);
+      // role toggle
+      const roleBtn = el("button",{class:"secondary"}, u.role==="admin"?"Make editor":"Make admin");
+      roleBtn.addEventListener("click",async()=>{ rowMsg.classList.add("hidden"); roleBtn.disabled=true;
+        try{ await api("/users/role",{method:"POST",body:JSON.stringify({email:u.email,role:u.role==="admin"?"editor":"admin"})}); usersView(); }
+        catch(ex){ rowMsg.textContent=ex.message; rowMsg.classList.remove("hidden"); roleBtn.disabled=false; }
+      });
+      actions.append(roleBtn);
+      // delete
+      if(!isMe){
+        const dBtn = el("button",{class:"danger"},"Delete");
+        dBtn.addEventListener("click",async()=>{ if(!confirm("Delete "+u.email+"?")) return; rowMsg.classList.add("hidden"); dBtn.disabled=true;
+          try{ await api("/users",{method:"DELETE",body:JSON.stringify({email:u.email})}); toast("User deleted.","ok"); usersView(); }
+          catch(ex){ rowMsg.textContent=ex.message; rowMsg.classList.remove("hidden"); dBtn.disabled=false; }
+        });
+        actions.append(dBtn);
+      }
+      listEl.append(el("div",{class:"row",style:"flex-wrap:wrap"},[
+        el("div",{class:"rowmain"},[el("div",{},[el("div",{class:"row__t"}, u.email + (isMe?"  (you)":"")), badge])]),
+        actions, rowMsg
+      ]));
+    });
+  }catch(ex){ listEl.innerHTML=""; listEl.append(el("div",{class:"msg err"},ex.message)); }
 }
 
 function getCol(name){ return CONFIG.collections.find(c=>c.name===name); }
@@ -346,7 +453,7 @@ async function editorView(name, item, fileEntry){
 async function boot(){
   try{ CONFIG = await (await fetch("/cms-config.json",{cache:"no-store"})).json(); }
   catch{ render(el("div",{class:"login"},el("div",{class:"login__card"},"Could not load CMS config."))); return; }
-  try{ const me=await api("/me"); SESSION=me.email; collectionView(CONFIG.collections[0].name); }
+  try{ const me=await api("/me"); SESSION={email:me.email,role:me.role}; collectionView(CONFIG.collections[0].name); }
   catch{ loginView(); }
 }
 boot();
