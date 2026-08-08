@@ -1,16 +1,18 @@
 {
-  "order": 3,
   "slug": "decorative-plants",
-  "relatedProjects": [
-    "project-04",
-    "project-02"
-  ],
+  "order": 3,
   "title": "Decorative Plants",
   "description": "Enhance your space by incorporating potted greenery, bringing an organic and stylish feel to your indoor & outdoor area.",
-  "image": "/assets/services/decorative-plants.webp",
+  "image": "/assets/services/uploads/fun-2.jpg",
   "alt": "Styled decorative potted plants",
   "width": 1000,
   "height": 989,
+  "relatedProjects": [
+    "project-02",
+    "project-04"
+  ],
+  "contentImage": "/assets/services/uploads/driveway.jpg",
+  "contentImageAlt": "Front garden after refresh",
   "detail": {
     "seoTitle": "Decorative Plants & Pot Styling",
     "metaDescription": "Style indoor and outdoor spaces with potted greenery — Balga Designs' Pot Styling Package ($2,000) brings an organic, healthy feel to any space.",
@@ -18,7 +20,5 @@
     "whenYouNeed": "When you want greenery and warmth without a full garden build — perfect for balconies, courtyards, entrances, patios and interiors.",
     "whatsInvolved": "Our Potted Greenery / Pot Styling Package is $2,000 and centres on selecting and arranging potted plants to suit your space and style.",
     "whyBalga": "We choose plants that thrive in your conditions and pair them beautifully with your space, so the result looks considered and stays healthy."
-  },
-  "contentImage": "/assets/projects/project-06/after.webp",
-  "contentImageAlt": "Front garden after refresh"
+  }
 }
