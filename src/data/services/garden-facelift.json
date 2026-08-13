@@ -1,17 +1,18 @@
 {
-  "order": 2,
   "slug": "garden-facelift",
-  "relatedProjects": [
-    "project-06",
-    "project-02",
-    "project-04"
-  ],
+  "order": 2,
   "title": "Garden Facelift",
   "description": "Tailored to harmonise with the natural environment, creating spaces that are both functional and beautiful.",
-  "image": "/assets/services/garden-facelift.webp",
+  "image": "/assets/services/uploads/front-5.jpg",
   "alt": "Regenerated native garden with grasses overlooking the hills",
   "width": 1000,
   "height": 750,
+  "relatedProjects": [
+    "project-02",
+    "project-04"
+  ],
+  "contentImage": "/assets/projects/project-01/after.webp",
+  "contentImageAlt": "Kingsley project after sustainable landscaping",
   "detail": {
     "seoTitle": "Garden Facelift | Sustainable Garden Renovation",
     "metaDescription": "Revive an overgrown or dated garden with a sustainable Balga Designs facelift — native, low-maintenance and beautiful, across the Northern Rivers.",
@@ -19,7 +20,5 @@
     "whenYouNeed": "When your garden has good bones but has become overgrown, dated or unloved, and you want to bring it back to life without starting completely from scratch.",
     "whatsInvolved": "Every facelift is shaped around your space and goals — we work with what is already there. Book a free consultation and we will scope the work and give you a tailored quote.",
     "whyBalga": "We work with what is already there and with the local ecosystem, so your revived garden feels natural, sustainable and easy to care for."
-  },
-  "contentImage": "/assets/projects/project-01/after.webp",
-  "contentImageAlt": "Kingsley project after sustainable landscaping"
+  }
 }
