@@ -1,16 +1,17 @@
 {
-  "order": 4,
   "slug": "integrated-pest-management",
-  "relatedProjects": [
-    "project-03",
-    "project-07"
-  ],
+  "order": 4,
   "title": "Integrated Pest Management",
   "description": "Restoring native ecosystems and promoting biodiversity within your garden.",
   "image": "/assets/services/pest-management.webp",
   "alt": "Cottage-feel native garden bed supporting biodiversity",
   "width": 1000,
   "height": 750,
+  "relatedProjects": [
+    "project-03"
+  ],
+  "contentImage": "/assets/services/uploads/img_3135.jpeg",
+  "contentImageAlt": "Bangalow backyard after transformation",
   "detail": {
     "seoTitle": "Integrated Pest Management | Chemical-Free",
     "metaDescription": "Chemical-free, ecological pest management from Balga Designs — restore native ecosystems and biodiversity in your Northern Rivers garden. Book a free consultation.",
@@ -18,7 +19,5 @@
     "whenYouNeed": "When pests are affecting your garden and you want them managed without harsh chemicals that damage soil, plants and local wildlife.",
     "whatsInvolved": "We assess your garden and apply integrated, ecological pest-management methods suited to your site. Book a free consultation and we will tailor a plan and quote to your garden.",
     "whyBalga": "Our methods work with nature, not against it — protecting the biodiversity that keeps your garden resilient over the long term."
-  },
-  "contentImage": "/assets/projects/project-02/after.webp",
-  "contentImageAlt": "Bangalow backyard after transformation"
+  }
 }
