@@ -1022,17 +1022,23 @@
       "identifier": "id",
       "sortField": "order",
       "summaryField": "q",
+      "groupField": "category",
+      "reorder": true,
+      "reorderHint": "Questions are grouped by category. Drag the ⠿ handle to change the order, or drag a question into another category — then press “Save new order”.",
+      "autoId": { "prefix": "faq-", "pad": 2 },
+      "autoOrder": true,
       "fields": [
         {
           "name": "id",
           "label": "ID / filename",
           "widget": "slug",
-          "hint": "e.g. faq-15"
+          "hidden": true
         },
         {
           "name": "order",
           "label": "Order",
           "widget": "number",
+          "hidden": true,
           "default": 99
         },
         {
