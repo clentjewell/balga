@@ -1280,13 +1280,18 @@ async function editorView(name, item, fileEntry){
 }
 
 async function boot(){
-  try{ CONFIG = await (await fetch("/cms-config.json",{cache:"no-store"})).json(); }
-  catch{ render(el("div",{class:"login"},el("div",{class:"login__card"},"Could not load CMS config."))); return; }
   // Arriving from a "reset your password" email.
   const reset = /[#&]reset=([^&]+)/.exec(location.hash);
   if(reset){ resetView(decodeURIComponent(reset[1])); return; }
-  try{ const me=await api("/me"); SESSION={email:me.email,role:me.role,name:me.name||""}; dashboardView(); }
-  catch{ loginView(); }
+
+  // Who are you? The config is only served to a signed-in session, so this comes first.
+  try{ const me=await api("/me"); SESSION={email:me.email,role:me.role,name:me.name||""}; }
+  catch{ loginView(); return; }
+
+  try{ CONFIG = await (await fetch("/cms-config.json",{cache:"no-store"})).json(); }
+  catch{ render(el("div",{class:"login"},el("div",{class:"login__card"},"Could not load CMS config."))); return; }
+
+  dashboardView();
 }
 // A reset link pasted into an already-open tab changes the hash without reloading.
 window.addEventListener("hashchange",()=>{

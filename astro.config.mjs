@@ -1,7 +1,8 @@
 import { defineConfig } from 'astro/config';
 import { writeFileSync, readFileSync, rmSync, mkdirSync, readdirSync, statSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createHash } from 'node:crypto';
 import { parse } from 'node-html-parser';
 import sharp from 'sharp';
 import { draftPaths } from './src/data/pages.mjs';
@@ -87,6 +88,45 @@ async function addImageDimensions(dir) {
     if (out !== html) writeFileSync(file, out);
   }
   return touched;
+}
+
+/**
+ * Hash every inline <script> so the Content-Security-Policy can name them
+ * instead of allowing 'unsafe-inline'.
+ *
+ * Inline blocks are unavoidable here — Astro's hoisted scripts and the JSON-LD
+ * the SEO work depends on are both inline — but a hash lets the browser run
+ * exactly those and nothing else, so an injected <script> is refused. The Worker
+ * reads this manifest and emits a per-page policy (see src/worker.js).
+ */
+function writeCspManifest(dir) {
+  const root = fileURLToPath(dir);
+  const manifest = {};
+
+  const walk = (d) => {
+    for (const name of readdirSync(d)) {
+      const p = join(d, name);
+      if (statSync(p).isDirectory()) { if (name !== '_cms') walk(p); continue; }
+      if (!name.endsWith('.html')) continue;
+
+      const html = readFileSync(p, 'utf8');
+      const hashes = [];
+      for (const m of html.matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/g)) {
+        if (/\ssrc=/.test(m[1])) continue; // external file — covered by 'self'
+        hashes.push('sha256-' + createHash('sha256').update(m[2], 'utf8').digest('base64'));
+      }
+
+      // dist/about/index.html -> /about/ ; dist/index.html -> / ; dist/404.html -> /404.html
+      let route = '/' + relative(root, p).split(sep).join('/');
+      route = route.endsWith('/index.html') ? route.slice(0, -'index.html'.length) : route;
+      manifest[route] = [...new Set(hashes)];
+    }
+  };
+  walk(root);
+
+  mkdirSync(new URL('_cms/', dir), { recursive: true });
+  writeFileSync(new URL('_cms/csp.json', dir), JSON.stringify(manifest, null, 2) + '\n');
+  return Object.values(manifest).reduce((n, h) => n + h.length, 0);
 }
 
 function toUrls(pages) {
@@ -221,6 +261,10 @@ ${sections.join('\n---\n\n')}`;
 
         const withDims = await addImageDimensions(dir);
         if (withDims) console.log(`balga-seo-files: added width/height to ${withDims} image(s)`);
+
+        // Must run last: it hashes the HTML exactly as it will be served.
+        const hashed = writeCspManifest(dir);
+        console.log(`balga-seo-files: hashed ${hashed} inline script(s) for the CSP`);
       },
     },
   };
