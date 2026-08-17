@@ -6,7 +6,7 @@
  *  - add X-Robots-Tag: noindex, nofollow on the preview (toggle with PREVIEW_NOINDEX=false).
  */
 
-import { handleCms, saveEnquiry, hasCmsSession } from "./cms/handler.js";
+import { handleCms, saveEnquiry, hasCmsSession, sendMail, mailConfigured } from "./cms/handler.js";
 // The one source of business facts, so error copy can't drift from the site.
 import settings from "./data/content/settings.json";
 
@@ -71,41 +71,41 @@ async function handleContact(request, env) {
   // the client a lead, so it doesn't block the send below.
   const stored = await saveEnquiry(env, { firstName, lastName, email, message }).catch(() => ({ ok: false }));
 
-  const apiKey = env.RESEND_API_KEY;
-  const to = env.CONTACT_TO_EMAIL || "rao@jewellprojects.com";
-  const from = env.CONTACT_FROM_EMAIL || "Balga Designs <onboarding@resend.dev>";
+  // Notify the business. Mail goes out through whichever route is configured —
+  // their Google Workspace relay or Resend — see sendMail() in cms/handler.js.
+  const to = env.CONTACT_TO_EMAIL || settings.email;
 
-  // No delivery credentials configured -> honest response (never fake a send). The
-  // enquiry is still recorded above, so the client sees it in the CMS dashboard.
-  if (!apiKey || !to || !from) {
+  if (!mailConfigured(env)) {
+    // Nothing can be sent yet. Say so honestly; the enquiry is safe either way.
     return json({
       status: stored.ok ? "sent" : "preview",
       message: stored.ok
         ? `Thanks! Your message has been received — we’ll be in touch soon. For anything urgent, email ${settings.email}.`
-        : `Preview mode: your message validated correctly, but email delivery isn’t configured on this preview deployment. Please email ${settings.email} directly.`,
+        : `Preview mode: your message validated correctly, but email delivery isn’t configured on this deployment. Please email ${settings.email} directly.`,
     });
   }
 
-  try {
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        from,
-        to: [to],
-        reply_to: email,
-        subject: `New enquiry from ${firstName} ${lastName}`,
-        text: `Name: ${firstName} ${lastName}\nEmail: ${email}\n\n${message}`,
-      }),
-    });
-    if (!res.ok) {
-      const detail = await res.text().catch(() => "");
-      return json({ status: "error", message: `We couldn’t send your message right now. Please email ${settings.email}.`, detail: detail.slice(0, 200) }, 502);
-    }
-    return json({ status: "sent", message: "Thanks! Your message has been sent — we’ll be in touch soon." });
-  } catch {
-    return json({ status: "error", message: `Network error sending your message. Please email ${settings.email}.` }, 502);
+  const sent = await sendMail(env, {
+    to,
+    subject: `New enquiry from ${firstName} ${lastName}`,
+    text: `Name: ${firstName} ${lastName}\nEmail: ${email}\n\n${message}`,
+    replyTo: email,
+    fromName: "Balga Designs website",
+  });
+
+  if (!sent.ok) {
+    // The enquiry is already saved, so this isn't lost — the client will see it on
+    // the dashboard even though the notification didn't get through.
+    return json({
+      status: stored.ok ? "sent" : "error",
+      message: stored.ok
+        ? `Thanks! Your message has been received — we’ll be in touch soon.`
+        : `We couldn’t send your message right now. Please email ${settings.email}.`,
+      detail: sent.error ? String(sent.error).slice(0, 200) : undefined,
+    }, stored.ok ? 200 : 502);
   }
+
+  return json({ status: "sent", message: "Thanks! Your message has been sent — we’ll be in touch soon." });
 }
 
 // Content types wrangler's asset server may not set (needed alongside nosniff).

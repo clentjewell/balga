@@ -157,18 +157,46 @@ public URL 404s for a minute or two. Thumbnails and previews fall back to
 `GET /cms-api/media-file?path=…`, which reads the file straight from the repo, so
 new uploads are visible in the CMS immediately.
 
-## Contact enquiries + email (Resend)
+## Contact enquiries + outgoing email
 
-The contact form (`POST /api/contact`) stores every valid submission in KV and then
-tries to email it. Setting `RESEND_API_KEY` (plus optional `CONTACT_TO_EMAIL` /
-`CONTACT_FROM_EMAIL`) with `wrangler secret put` switches the email on; until then
-submissions are still captured and visible on the dashboard.
+Every valid contact-form submission is **stored first** (KV) and shows on the
+dashboard, so enquiries are captured whether or not email is switched on. The email
+is the notification on top of that.
 
-The same key powers **Forgot password**: the client gets a one-time link (30 minutes,
-single use) to set a new password themselves. Until `RESEND_API_KEY` exists the
-screen says so and admins can still reset passwords under **Users**. Reset requests
-answer identically whether or not the email has an account, so the form can't be
-used to discover who has one.
+### How mail leaves the site
+
+Cloudflare Workers can't hand a message to an SMTP server the way a normal web host
+would — outgoing mail has to go over HTTPS. Two routes are supported, tried in this
+order by `sendMail()` in `src/cms/handler.js`:
+
+**1. Google Workspace (recommended here — the client's mail already lives there).**
+A small Apps Script web app runs in the client's own Google account and sends the
+mail from their mailbox. No third-party sending service, nothing to pay for, and no
+SPF/DKIM changes, because the mail genuinely is sent by their account.
+
+Setup is in [`docs/google-workspace-mailer.gs`](docs/google-workspace-mailer.gs) —
+paste the script, deploy it as a web app, then:
+
+```bash
+npx wrangler secret put GAS_MAIL_URL      # the /exec URL of the deployment
+npx wrangler secret put GAS_MAIL_TOKEN    # the shared token from the script
+```
+
+**2. Resend**, if a sending service is ever preferred: `npx wrangler secret put
+RESEND_API_KEY` (plus optional `CONTACT_FROM_EMAIL`). Only used when the Workspace
+relay isn't configured.
+
+Notifications go to `CONTACT_TO_EMAIL` if set, otherwise to the business email from
+**Site settings**. If a send fails, the visitor still gets a "received" reply and the
+enquiry is on the dashboard — a delivery problem never loses a lead.
+
+### What this also switches on
+
+The same mailer powers **Forgot password**: a one-time link (30 minutes, single use)
+to set a new password. Until either route is configured the screen says so, and
+admins can still reset passwords under **Users**. Reset requests answer identically
+whether or not the email has an account, so the form can't be used to discover who
+has one.
 
 ## FAQs — ordering and categories
 
