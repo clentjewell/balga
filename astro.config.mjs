@@ -1,6 +1,7 @@
 import { defineConfig } from 'astro/config';
-import { writeFileSync, readFileSync } from 'node:fs';
+import { writeFileSync, readFileSync, rmSync, mkdirSync } from 'node:fs';
 import { parse } from 'node-html-parser';
+import { draftPaths } from './src/data/pages.mjs';
 
 // Preview deployment URL (workers.dev). Override with SITE_URL when promoting
 // to a production domain so canonicals/sitemap use the right origin.
@@ -49,8 +50,20 @@ function seoFiles() {
     name: 'balga-seo-files',
     hooks: {
       'astro:build:done': ({ pages, dir }) => {
-        const urls = toUrls(pages);
+        // Pages the client has unpublished from the CMS dashboard: delete the built
+        // HTML so the URL falls through to the 404 page, and keep them out of the
+        // sitemap / llms files below.
+        for (const p of draftPaths) {
+          rmSync(new URL(p.replace(/^\//, ''), dir), { recursive: true, force: true });
+        }
+        const urls = toUrls(pages).filter((u) => !draftPaths.includes(u));
         const lastmod = new Date().toISOString().slice(0, 10);
+
+        // Session-gated by the Worker (see src/worker.js): the audit reads this to
+        // tell "link to a page you unpublished" apart from "link to nowhere", and
+        // the CMS dashboard reads the link report written alongside it.
+        mkdirSync(new URL('_cms/', dir), { recursive: true });
+        writeFileSync(new URL('_cms/page-status.json', dir), JSON.stringify({ draftPaths }, null, 2) + '\n');
 
         // --- sitemap.xml (with stylesheet reference for the Yoast/RankMath-style view) ---
         const body = urls
@@ -93,7 +106,8 @@ function seoFiles() {
           const [label, desc] = PAGE_META[u] || [u, ''];
           return `- [${label}](${BASE}${u})${desc ? `: ${desc}` : ''}`;
         };
-        const corePages = ['/', '/about/', '/services/', '/projects/', '/pricing/', '/faqs/', '/contact/'];
+        const corePages = ['/', '/about/', '/services/', '/projects/', '/pricing/', '/faqs/', '/contact/']
+          .filter((u) => urls.includes(u));
         const servicePages = urls.filter((u) => u.startsWith('/services/') && u !== '/services/');
         const articles = urls.filter((u) => u.startsWith('/what-') || u.startsWith('/why-') || u.startsWith('/balga-meaning'));
         const llms =

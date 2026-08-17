@@ -1,5 +1,7 @@
 ---
 import { testimonials as all } from "../data/testimonials";
+// Section heading, intro and backdrop are client-editable (CMS "Shared sections").
+import sections from "../data/content/sections.json";
 export interface Props { count?: number; }
 const { count = all.length } = Astro.props;
 const items = all.slice(0, count);
@@ -7,14 +9,14 @@ const stars = [0, 1, 2, 3, 4];
 ---
 <section class="testi">
   <div class="testi__media">
-    <img src="/assets/home/testimonials-bg.webp" alt="A naturalistic native garden by Balga Designs" width="900" height="1100" loading="lazy" />
+    <img src={sections.testimonialsImage} alt={sections.testimonialsImageAlt} width="900" height="1100" loading="lazy" />
   </div>
   <div class="testi__panel">
     <div class="testi__inner">
       <div class="testi__head reveal">
-        <span class="eyebrow">Testimonials</span>
-        <h2>Review From Our Customers</h2>
-        <p class="testi__intro">Our clients appreciate how we blend sustainability and beauty in their outdoor spaces. Hear from those who’ve experienced the Balga Designs transformation.</p>
+        <span class="eyebrow">{sections.testimonialsEyebrow}</span>
+        <h2>{sections.testimonialsTitle}</h2>
+        <p class="testi__intro">{sections.testimonialsIntro}</p>
       </div>
 
       <div class="testi__slider" data-testi>

@@ -77,6 +77,53 @@ User accounts live in a Cloudflare **KV namespace** (binding `CMS_USERS` in
 Passwords are stored only as PBKDF2-SHA256 hashes; the `CMS_PASSWORD` secret is just
 the seed. Sessions last 8 hours and carry the role.
 
+## Dashboard
+
+Signing in lands on **Dashboard** (first item in the sidebar; everything else is
+unchanged). Five cards:
+
+- **Contact enquiries** — every message sent through the website's contact form,
+  with total / unread / read counts. Opening one marks it read. Enquiries are stored
+  in KV *before* the notification email is attempted, so they're captured even
+  though Resend isn't set up yet (see below).
+- **Broken links** — from the link check that runs with every publish
+  (`npm run audit`). Separates genuinely dead links from links pointing at a page
+  the client has unpublished, and ignores sites that merely block robots (a 429 from
+  Instagram is not a broken link).
+- **Last 20 changes** — who changed what, when. CMS commits are attributed to the
+  signed-in user, so this reads "Sarah · Updated the About page · 2 hours ago"
+  rather than crediting the shared bot token.
+- **Pages** — publish / unpublish each page (below), plus a **+ New page** button
+  that explains new pages need design work and to contact the admin.
+- **Blog posts** — the post list with Edit, plus New post.
+
+### Publishing and unpublishing pages
+
+Status lives in `src/data/content/page-status.json` (`published` | `draft`) and is
+written by the dashboard. On the next build an unpublished page is **deleted from
+`dist/`** (so the URL falls through to the 404 page) and dropped from the menus,
+the sitemap and `llms.txt`. Nothing is deleted from the repo — publishing it again
+restores it exactly.
+
+Home and Contact are locked: a site should never be able to lose them. New pages
+are deliberately not self-serve; they need layout/design work.
+
+Any links *inside page content* that point at a page the client unpublishes show up
+on the Broken links card as "points at a page you've unpublished".
+
+## Contact enquiries + email (Resend)
+
+The contact form (`POST /api/contact`) stores every valid submission in KV and then
+tries to email it. Setting `RESEND_API_KEY` (plus optional `CONTACT_TO_EMAIL` /
+`CONTACT_FROM_EMAIL`) with `wrangler secret put` switches the email on; until then
+submissions are still captured and visible on the dashboard.
+
+The same key powers **Forgot password**: the client gets a one-time link (30 minutes,
+single use) to set a new password themselves. Until `RESEND_API_KEY` exists the
+screen says so and admins can still reset passwords under **Users**. Reset requests
+answer identically whether or not the email has an account, so the form can't be
+used to discover who has one.
+
 ## FAQs — ordering and categories
 
 The FAQs screen lists the questions **grouped by category**, in the order they
@@ -96,6 +143,8 @@ way: `"reorder": true`, `"groupField": "<field>"`, `"autoId": {"prefix":"faq-","
 
 ## Notes / limits
 
+- The shared-sections file now also carries the **Testimonials** section heading,
+  intro and backdrop (they used to be hard-coded in the component).
 - Editable content: **every page** (hero, headings, CTAs, images) + shared sections
   (Why choose us, How we work, Video band, CTA, hero cards) + Projects, Services,
   Pricing packages, Blog posts, FAQs, Testimonials, and the **Header & footer**

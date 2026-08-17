@@ -51,6 +51,32 @@
   .row__t{font-weight:600}
   .row__s{color:var(--muted);font-size:.85rem}
 
+  /* Dashboard */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:1rem;align-items:start}
+  .cards .card{margin:0}
+  .card--wide{grid-column:1/-1}
+  .card__h{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin:0 0 .8rem;font-size:1.05rem;font-weight:700}
+  .card__h .hint{margin:0}
+  .stats{display:flex;gap:1.4rem;flex-wrap:wrap;margin-bottom:.8rem}
+  .stat__n{font-size:1.7rem;font-weight:700;line-height:1.1}
+  .stat__l{color:var(--muted);font-size:.82rem}
+  .stat--alert .stat__n{color:var(--danger)}
+  .stat--ok .stat__n{color:var(--ok)}
+  .clist{display:grid;gap:.1rem;max-height:340px;overflow:auto;margin:0 -.4rem}
+  .citem{display:flex;gap:.6rem;align-items:flex-start;padding:.5rem .4rem;border-top:1px solid var(--line);font-size:.9rem}
+  .citem:first-child{border-top:0}
+  .citem__main{flex:1;min-width:0}
+  .citem__t{font-weight:600;overflow-wrap:anywhere}
+  .citem__s{color:var(--muted);font-size:.82rem;overflow-wrap:anywhere}
+  .citem__act{flex:0 0 auto;display:flex;gap:.3rem}
+  .citem__act button{padding:.3rem .5rem;font-size:.8rem}
+  .dot{flex:0 0 auto;width:8px;height:8px;border-radius:50%;background:var(--green);margin-top:.45rem}
+  .dot--off{background:transparent;border:1px solid var(--line)}
+  .pill{flex:0 0 auto;font-size:.75rem;font-weight:600;padding:.15rem .5rem;border-radius:999px;background:#e8e7df;color:var(--muted)}
+  .pill--live{background:#e4eede;color:var(--ok)}
+  .pill--draft{background:#f6e7c9;color:#7a5a12}
+  .empty{color:var(--muted);font-size:.88rem;padding:.4rem 0}
+
   /* Grouped + drag-to-reorder list */
   .group{margin-bottom:1.6rem}
   .group__h{margin:0 0 .6rem;font-size:1.02rem;font-weight:700;display:flex;align-items:center;gap:.5rem}
@@ -144,14 +170,72 @@ function loginView(){
     el("div",{class:"field"},[el("label",{},"Password"),pass]),
     btn, err
   ]);
-  const forgot = el("p",{class:"hint",style:"margin-top:1rem"},"Forgot your password? Ask an admin to reset it under “Users”, or contact your developer if you're the only admin.");
+  const forgot = el("p",{class:"hint",style:"margin-top:1rem"},[
+    el("button",{class:"link",type:"button",onclick:()=>forgotView()},"Forgot your password?"),
+  ]);
   render(el("div",{class:"login"},[el("div",{class:"login__card"},[
     el("h1",{},"Balga Content Manager"), el("p",{},"Sign in to edit the website."), form, forgot
   ])]));
 }
 
+// ---------- forgot password (emails a one-time reset link) ----------
+function forgotView(){
+  const msg = el("div",{class:"msg err hidden"});
+  const ok = el("p",{class:"hint hidden"});
+  const email = el("input",{type:"email",placeholder:"you@example.com",autocomplete:"username"});
+  const btn = el("button",{type:"submit"},"Email me a reset link");
+  const form = el("form",{onsubmit:async(e)=>{
+    e.preventDefault(); msg.classList.add("hidden"); btn.disabled=true; btn.innerHTML='<span class="spin"></span> Sending…';
+    try{
+      const r = await api("/forgot",{method:"POST",body:JSON.stringify({email:email.value})});
+      ok.textContent = r.message || "If that email has an account, a reset link is on its way.";
+      ok.classList.remove("hidden"); form.querySelector("input").disabled=true;
+      btn.textContent="Sent";
+    }catch(ex){ msg.textContent=ex.message; msg.classList.remove("hidden"); btn.disabled=false; btn.textContent="Email me a reset link"; }
+  }},[
+    el("div",{class:"field"},[el("label",{},"Your email"),email]),
+    btn, msg, ok,
+  ]);
+  render(el("div",{class:"login"},[el("div",{class:"login__card"},[
+    el("h1",{},"Reset your password"),
+    el("p",{},"We'll email you a link to set a new one. It lasts 30 minutes and works once."),
+    form,
+    el("p",{class:"hint",style:"margin-top:1rem"},[el("button",{class:"link",type:"button",onclick:()=>loginView()},"← Back to sign in")]),
+  ])]));
+}
+
+// ---------- set a new password from an emailed link ----------
+function resetView(token){
+  const msg = el("div",{class:"msg err hidden"});
+  const nw = el("input",{type:"password",autocomplete:"new-password"});
+  const cf = el("input",{type:"password",autocomplete:"new-password"});
+  const btn = el("button",{type:"submit"},"Set new password");
+  const form = el("form",{onsubmit:async(e)=>{
+    e.preventDefault(); msg.classList.add("hidden");
+    if(nw.value.length<8){ msg.textContent="Password must be at least 8 characters."; msg.classList.remove("hidden"); return; }
+    if(nw.value!==cf.value){ msg.textContent="The two passwords don't match."; msg.classList.remove("hidden"); return; }
+    btn.disabled=true; btn.innerHTML='<span class="spin"></span> Saving…';
+    try{
+      await api("/reset",{method:"POST",body:JSON.stringify({token,newPassword:nw.value})});
+      history.replaceState(null,"",location.pathname);
+      toast("Password updated — you can sign in now.","ok");
+      loginView();
+    }catch(ex){ msg.textContent=ex.message; msg.classList.remove("hidden"); btn.disabled=false; btn.textContent="Set new password"; }
+  }},[
+    el("div",{class:"field"},[el("label",{},"New password"),nw]),
+    el("div",{class:"field"},[el("label",{},"Confirm new password"),cf]),
+    btn, msg,
+  ]);
+  render(el("div",{class:"login"},[el("div",{class:"login__card"},[
+    el("h1",{},"Choose a new password"), el("p",{},"Pick something at least 8 characters long."), form,
+  ])]));
+}
+
 function appShell(activeCollection){
-  const nav = el("nav",{}, CONFIG.collections.map(c=>el("button",{class:c.name===activeCollection?"active":"",onclick:()=>collectionView(c.name)},c.label)));
+  const nav = el("nav",{}, [
+    el("button",{class:activeCollection==="__dash"?"active":"",onclick:()=>dashboardView()},"🏠 Dashboard"),
+    ...CONFIG.collections.map(c=>el("button",{class:c.name===activeCollection?"active":"",onclick:()=>collectionView(c.name)},c.label)),
+  ]);
   const accountBtns = [ el("button",{class:activeCollection==="__account"?"active":"",onclick:()=>accountView()},"👤 My account") ];
   if(SESSION && SESSION.role==="admin") accountBtns.push(el("button",{class:activeCollection==="__users"?"active":"",onclick:()=>usersView()},"🔑 Users"));
   const extra = el("nav",{style:"margin-top:.6rem;border-top:1px solid rgba(255,255,255,.18);padding-top:.6rem"}, accountBtns);
@@ -164,6 +248,259 @@ function appShell(activeCollection){
   const main = el("main",{class:"main",id:"main"});
   render(el("div",{class:"app"},[side,main]));
   return main;
+}
+
+// ---------- dashboard ----------
+/** "3 minutes ago" / "2 days ago" from an ISO date. */
+function ago(iso){
+  const t = Date.parse(iso);
+  if(!t) return "";
+  const s = Math.max(0, (Date.now()-t)/1000);
+  if(s<60) return "just now";
+  const units=[["minute",60],["hour",3600],["day",86400],["week",604800],["month",2592000],["year",31536000]];
+  let label="year", size=31536000;
+  for(let i=0;i<units.length;i++){ const next=units[i+1]; if(!next || s<next[1]){ label=units[i][0]; size=units[i][1]; break; } }
+  const n=Math.floor(s/size);
+  return n+" "+label+(n===1?"":"s")+" ago";
+}
+
+/** Turn "CMS: update src/data/faqs/faq-02.json" into "Updated FAQ · faq-02". */
+function describeChange(message){
+  const msg = message || "";
+  const pub = /^CMS:\s+(un)?publish the (.+) page$/.exec(msg);
+  if(pub){
+    const key = pub[2];
+    const known = (CONFIG.sitePages||[]).find(p=>p.key===key);
+    return { what: (pub[1]?"Unpublished":"Published")+" the "+((known&&known.label)||key)+" page", where: "" };
+  }
+  const m = /^CMS:\s+(create|update|delete|upload|reorder)\s+(.+)$/.exec(msg);
+  // Anything else (a developer commit, say) shows as written, minus the CMS prefix.
+  if(!m) return { what: msg.replace(/^CMS:\s*/,"") || "Change", where: "" };
+  const verbs = { create:"Added", update:"Updated", delete:"Deleted", upload:"Uploaded", reorder:"Reordered" };
+  const verb = verbs[m[1]] || "Changed";
+  const target = m[2].trim();
+  const KINDS = [
+    [/^src\/data\/faqs\//, "FAQ"], [/^src\/data\/projects\//, "project"],
+    [/^src\/data\/services\//, "service"], [/^src\/data\/pricing\//, "pricing package"],
+    [/^src\/data\/testimonials\//, "testimonial"], [/^src\/content\/blog\//, "blog post"],
+    [/^src\/data\/content\/navigation\.json$/, "the header & footer"],
+    [/^src\/data\/content\/settings\.json$/, "the site settings"],
+    [/^src\/data\/content\/sections\.json$/, "the shared sections"],
+    [/^src\/data\/content\/page-status\.json$/, "a page's status"],
+    [/^public\/assets\//, "an image"],
+  ];
+  const name = target.split("/").pop().replace(/\.(json|md|jpe?g|png|webp|svg)$/i,"");
+  // A page's own content file — name it the way the client knows it ("the About page").
+  const pageMatch = /^src\/data\/content\/([a-z-]+)\.json$/.exec(target);
+  const known = pageMatch && (CONFIG.sitePages||[]).find(p=>p.key===pageMatch[1]);
+  if(known) return { what: `${verb} the ${known.label} page`, where: "" };
+  if(pageMatch) return { what: `${verb} a page`, where: name };
+
+  const kind = (KINDS.find(([re])=>re.test(target))||[null,"content"])[1];
+  const multi = /^\d+ files$/.test(target) || /^[A-Z]/.test(target);
+  return { what: multi ? `${verb} ${target}` : `${verb} ${kind}`, where: multi ? "" : name };
+}
+
+function dashCard(title, opts={}){
+  const body = el("div",{});
+  const head = el("h3",{class:"card__h"},[title]);
+  const node = el("section",{class:"card"+(opts.wide?" card--wide":"")},[head, body]);
+  body.append(el("p",{class:"hint"},[el("span",{class:"spin"})," Loading…"]));
+  const set=(...kids)=>{ body.innerHTML=""; kids.filter(Boolean).forEach(k=>body.append(k)); };
+  const fail=(msg)=>set(el("div",{class:"msg err"},msg));
+  return { node, head, body, set, fail };
+}
+const stat=(n,label,cls)=>el("div",{class:"stat"+(cls?" "+cls:"")},[el("div",{class:"stat__n"},String(n)), el("div",{class:"stat__l"},label)]);
+
+async function dashboardView(){
+  const main = appShell("__dash");
+  main.append(el("div",{class:"topbar"},[
+    el("h2",{},"Dashboard"),
+    el("div",{class:"row__s"}, SESSION ? "Signed in as "+SESSION.email : ""),
+  ]));
+  const grid = el("div",{class:"cards"});
+  main.append(grid);
+
+  const enquiries = dashCard("📥 Contact enquiries");
+  const links     = dashCard("🔗 Broken links");
+  const activity  = dashCard("🕒 Last 20 changes", {wide:true});
+  const pagesCard = dashCard("📄 Pages");
+  const postsCard = dashCard("📝 Blog posts");
+  grid.append(enquiries.node, links.node, activity.node, pagesCard.node, postsCard.node);
+
+  // Each card fills itself in as its data lands.
+  loadEnquiriesCard(enquiries);
+  loadLinksCard(links);
+  loadActivityCard(activity);
+  loadPagesCard(pagesCard);
+  loadPostsCard(postsCard);
+}
+
+async function loadEnquiriesCard(card){
+  try{
+    const data = await api("/enquiries");
+    const render=()=>{
+      const list = el("div",{class:"clist"});
+      if(!data.items.length) list.append(el("p",{class:"empty"},"No enquiries yet. Messages sent through the website's contact form land here."));
+      data.items.slice(0,12).forEach(e=>{
+        const body = el("div",{class:"citem__s hidden"});
+        const open = async()=>{
+          if(body.dataset.loaded){ body.classList.toggle("hidden"); return; }
+          try{
+            const full = await api("/enquiries?id="+encodeURIComponent(e.id));
+            body.textContent = full.enquiry.message;
+            body.dataset.loaded="1"; body.classList.remove("hidden");
+            if(!e.read){ await api("/enquiries/read",{method:"POST",body:JSON.stringify({id:e.id,read:true})}); loadEnquiriesCard(card); }
+          }catch(ex){ toast(ex.message,"err"); }
+        };
+        const row = el("div",{class:"citem"},[
+          el("span",{class:"dot"+(e.read?" dot--off":"")}),
+          el("div",{class:"citem__main"},[
+            el("div",{class:"citem__t"}, (e.name||"(no name)")+(e.read?"":" · new")),
+            el("div",{class:"citem__s"}, (e.email||"")+" · "+ago(e.at)),
+            el("div",{class:"citem__s"}, e.preview||""),
+            body,
+          ]),
+          el("div",{class:"citem__act"},[
+            el("button",{class:"secondary",onclick:open},"Read"),
+            el("button",{class:"danger",onclick:async()=>{
+              if(!confirm("Delete this enquiry? This cannot be undone.")) return;
+              try{ await api("/enquiries",{method:"DELETE",body:JSON.stringify({id:e.id})}); loadEnquiriesCard(card); }
+              catch(ex){ toast(ex.message,"err"); }
+            }},"Delete"),
+          ]),
+        ]);
+        list.append(row);
+      });
+      card.set(
+        el("div",{class:"stats"},[
+          stat(data.total,"total"),
+          stat(data.unread,"unread", data.unread?"stat--alert":null),
+          stat(data.read,"read"),
+        ]),
+        list,
+      );
+    };
+    render();
+  }catch(ex){
+    card.set(el("p",{class:"empty"}, ex.message.includes("not configured")
+      ? "The enquiry inbox isn't switched on for this deployment yet."
+      : ex.message));
+  }
+}
+
+async function loadLinksCard(card){
+  let report;
+  try{
+    const res = await fetch("/_cms/link-report.json",{cache:"no-store"});
+    if(!res.ok) throw new Error("no report");
+    report = await res.json();
+  }catch{
+    card.set(el("p",{class:"empty"},"No link check yet — one runs automatically with the next publish."));
+    return;
+  }
+  const unpublished = report.toUnpublished || [];
+  const broken = [
+    ...report.internalBroken.map(b=>({ t:b.href, s:"on "+b.page })),
+    ...report.externalBroken.map(b=>({ t:b.url, s:"HTTP "+b.status+" · on "+b.pages.length+" page"+(b.pages.length===1?"":"s") })),
+    ...unpublished.map(b=>({ t:b.href, s:"points at a page you've unpublished · on "+b.page })),
+  ];
+  const list = el("div",{class:"clist"});
+  if(!broken.length) list.append(el("p",{class:"empty"},"No broken links found. 🎉"));
+  broken.slice(0,12).forEach(b=> list.append(el("div",{class:"citem"},[
+    el("div",{class:"citem__main"},[ el("div",{class:"citem__t"},b.t), el("div",{class:"citem__s"},b.s) ])
+  ])));
+  if(broken.length>12) list.append(el("p",{class:"hint"},"+ "+(broken.length-12)+" more"));
+  const extras = [];
+  if(report.unreachable.length) extras.push(report.unreachable.length+" link(s) didn't respond");
+  if(report.blocked && report.blocked.length) extras.push(report.blocked.length+" blocked automated checks (not broken)");
+  card.set(
+    el("div",{class:"stats"},[
+      stat(broken.length,"broken", broken.length?"stat--alert":"stat--ok"),
+      stat(report.checkedLinks,"links checked"),
+      stat(report.checkedPages,"pages"),
+    ]),
+    list,
+    el("p",{class:"hint"}, "Checked "+ago(report.generatedAt)+(extras.length? " · "+extras.join(" · "):"")),
+  );
+}
+
+async function loadActivityCard(card){
+  try{
+    const {items} = await api("/activity?limit=20");
+    const list = el("div",{class:"clist",style:"max-height:none"});
+    if(!items.length) list.append(el("p",{class:"empty"},"No changes recorded yet."));
+    items.forEach(c=>{
+      const d = describeChange(c.message);
+      const who = (c.author||"").includes("@") ? c.author.split("@")[0] : (c.author||"someone");
+      list.append(el("div",{class:"citem"},[
+        el("div",{class:"citem__main"},[
+          el("div",{class:"citem__t"}, d.what + (d.where? " · "+d.where : "")),
+          el("div",{class:"citem__s"}, "by "+who+" · "+ago(c.at)),
+        ]),
+      ]));
+    });
+    card.set(list);
+  }catch(ex){ card.fail(ex.message); }
+}
+
+async function loadPagesCard(card){
+  const registry = CONFIG.sitePages || [];
+  try{
+    const {statuses, locked} = await api("/page-status");
+    const lockedSet = new Set(locked||[]);
+    const list = el("div",{class:"clist",style:"max-height:none"});
+    registry.forEach(p=>{
+      const isDraft = statuses[p.key]==="draft";
+      const lock = lockedSet.has(p.key) || p.locked;
+      const btn = lock ? null : el("button",{class:isDraft?"":"secondary",onclick:async()=>{
+        btn.disabled=true;
+        try{
+          await api("/page-status",{method:"PUT",body:JSON.stringify({key:p.key,status:isDraft?"published":"draft"})});
+          toast((isDraft?"Published":"Unpublished")+" — the site will update in ~1–2 minutes.","ok");
+          loadPagesCard(card);
+        }catch(ex){ toast(ex.message,"err"); btn.disabled=false; }
+      }}, isDraft?"Publish":"Unpublish");
+      list.append(el("div",{class:"citem"},[
+        el("div",{class:"citem__main"},[
+          el("div",{class:"citem__t"},p.label),
+          el("div",{class:"citem__s"},p.path),
+        ]),
+        el("span",{class:"pill "+(isDraft?"pill--draft":"pill--live")}, isDraft?"Draft":"Published"),
+        el("div",{class:"citem__act"},[ btn || el("span",{class:"citem__s"},"always on") ]),
+      ]));
+    });
+    card.set(
+      list,
+      el("div",{class:"actions",style:"margin-top:.8rem"},[
+        el("button",{class:"secondary",onclick:()=>toast(
+          "New pages need design and build work — contact your website admin and they'll add it for you.","")},"+ New page"),
+      ]),
+      el("p",{class:"hint"},"Unpublishing takes a page off the website and out of the menus. It keeps all its content, so you can publish it again any time."),
+    );
+  }catch(ex){ card.fail(ex.message); }
+}
+
+async function loadPostsCard(card){
+  const col = getCol("blog");
+  if(!col){ card.set(el("p",{class:"empty"},"No blog collection configured.")); return; }
+  try{
+    const items = await loadItems(col);
+    const list = el("div",{class:"clist"});
+    if(!items.length) list.append(el("p",{class:"empty"},"No blog posts yet."));
+    items.forEach(it=> list.append(el("div",{class:"citem"},[
+      el("div",{class:"citem__main"},[ el("div",{class:"citem__t"},it.title), el("div",{class:"citem__s"},it.id) ]),
+      el("div",{class:"citem__act"},[ el("button",{class:"secondary",onclick:()=>editorView("blog",it)},"Edit") ]),
+    ])));
+    card.set(
+      el("div",{class:"stats"},[ stat(items.length,"posts") ]),
+      list,
+      el("div",{class:"actions",style:"margin-top:.8rem"},[
+        el("button",{onclick:()=>editorView("blog",null)},"+ New post"),
+        el("button",{class:"secondary",onclick:()=>collectionView("blog")},"View all"),
+      ]),
+    );
+  }catch(ex){ card.fail(ex.message); }
 }
 
 // ---------- my account (change password) ----------
@@ -676,9 +1013,17 @@ async function editorView(name, item, fileEntry){
 async function boot(){
   try{ CONFIG = await (await fetch("/cms-config.json",{cache:"no-store"})).json(); }
   catch{ render(el("div",{class:"login"},el("div",{class:"login__card"},"Could not load CMS config."))); return; }
-  try{ const me=await api("/me"); SESSION={email:me.email,role:me.role}; collectionView(CONFIG.collections[0].name); }
+  // Arriving from a "reset your password" email.
+  const reset = /[#&]reset=([^&]+)/.exec(location.hash);
+  if(reset){ resetView(decodeURIComponent(reset[1])); return; }
+  try{ const me=await api("/me"); SESSION={email:me.email,role:me.role}; dashboardView(); }
   catch{ loginView(); }
 }
+// A reset link pasted into an already-open tab changes the hash without reloading.
+window.addEventListener("hashchange",()=>{
+  const m = /[#&]reset=([^&]+)/.exec(location.hash);
+  if(m) resetView(decodeURIComponent(m[1]));
+});
 boot();
 </script>
 </body>

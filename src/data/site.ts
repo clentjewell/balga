@@ -2,6 +2,8 @@
 import settings from "./content/settings.json";
 // Header/footer chrome — logo, menus, CTA, footer headings (CMS "Header & footer").
 import navigation from "./content/navigation.json";
+// Which top-level pages are published (CMS dashboard → Pages).
+import { isDraftPath } from "./pages.mjs";
 
 export const site = {
   name: "Balga Designs",
@@ -50,11 +52,15 @@ export const site = {
 
 export interface NavLink { label: string; href: string; }
 
-export const nav = navigation.nav as NavLink[];
+// Unpublished (draft) pages drop out of every menu — the build also removes the
+// page itself, so a link left behind would 404.
+const live = (links: NavLink[]) => links.filter((l) => !isDraftPath(l.href));
+
+export const nav = live(navigation.nav as NavLink[]);
 
 export const footerLinks = {
-  quicklinks: navigation.quicklinks as NavLink[],
-  support: navigation.support as NavLink[],
+  quicklinks: live(navigation.quicklinks as NavLink[]),
+  support: live(navigation.support as NavLink[]),
 };
 
 // Editable labels/headings for the header and footer chrome.

@@ -23,6 +23,7 @@
 
 const COOKIE = "cms_session";
 const SESSION_TTL = 60 * 60 * 8; // 8 hours
+const RESET_TTL = 60 * 30; // password-reset links last 30 minutes, single use
 const PBKDF2_ITERATIONS = 100000;
 const MIN_PASSWORD = 8;
 const enc = new TextEncoder();
@@ -46,13 +47,14 @@ function b64urlToBytes(s) {
 async function hmacKey(secret) {
   return crypto.subtle.importKey("raw", enc.encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign", "verify"]);
 }
-async function signSession(env, email, role) {
-  const payload = b64url(enc.encode(JSON.stringify({ e: email, r: role || "editor", exp: Math.floor(Date.now() / 1000) + SESSION_TTL })));
+/** Sign an arbitrary payload with an expiry — used for sessions and reset links. */
+async function signPayload(env, obj, ttlSeconds) {
+  const payload = b64url(enc.encode(JSON.stringify({ ...obj, exp: Math.floor(Date.now() / 1000) + ttlSeconds })));
   const key = await hmacKey(env.CMS_SESSION_SECRET || "dev-secret");
   const sig = b64url(await crypto.subtle.sign("HMAC", key, enc.encode(payload)));
   return `${payload}.${sig}`;
 }
-async function verifySession(env, token) {
+async function verifyPayload(env, token) {
   if (!token || !token.includes(".")) return null;
   const [payload, sig] = token.split(".");
   const key = await hmacKey(env.CMS_SESSION_SECRET || "dev-secret");
@@ -66,6 +68,8 @@ async function verifySession(env, token) {
     return null;
   }
 }
+const signSession = (env, email, role) => signPayload(env, { e: email, r: role || "editor" }, SESSION_TTL);
+const verifySession = (env, token) => verifyPayload(env, token);
 function getCookie(request, name) {
   const c = request.headers.get("Cookie") || "";
   const m = c.match(new RegExp("(?:^|; )" + name + "=([^;]+)"));
@@ -145,6 +149,75 @@ async function ensureSeed(env) {
   });
 }
 
+// ---- contact enquiries (Cloudflare KV, same namespace as users) ----
+// Key: `enquiry:<iso timestamp>-<random>` so a prefix list comes back oldest-first
+// and can just be reversed. The summary (name, email, when, read flag, preview) is
+// stored as KV *metadata*, so the dashboard's counts and list need one list call —
+// the full message body is only fetched when the client opens an enquiry.
+const ENQUIRY_PREFIX = "enquiry:";
+const PREVIEW_CHARS = 140;
+
+export async function saveEnquiry(env, { firstName, lastName, email, message }) {
+  if (!env.CMS_USERS) return { ok: false, error: "No KV namespace bound." };
+  const at = new Date().toISOString();
+  const id = `${at}-${crypto.randomUUID().slice(0, 8)}`;
+  const name = `${firstName} ${lastName}`.trim();
+  const record = { id, name, email, message, at, read: false };
+  await env.CMS_USERS.put(ENQUIRY_PREFIX + id, JSON.stringify(record), {
+    metadata: { name, email, at, read: false, preview: message.slice(0, PREVIEW_CHARS) },
+  });
+  return { ok: true, id };
+}
+
+async function listEnquiries(env) {
+  if (!env.CMS_USERS) return [];
+  const out = [];
+  let cursor;
+  do {
+    const page = await env.CMS_USERS.list({ prefix: ENQUIRY_PREFIX, cursor });
+    for (const k of page.keys) {
+      const m = k.metadata || {};
+      out.push({ id: k.name.slice(ENQUIRY_PREFIX.length), name: m.name, email: m.email, at: m.at, read: !!m.read, preview: m.preview });
+    }
+    cursor = page.list_complete ? undefined : page.cursor;
+  } while (cursor);
+  out.sort((a, b) => String(b.at || "").localeCompare(String(a.at || "")));
+  return out;
+}
+
+async function getEnquiry(env, id) {
+  if (!env.CMS_USERS) return null;
+  const raw = await env.CMS_USERS.get(ENQUIRY_PREFIX + id);
+  return raw ? JSON.parse(raw) : null;
+}
+
+async function setEnquiryRead(env, id, read) {
+  const rec = await getEnquiry(env, id);
+  if (!rec) return null;
+  rec.read = !!read;
+  await env.CMS_USERS.put(ENQUIRY_PREFIX + id, JSON.stringify(rec), {
+    metadata: { name: rec.name, email: rec.email, at: rec.at, read: rec.read, preview: (rec.message || "").slice(0, PREVIEW_CHARS) },
+  });
+  return rec;
+}
+
+// ---- outgoing email (Resend) ----
+async function sendEmail(env, { to, subject, text }) {
+  if (!env.RESEND_API_KEY) return { ok: false, error: "not-configured" };
+  const from = env.CONTACT_FROM_EMAIL || "Balga Designs <onboarding@resend.dev>";
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ from, to: [to], subject, text }),
+    });
+    if (!res.ok) return { ok: false, error: (await res.text().catch(() => "")).slice(0, 200) };
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: String(e.message || e).slice(0, 200) };
+  }
+}
+
 // ---- GitHub REST helpers ----
 function ghBase(env) {
   return `https://api.github.com/repos/${env.GH_OWNER}/${env.GH_REPO}/contents`;
@@ -192,8 +265,18 @@ function encodeB64Utf8(str) {
   bytes.forEach((b) => (bin += String.fromCharCode(b)));
   return btoa(bin);
 }
-async function ghPut(env, path, contentB64, sha, message) {
+// Commits are attributed to the signed-in CMS user, so the dashboard's activity
+// feed (and the repo history) shows who actually made each change rather than the
+// shared bot token.
+function commitAuthor(actor) {
+  if (!actor || !validEmail(actor)) return undefined;
+  return { name: actor.split("@")[0], email: actor };
+}
+
+async function ghPut(env, path, contentB64, sha, message, actor) {
   const body = { message, content: contentB64, branch: branch(env) };
+  const author = commitAuthor(actor);
+  if (author) body.author = author;
   if (sha) body.sha = sha;
   const r = await ghFetch(env, "PUT", `${ghBase(env)}/${encodeURI(path)}`, body);
   if (!r.ok) return { ok: false, status: r.status, error: r.data.message };
@@ -202,7 +285,7 @@ async function ghPut(env, path, contentB64, sha, message) {
 // Commit several files in ONE commit (Git data API) — used by drag-and-drop
 // reordering, which rewrites the `order` of many files at once. Doing it as a
 // single commit means a single build + deploy instead of one per file.
-async function ghCommitMany(env, files, message) {
+async function ghCommitMany(env, files, message, actor) {
   const repo = `https://api.github.com/repos/${env.GH_OWNER}/${env.GH_REPO}`;
   const br = branch(env);
   const ref = await ghFetch(env, "GET", `${repo}/git/ref/heads/${encodeURI(br)}`);
@@ -215,17 +298,48 @@ async function ghCommitMany(env, files, message) {
     tree: files.map((f) => ({ path: f.path, mode: "100644", type: "blob", content: f.content })),
   });
   if (!tree.ok) return { ok: false, status: tree.status, error: tree.data.message };
-  const commit = await ghFetch(env, "POST", `${repo}/git/commits`, { message, tree: tree.data.sha, parents: [headSha] });
+  const commitBody = { message, tree: tree.data.sha, parents: [headSha] };
+  const author = commitAuthor(actor);
+  if (author) commitBody.author = author;
+  const commit = await ghFetch(env, "POST", `${repo}/git/commits`, commitBody);
   if (!commit.ok) return { ok: false, status: commit.status, error: commit.data.message };
   const upd = await ghFetch(env, "PATCH", `${repo}/git/refs/heads/${encodeURI(br)}`, { sha: commit.data.sha });
   if (!upd.ok) return { ok: false, status: upd.status, error: upd.data.message };
   return { ok: true, commit: commit.data.sha };
 }
 
-async function ghDelete(env, path, sha, message) {
-  const r = await ghFetch(env, "DELETE", `${ghBase(env)}/${encodeURI(path)}`, { message, sha, branch: branch(env) });
+async function ghDelete(env, path, sha, message, actor) {
+  const body = { message, sha, branch: branch(env) };
+  const author = commitAuthor(actor);
+  if (author) body.author = author;
+  const r = await ghFetch(env, "DELETE", `${ghBase(env)}/${encodeURI(path)}`, body);
   if (!r.ok) return { ok: false, status: r.status, error: r.data.message };
   return { ok: true };
+}
+
+/** Recent commits on the deploy branch — the dashboard's "Recent changes" feed. */
+async function ghCommits(env, limit = 20) {
+  const url = `https://api.github.com/repos/${env.GH_OWNER}/${env.GH_REPO}/commits?sha=${encodeURIComponent(branch(env))}&per_page=${limit}`;
+  const r = await ghFetch(env, "GET", url);
+  if (!r.ok) return { ok: false, status: r.status, error: r.data.message };
+  const items = (Array.isArray(r.data) ? r.data : []).map((c) => ({
+    sha: (c.sha || "").slice(0, 7),
+    message: (c.commit?.message || "").split("\n")[0],
+    author: c.commit?.author?.email || c.commit?.author?.name || "",
+    at: c.commit?.author?.date || "",
+    url: c.html_url,
+  }));
+  return { ok: true, items };
+}
+
+// Pages the client may publish / unpublish. `locked` mirrors src/data/pages.mjs —
+// the site must always have a home and a contact page.
+const PAGE_STATUS_PATH = "src/data/content/page-status.json";
+const LOCKED_PAGES = new Set(["home", "contact"]);
+
+/** Is this request carrying a valid CMS session? (used to gate /_cms/* assets) */
+export async function hasCmsSession(request, env) {
+  return !!(await verifySession(env, getCookie(request, COOKIE)));
 }
 
 // ---- request handler ----
@@ -256,6 +370,60 @@ export async function handleCms(request, env) {
     const cookie = `${COOKIE}=${encodeURIComponent(token)}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=${SESSION_TTL}`;
     return json({ ok: true, email: user.email, role: user.role }, 200, { "Set-Cookie": cookie });
   }
+  // --- forgot password: email a one-time reset link (no session required) ---
+  if (path === "forgot" && method === "POST") {
+    const body = await request.json().catch(() => ({}));
+    const email = normEmail(body.email);
+    if (!env.CMS_USERS) return json({ error: "User store not configured." }, 501);
+    if (!env.RESEND_API_KEY) {
+      return json({ error: "Password reset by email isn't switched on yet. Ask an admin to reset your password." }, 501);
+    }
+    await ensureSeed(env);
+    const user = await getUser(env, email);
+    // Always answer the same way: never reveal whether an account exists.
+    const generic = { ok: true, message: "If that email has an account, a reset link is on its way." };
+    if (!user) return json(generic);
+    const jti = crypto.randomUUID();
+    await env.CMS_USERS.put(`reset:${jti}`, user.email, { expirationTtl: RESET_TTL });
+    const token = await signPayload(env, { e: user.email, jti }, RESET_TTL);
+    const link = `${new URL(request.url).origin}/admin/#reset=${encodeURIComponent(token)}`;
+    const sent = await sendEmail(env, {
+      to: user.email,
+      subject: "Reset your Balga Content Manager password",
+      text:
+        `Someone asked to reset the password for your Balga Content Manager account.\n\n` +
+        `Set a new password here (the link lasts ${Math.round(RESET_TTL / 60)} minutes and works once):\n${link}\n\n` +
+        `If this wasn't you, ignore this email — your password hasn't changed.`,
+    });
+    if (!sent.ok) {
+      await env.CMS_USERS.delete(`reset:${jti}`);
+      return json({ error: "Could not send the reset email. Please ask an admin to reset your password." }, 502);
+    }
+    return json(generic);
+  }
+
+  // --- complete a password reset from an emailed link ---
+  if (path === "reset" && method === "POST") {
+    const body = await request.json().catch(() => ({}));
+    if (!env.CMS_USERS) return json({ error: "User store not configured." }, 501);
+    const data = await verifyPayload(env, body.token);
+    if (!data || !data.jti || !data.e) return json({ error: "That reset link has expired. Please request a new one." }, 400);
+    const holder = await env.CMS_USERS.get(`reset:${data.jti}`);
+    if (!holder || normEmail(holder) !== normEmail(data.e)) {
+      return json({ error: "That reset link has already been used. Please request a new one." }, 400);
+    }
+    if ((body.newPassword || "").length < MIN_PASSWORD) {
+      return json({ error: `Password must be at least ${MIN_PASSWORD} characters.` }, 400);
+    }
+    const user = await getUser(env, data.e);
+    if (!user) return json({ error: "Account not found." }, 404);
+    user.pass = await hashPassword(body.newPassword);
+    user.updatedAt = Date.now();
+    await putUser(env, user);
+    await env.CMS_USERS.delete(`reset:${data.jti}`); // single use
+    return json({ ok: true });
+  }
+
   if (path === "logout" && method === "POST") {
     return json({ ok: true }, 200, { "Set-Cookie": `${COOKIE}=; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=0` });
   }
@@ -339,6 +507,67 @@ export async function handleCms(request, env) {
     return json({ error: "Unknown endpoint." }, 404);
   }
 
+  // --- dashboard: recent changes feed ---
+  if (path === "activity" && method === "GET") {
+    const limit = Math.min(parseInt(url.searchParams.get("limit") || "20", 10) || 20, 50);
+    const r = await ghCommits(env, limit);
+    return r.ok ? json({ items: r.items }) : json({ error: r.error }, r.status || 502);
+  }
+
+  // --- dashboard: contact form enquiries ---
+  if (path === "enquiries" || path.startsWith("enquiries/")) {
+    if (!env.CMS_USERS) return json({ error: "Enquiry store not configured." }, 501);
+    if (path === "enquiries" && method === "GET") {
+      const id = url.searchParams.get("id");
+      if (id) {
+        const rec = await getEnquiry(env, id);
+        return rec ? json({ enquiry: rec }) : json({ error: "Enquiry not found." }, 404);
+      }
+      const items = await listEnquiries(env);
+      const unread = items.filter((e) => !e.read).length;
+      return json({ items, total: items.length, unread, read: items.length - unread });
+    }
+    if (path === "enquiries/read" && method === "POST") {
+      const body = await request.json().catch(() => ({}));
+      const rec = await setEnquiryRead(env, body.id, body.read !== false);
+      return rec ? json({ ok: true }) : json({ error: "Enquiry not found." }, 404);
+    }
+    if (path === "enquiries" && method === "DELETE") {
+      const body = await request.json().catch(() => ({}));
+      if (!body.id) return json({ error: "Missing id." }, 400);
+      await env.CMS_USERS.delete(ENQUIRY_PREFIX + body.id);
+      return json({ ok: true });
+    }
+    return json({ error: "Unknown endpoint." }, 404);
+  }
+
+  // --- dashboard: publish / unpublish a page ---
+  if (path === "page-status") {
+    const current = await ghGet(env, PAGE_STATUS_PATH);
+    if (!current.ok) return json({ error: current.error }, current.status || 502);
+    let statuses;
+    try { statuses = JSON.parse(current.content); } catch { return json({ error: "page-status.json is not valid JSON." }, 500); }
+
+    if (method === "GET") return json({ statuses, locked: [...LOCKED_PAGES] });
+
+    if (method === "PUT") {
+      const body = await request.json().catch(() => ({}));
+      const key = String(body.key || "");
+      const status = body.status === "draft" ? "draft" : "published";
+      if (!(key in statuses)) return json({ error: "Unknown page." }, 404);
+      if (LOCKED_PAGES.has(key) && status === "draft") {
+        return json({ error: "The home and contact pages can't be unpublished." }, 400);
+      }
+      if (statuses[key] === status) return json({ ok: true, statuses });
+      statuses[key] = status;
+      const content = encodeB64Utf8(JSON.stringify(statuses, null, 2) + "\n");
+      const verb = status === "draft" ? "unpublish" : "publish";
+      const r = await ghPut(env, PAGE_STATUS_PATH, content, current.sha, `CMS: ${verb} the ${key} page`, session.e);
+      return r.ok ? json({ ok: true, statuses }) : json({ error: r.error }, r.status || 502);
+    }
+    return json({ error: "Unknown endpoint." }, 404);
+  }
+
   if (path === "list" && method === "GET") {
     const dir = url.searchParams.get("folder");
     if (!dir) return json({ error: "Missing folder." }, 400);
@@ -354,7 +583,7 @@ export async function handleCms(request, env) {
   if (path === "file" && method === "PUT") {
     const body = await request.json().catch(() => ({}));
     if (!body.path || typeof body.content !== "string") return json({ error: "Missing path or content." }, 400);
-    const r = await ghPut(env, body.path, encodeB64Utf8(body.content), body.sha, body.message || `CMS: update ${body.path}`);
+    const r = await ghPut(env, body.path, encodeB64Utf8(body.content), body.sha, body.message || `CMS: update ${body.path}`, session.e);
     return r.ok ? json(r) : json({ error: r.error }, r.status || 502);
   }
   // Batch save — many files, one commit, one deploy (used by reordering).
@@ -368,13 +597,13 @@ export async function handleCms(request, env) {
         return json({ error: "Each file needs a path and content." }, 400);
       }
     }
-    const r = await ghCommitMany(env, files, body.message || `CMS: update ${files.length} files`);
+    const r = await ghCommitMany(env, files, body.message || `CMS: update ${files.length} files`, session.e);
     return r.ok ? json(r) : json({ error: r.error }, r.status || 502);
   }
   if (path === "file" && method === "DELETE") {
     const body = await request.json().catch(() => ({}));
     if (!body.path || !body.sha) return json({ error: "Missing path or sha." }, 400);
-    const r = await ghDelete(env, body.path, body.sha, body.message || `CMS: delete ${body.path}`);
+    const r = await ghDelete(env, body.path, body.sha, body.message || `CMS: delete ${body.path}`, session.e);
     return r.ok ? json(r) : json({ error: r.error }, r.status || 502);
   }
   if (path === "upload" && method === "POST") {
@@ -387,7 +616,7 @@ export async function handleCms(request, env) {
     let sha;
     const existing = await ghFetch(env, "GET", `${ghBase(env)}/${encodeURI(target)}?ref=${branch(env)}`);
     if (existing.ok) sha = existing.data.sha;
-    const r = await ghPut(env, target, body.dataBase64, sha, `CMS: upload ${target}`);
+    const r = await ghPut(env, target, body.dataBase64, sha, `CMS: upload ${target}`, session.e);
     if (!r.ok) return json({ error: r.error }, r.status || 502);
     // public URL = path with leading "public" stripped
     const publicUrl = "/" + target.replace(/^public\//, "");
