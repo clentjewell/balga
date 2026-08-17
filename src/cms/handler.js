@@ -347,17 +347,55 @@ async function ghCommits(env, limit = 20) {
  */
 const MEDIA_ROOT = "public/assets/";
 const IMAGE_EXT = /\.(jpe?g|png|webp|gif|svg|avif)$/i;
+// Title / alt / caption / description per image, keyed by public URL.
+const MEDIA_META_PATH = "src/data/media.json";
+const MIME = { jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png", webp: "image/webp",
+               gif: "image/gif", svg: "image/svg+xml", avif: "image/avif" };
+
+/**
+ * Serve an image straight from the repo.
+ *
+ * A just-uploaded image is committed immediately but only reaches the live site
+ * after the next build (a minute or two), so its public URL 404s until then. The
+ * library falls back to this so new uploads are visible at once.
+ */
+async function ghRawFile(env, path) {
+  const url = `${ghBase(env)}/${encodeURI(path)}?ref=${branch(env)}`;
+  const res = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${env.GITHUB_TOKEN}`,
+      Accept: "application/vnd.github.raw",
+      "User-Agent": "balga-cms",
+      "X-GitHub-Api-Version": "2022-11-28",
+    },
+  });
+  if (!res.ok) return { ok: false, status: res.status };
+  return { ok: true, body: await res.arrayBuffer() };
+}
+
+async function readMediaMeta(env) {
+  const r = await ghGet(env, MEDIA_META_PATH);
+  if (!r.ok) return { meta: {}, sha: null };
+  try { return { meta: JSON.parse(r.content) || {}, sha: r.sha }; }
+  catch { return { meta: {}, sha: r.sha }; }
+}
 
 async function ghMedia(env) {
   const url = `https://api.github.com/repos/${env.GH_OWNER}/${env.GH_REPO}/git/trees/${encodeURIComponent(branch(env))}?recursive=1`;
   const r = await ghFetch(env, "GET", url);
   if (!r.ok) return { ok: false, status: r.status, error: r.data.message };
+  const { meta } = await readMediaMeta(env);
   const items = (r.data.tree || [])
     .filter((n) => n.type === "blob" && n.path.startsWith(MEDIA_ROOT) && IMAGE_EXT.test(n.path))
     .map((n) => {
       const name = n.path.split("/").pop();
       const folder = n.path.slice(0, n.path.length - name.length - 1);
-      return { path: n.path, url: "/" + n.path.replace(/^public\//, ""), name, folder: folder.replace(/^public\//, ""), size: n.size };
+      const url = "/" + n.path.replace(/^public\//, "");
+      const m = meta[url] || {};
+      return {
+        path: n.path, url, name, folder: folder.replace(/^public\//, ""), size: n.size,
+        title: m.title || "", alt: m.alt || "", caption: m.caption || "", description: m.description || "",
+      };
     })
     .sort((a, b) => a.folder.localeCompare(b.folder) || a.name.localeCompare(b.name));
   return { ok: true, items, truncated: !!r.data.truncated };
@@ -549,6 +587,37 @@ export async function handleCms(request, env) {
   if (path === "media" && method === "GET") {
     const r = await ghMedia(env);
     return r.ok ? json({ items: r.items, truncated: r.truncated }) : json({ error: r.error }, r.status || 502);
+  }
+  // Image bytes from the repo — covers uploads that haven't been deployed yet.
+  if (path === "media-file" && method === "GET") {
+    const p = url.searchParams.get("path") || "";
+    if (!p.startsWith(MEDIA_ROOT) || p.includes("..") || !IMAGE_EXT.test(p)) return json({ error: "Not an image path." }, 400);
+    const r = await ghRawFile(env, p);
+    if (!r.ok) return json({ error: "Image not found." }, r.status === 404 ? 404 : 502);
+    const ext = p.split(".").pop().toLowerCase();
+    return new Response(r.body, {
+      headers: { "Content-Type": MIME[ext] || "application/octet-stream", "Cache-Control": "private, max-age=300" },
+    });
+  }
+  // Title / alt text / caption / description for one image.
+  if (path === "media-meta" && method === "PUT") {
+    const body = await request.json().catch(() => ({}));
+    const target = String(body.url || "");
+    if (!target.startsWith("/assets/")) return json({ error: "Unknown image." }, 400);
+    const { meta, sha } = await readMediaMeta(env);
+    const entry = {
+      title: String(body.title || "").slice(0, 200),
+      alt: String(body.alt || "").slice(0, 300),
+      caption: String(body.caption || "").slice(0, 500),
+      description: String(body.description || "").slice(0, 2000),
+    };
+    if (!entry.title && !entry.alt && !entry.caption && !entry.description) delete meta[target];
+    else meta[target] = entry;
+    const sorted = Object.fromEntries(Object.keys(meta).sort().map((k) => [k, meta[k]]));
+    const content = encodeB64Utf8(JSON.stringify(sorted, null, 2) + "\n");
+    const name = entry.title || target.split("/").pop();
+    const r = await ghPut(env, MEDIA_META_PATH, content, sha, `CMS: update image details “${name}”`, session.e);
+    return r.ok ? json({ ok: true, meta: entry }) : json({ error: r.error }, r.status || 502);
   }
 
   // --- dashboard: contact form enquiries ---

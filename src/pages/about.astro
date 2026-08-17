@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { altFor } from "../data/media";
 import PageHero from "../components/PageHero.astro";
 import HowWeWork from "../components/HowWeWork.astro";
 import VideoBand from "../components/VideoBand.astro";
@@ -29,8 +30,8 @@ import about from "../data/content/about.json";
         </div>
       </div>
       <div class="about-intro__imgs reveal">
-        <img src={about.image1} alt={about.image1Alt} width="714" height="1102" loading="lazy" />
-        <img src={about.image2} alt={about.image2Alt} width="900" height="1102" loading="lazy" />
+        <img src={about.image1} alt={altFor(about.image1, about.image1Alt)} width="714" height="1102" loading="lazy" />
+        <img src={about.image2} alt={altFor(about.image2, about.image2Alt)} width="900" height="1102" loading="lazy" />
       </div>
     </div>
   </section>

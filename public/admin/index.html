@@ -59,7 +59,19 @@
   .modal__h h3{margin:0;font-size:1.1rem}
   .modal__bar{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;padding:.8rem 1.2rem;border-bottom:1px solid var(--line)}
   .modal__bar input[type=search]{flex:1;min-width:180px}
-  .modal__body{padding:1rem 1.2rem;overflow:auto}
+  /* Grid and details pane scroll independently, so the details stay put. */
+  .modal__body{padding:1rem 1.2rem;display:flex;gap:1rem;align-items:stretch;flex:1;min-height:0;overflow:hidden}
+  .modal__grid{flex:1;min-width:0;overflow:auto}
+  .details{flex:0 0 290px;overflow:auto;align-self:stretch;display:grid;gap:.6rem;align-content:start;
+           background:#faf9f5;border:1px solid var(--line);border-radius:10px;padding:.9rem}
+  .details h4{margin:0;font-size:.95rem}
+  .details label{font-size:.82rem;margin-bottom:.2rem}
+  .details input,.details textarea{padding:.45rem .55rem;font-size:.88rem}
+  .details textarea{min-height:56px}
+  .details__prev{width:100%;height:130px;object-fit:cover;border-radius:8px;border:1px solid var(--line);background:#e7e6de}
+  .details__url{display:flex;gap:.4rem}
+  .details__url input{font-size:.78rem;color:var(--muted)}
+  @media(max-width:760px){.modal__body{flex-direction:column}.details{flex:auto;width:100%;position:static}}
   .modal__f{padding:.8rem 1.2rem;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:.6rem;align-items:center}
   .media{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:.7rem}
   .mtile{border:2px solid transparent;border-radius:10px;padding:.3rem;background:#f7f6f1;cursor:pointer;text-align:left;color:inherit;font:inherit;font-weight:400}
@@ -284,6 +296,24 @@ async function uploadImage(file, folder){
   mediaCache = null; // the library has a new item
   return up.path;
 }
+const mediaFor = (url) => mediaCache ? mediaCache.find(m=>m.url===url) : null;
+
+/**
+ * An <img> that still shows a just-uploaded image.
+ *
+ * A new upload is saved straight away but only reaches the live site after the
+ * next build, so its public URL 404s for a minute or two. When that happens we
+ * fall back to reading the file back through the CMS.
+ */
+function mediaImg(url, attrs={}){
+  const img = el("img", { src:url, alt:"", ...attrs });
+  img.addEventListener("error",()=>{
+    if(img.dataset.fellBack || !url.startsWith("/assets/")) return;
+    img.dataset.fellBack = "1";
+    img.src = API+"/media-file?path="+encodeURIComponent("public"+url);
+  });
+  return img;
+}
 
 /**
  * Pick an image: the library first (like WordPress), with uploading as one of the
@@ -311,19 +341,58 @@ function mediaPicker({ current, folder }){
     });
     const uploadBtn = el("label",{class:"uploadbtn secondary",style:"display:inline-flex;align-items:center;gap:.4rem;background:#e8e7df;color:var(--ink);border-radius:8px;padding:.6rem 1rem;font-weight:600;cursor:pointer"},["⬆ Upload new image", fileInput]);
 
+    // --- details panel: title / alt / caption / description + copy URL ---
+    const details = el("div",{class:"details"});
+    const showDetails = (m)=>{
+      details.innerHTML="";
+      if(!m){ details.append(el("p",{class:"hint"},"Select an image to see and edit its details.")); return; }
+      const title=el("input",{value:m.title||""}), alt=el("input",{value:m.alt||""});
+      const caption=el("textarea",{},m.caption||""), description=el("textarea",{},m.description||"");
+      const urlInp=el("input",{value:location.origin+m.url,readonly:""});
+      const copyBtn=el("button",{class:"secondary",type:"button"},"Copy");
+      copyBtn.addEventListener("click",async()=>{
+        try{ await navigator.clipboard.writeText(urlInp.value); }
+        catch{ urlInp.select(); document.execCommand("copy"); }
+        copyBtn.textContent="Copied ✓"; setTimeout(()=>copyBtn.textContent="Copy",1600);
+      });
+      const saveBtn=el("button",{},"Save details");
+      saveBtn.addEventListener("click",async()=>{
+        saveBtn.disabled=true; saveBtn.innerHTML='<span class="spin"></span> Saving…';
+        try{
+          await api("/media-meta",{method:"PUT",body:JSON.stringify({url:m.url,title:title.value,alt:alt.value,caption:caption.value,description:description.value})});
+          Object.assign(m,{title:title.value,alt:alt.value,caption:caption.value,description:description.value});
+          toast("Image details saved.","ok");
+        }catch(ex){ toast(ex.message,"err"); }
+        saveBtn.disabled=false; saveBtn.textContent="Save details";
+      });
+      details.append(
+        el("h4",{},"Image details"),
+        mediaImg(m.url,{class:"details__prev",loading:"lazy"}),
+        el("div",{class:"hint"},m.name),
+        el("div",{},[el("label",{},"Title"),title]),
+        el("div",{},[el("label",{},"Alt text"),alt,
+          el("p",{class:"hint"},"Describes the image for screen readers and search engines. Used on the website wherever the page doesn't set its own.")]),
+        el("div",{},[el("label",{},"Caption"),caption]),
+        el("div",{},[el("label",{},"Description"),description]),
+        el("div",{},[el("label",{},"File URL"), el("div",{class:"details__url"},[urlInp,copyBtn])]),
+        el("div",{class:"actions"},[saveBtn]),
+      );
+    };
+
     const paint = (items)=>{
       grid.innerHTML="";
       if(!items.length){ grid.append(el("p",{class:"empty"},"No images found. Upload one to get started.")); return; }
       items.forEach(m=>{
         const tile = el("button",{class:"mtile",type:"button","aria-current":selected===m.url?"true":"false",title:m.url},[
-          el("img",{src:m.url,alt:"",loading:"lazy"}),
-          el("div",{class:"mtile__n"},m.name),
+          mediaImg(m.url,{loading:"lazy"}),
+          el("div",{class:"mtile__n"},m.title||m.name),
         ]);
         tile.addEventListener("click",()=>{
           selected = m.url;
           grid.querySelectorAll(".mtile").forEach(t=>t.setAttribute("aria-current","false"));
           tile.setAttribute("aria-current","true");
           chooseBtn.disabled = false;
+          showDetails(m);
         });
         tile.addEventListener("dblclick",()=>close(m.url));
         grid.append(tile);
@@ -341,7 +410,7 @@ function mediaPicker({ current, folder }){
     const modal = el("div",{class:"modal"},[
       el("div",{class:"modal__h"},[ el("h3",{},"Media library"), el("button",{class:"secondary",onclick:()=>close(null)},"✕") ]),
       el("div",{class:"modal__bar"},[ search, uploadBtn, status ]),
-      el("div",{class:"modal__body"},[grid]),
+      el("div",{class:"modal__body"},[ el("div",{class:"modal__grid"},[grid]), details ]),
       el("div",{class:"modal__f"},[
         el("span",{class:"hint"},"Click an image to select it, or double-click to use it straight away."),
         el("div",{class:"actions"},[ el("button",{class:"secondary",onclick:()=>close(null)},"Cancel"), chooseBtn ]),
@@ -352,7 +421,8 @@ function mediaPicker({ current, folder }){
     document.addEventListener("keydown",onKey);
     search.focus();
 
-    loadMedia().then(items=>{ all=items; filter(); })
+    showDetails(null);
+    loadMedia().then(items=>{ all=items; filter(); if(current) showDetails(items.find(m=>m.url===current)); })
       .catch(ex=>{ grid.innerHTML=""; grid.append(el("div",{class:"msg err"},ex.message)); });
   });
 }
@@ -360,7 +430,7 @@ function mediaPicker({ current, folder }){
 /** The image form field: preview + "Choose/Change image" + Remove. */
 function imageField(current, folder, onChange){
   let value = current || "";
-  const prev = el("img",{class:"imgprev",src:value||"",alt:""});
+  const prev = mediaImg(value,{class:"imgprev"});
   if(!value) prev.style.visibility="hidden";
   const name = el("div",{class:"hint"}, value ? value.split("/").pop() : "No image chosen");
   const removeBtn = el("button",{class:"secondary",type:"button",onclick:()=>set("")},"Remove");
@@ -370,6 +440,7 @@ function imageField(current, folder, onChange){
   }}, value?"Change image":"Choose image");
   function set(v){
     value = v || "";
+    delete prev.dataset.fellBack; // a new file gets its own shot at the live URL
     prev.src = value; prev.style.visibility = value ? "visible" : "hidden";
     name.textContent = value ? value.split("/").pop() : "No image chosen";
     chooseBtn.textContent = value ? "Change image" : "Choose image";
@@ -1032,7 +1103,8 @@ async function editorView(name, item, fileEntry){
   }
 
   const form=el("form",{class:"form",onsubmit:(e)=>e.preventDefault()});
-  const getVal={}; // name -> fn returning value
+  const getVal={};  // name -> fn returning value
+  const setters={}; // name -> {get,set} for plain text fields (used to fill alt text)
 
   for(const f of spec.fields){
     const cur = fields[f.name];
@@ -1056,7 +1128,15 @@ async function editorView(name, item, fileEntry){
     else if(f.widget==="number"){ const inp=el("input",{id:idAttr,type:"number",value:cur??(f.default??"")}); wrap.append(inp); getVal[f.name]=()=>inp.value===""?undefined:Number(inp.value); }
     else if(f.widget==="text"||f.widget==="markdown"){ const ta=el("textarea",{id:idAttr,rows:f.widget==="markdown"?16:3},cur??""); wrap.append(ta); getVal[f.name]=()=>ta.value; }
     else if(f.widget==="image"){
-      const field = imageField(cur, spec.mediaFolder);
+      // Picking an image copies its library alt text into this field's alt box,
+      // if the form has one and it's still empty (the WordPress behaviour).
+      const field = imageField(cur, spec.mediaFolder, (value)=>{
+        const m = mediaFor(value);
+        if(!m || !m.alt) return;
+        const candidates = [f.name+"Alt", f.name==="image"?"alt":null, f.name==="image"?"imageAlt":null];
+        const target = candidates.find(n=>n && setters[n]);
+        if(target && !setters[target].get().trim()) setters[target].set(m.alt);
+      });
       wrap.append(field.node);
       getVal[f.name]=()=>field.get();
     }
@@ -1115,7 +1195,11 @@ async function editorView(name, item, fileEntry){
       wrap.append(listWrap, el("button",{class:"secondary",type:"button",style:"margin-top:.4rem",onclick:()=>mkRow(f.fields?null:"")}, "+ Add "+(f.addLabel||"item")));
       getVal[f.name]=()=> rowVals.map(g=>g&&g()).filter(v=>v!==null&&v!==undefined&&v!=="");
     }
-    else { const inp=el("input",{id:idAttr,value:cur??""}); wrap.append(inp); getVal[f.name]=()=>inp.value; }
+    else {
+      const inp=el("input",{id:idAttr,value:cur??""}); wrap.append(inp);
+      getVal[f.name]=()=>inp.value;
+      setters[f.name]={ get:()=>inp.value, set:(v)=>{ inp.value=v; } };
+    }
 
     if(f.hint) wrap.append(el("p",{class:"hint"},f.hint));
     form.append(wrap);
