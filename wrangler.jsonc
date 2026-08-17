@@ -18,7 +18,7 @@
     // CMS_PASSWORD, CMS_SESSION_SECRET and GITHUB_TOKEN are set with `wrangler secret put`.
     "GH_OWNER": "clentjewell",
     "GH_REPO": "balga",
-    "GH_BRANCH": "claude/balga-designs-static-rebuild-vbvcqa"
+    "GH_BRANCH": "main"
   },
   "kv_namespaces": [
     // Stores CMS user accounts (email → hashed password + role). Seeded on first

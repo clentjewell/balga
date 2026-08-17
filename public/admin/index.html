@@ -51,6 +51,24 @@
   .row__t{font-weight:600}
   .row__s{color:var(--muted);font-size:.85rem}
 
+  /* Grouped + drag-to-reorder list */
+  .group{margin-bottom:1.6rem}
+  .group__h{margin:0 0 .6rem;font-size:1.02rem;font-weight:700;display:flex;align-items:center;gap:.5rem}
+  .group__n{font-weight:500;color:var(--muted);font-size:.85rem}
+  .zone{display:grid;gap:.6rem;min-height:54px;border-radius:10px}
+  .zone--empty{border:1px dashed var(--line);display:grid;place-items:center;color:var(--muted);font-size:.85rem}
+  .row--drag{touch-action:none}
+  .row--drag .rowmain{flex:1 1 auto}
+  .row--drag .actions{flex:0 0 auto;flex-wrap:nowrap}
+  .grip{flex:0 0 auto;width:28px;height:34px;display:grid;place-items:center;cursor:grab;color:var(--muted);
+        border-radius:6px;background:#f2f1ea;border:1px solid var(--line);font-size:.95rem;line-height:1;user-select:none;touch-action:none}
+  .grip:active{cursor:grabbing}
+  .row.dragging{box-shadow:0 10px 26px rgba(0,0,0,.18);opacity:.97;transform:rotate(-.4deg)}
+  .dropph{border:2px dashed var(--green);background:rgba(90,103,78,.06);border-radius:10px}
+  .savebar{position:sticky;bottom:0;z-index:20;margin-top:1rem;background:var(--surface);border:1px solid var(--line);
+           border-radius:10px;padding:.8rem 1rem;display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;box-shadow:0 -4px 18px rgba(0,0,0,.08)}
+  .savebar span{font-weight:600}
+
   .form{max-width:720px;display:grid;gap:1.2rem}
   .card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:1rem 1.1rem}
   .card>legend,.card>h3{font-weight:700;margin:0 0 .8rem;padding:0}
@@ -78,7 +96,6 @@
 <script>
 const API = "/cms-api";
 let CONFIG = null, SESSION = null;
-const relCache = {}; // collectionName -> [{id,title}]
 
 const $ = (h) => { const d=document.createElement("div"); d.innerHTML=h.trim(); return d.firstElementChild; };
 const el = (t, a={}, kids=[]) => { const e=document.createElement(t); for(const k in a){ if(k==="class")e.className=a[k]; else if(k==="html")e.innerHTML=a[k]; else if(k.startsWith("on"))e.addEventListener(k.slice(2),a[k]); else if(a[k]!=null)e.setAttribute(k,a[k]); } (Array.isArray(kids)?kids:[kids]).forEach(c=>c&&e.append(c.nodeType?c:document.createTextNode(c))); return e; };
@@ -253,6 +270,50 @@ async function usersView(){
 
 function getCol(name){ return CONFIG.collections.find(c=>c.name===name); }
 
+// ---------- collection items (loaded once, then cached) ----------
+const itemsCache = {}; // collectionName -> [{ ...file, id, fields, body, title, order }]
+function invalidate(name){ delete itemsCache[name]; }
+
+async function loadItems(col){
+  if(itemsCache[col.name]) return itemsCache[col.name];
+  const {items} = await api("/list?folder="+encodeURIComponent(col.folder));
+  const out = await Promise.all(items.map(async(it)=>{
+    let fields={}, body="";
+    try{ const f=await api("/file?path="+encodeURIComponent(it.path)); const p=parseContent(col,f.content); fields=p.fields; body=p.body; }catch{}
+    const ord = Number(fields[col.sortField]);
+    return { ...it, id: it.name.replace(/\.(json|md)$/,""), fields, body,
+             title: fields[col.summaryField] || it.name,
+             order: Number.isFinite(ord) ? ord : 999,
+             thumb: col.thumbField ? fields[col.thumbField] : null };
+  }));
+  out.sort((a,b)=>a.order-b.order);
+  itemsCache[col.name]=out;
+  return out;
+}
+
+/** The groups an orderable collection is split into, in display order. */
+function groupNames(col, items){
+  const f=(col.fields||[]).find(x=>x.name===col.groupField);
+  const names = (f && Array.isArray(f.options)) ? f.options.slice() : [];
+  const seen = new Set(names);
+  items.forEach(it=>{ const g=it.fields[col.groupField]; if(g && !seen.has(g)){ names.push(g); seen.add(g); } });
+  return names;
+}
+
+function itemRow(col, it, drag){
+  return el("div",{class:"row"+(drag?" row--drag":""),"data-path":it.path},[
+    el("div",{class:"rowmain"},[
+      drag ? el("span",{class:"grip",title:"Drag to reorder","aria-hidden":"true"},"⠿") : null,
+      (it.thumb? el("img",{class:"rowthumb",src:it.thumb,alt:"",loading:"lazy"}):null),
+      el("div",{},[el("div",{class:"row__t"},it.title), drag?null:el("div",{class:"row__s"},it.id)])
+    ]),
+    el("div",{class:"actions"},[
+      el("button",{class:"secondary",onclick:()=>editorView(col.name,it)},"Edit"),
+      col.delete?el("button",{class:"danger",onclick:()=>del(col,it)},"Delete"):null
+    ])
+  ]);
+}
+
 async function collectionView(name){
   const col = getCol(name);
   const main = appShell(name);
@@ -269,46 +330,182 @@ async function collectionView(name){
   const top = el("div",{class:"topbar"},[ el("h2",{},col.label) ]);
   if(col.create) top.append(el("button",{onclick:()=>editorView(name,null)},"+ New "+(col.labelSingular||"item")));
   main.append(top);
+  if(col.reorder) main.append(el("p",{class:"hint",style:"margin:-.8rem 0 1rem"}, col.reorderHint || "Drag the ⠿ handle to change the order."));
   const listEl = el("div",{class:"list"}, el("p",{},[el("span",{class:"spin"})," Loading…"]));
   main.append(listEl);
   try{
-    const {items} = await api("/list?folder="+encodeURIComponent(col.folder));
-    const withTitles = await Promise.all(items.map(async(it)=>{
-      let title=it.name;
-      try{ const f=await api("/file?path="+encodeURIComponent(it.path)); const p=parseContent(col,f.content); title=p.fields[col.summaryField]||it.name; it._order=p.fields[col.sortField]??999; it._thumb=col.thumbField?p.fields[col.thumbField]:null; }catch{}
-      return {...it, title};
-    }));
-    withTitles.sort((a,b)=>(a._order??999)-(b._order??999));
+    const items = await loadItems(col);
     listEl.innerHTML="";
-    if(!withTitles.length) listEl.append(el("p",{},"No items yet."));
-    withTitles.forEach(it=>{
-      const idv = it.name.replace(/\.(json|md)$/,"");
-      listEl.append(el("div",{class:"row"},[
-        el("div",{class:"rowmain"},[
-          (it._thumb? el("img",{class:"rowthumb",src:it._thumb,alt:"",loading:"lazy"}):null),
-          el("div",{},[el("div",{class:"row__t"},it.title), el("div",{class:"row__s"},idv)])
-        ]),
-        el("div",{class:"actions"},[
-          el("button",{class:"secondary",onclick:()=>editorView(name,it)},"Edit"),
-          col.delete?el("button",{class:"danger",onclick:()=>del(col,it)},"Delete"):null
-        ])
-      ]));
-    });
+    if(!items.length){ listEl.append(el("p",{},"No items yet.")); return; }
+    if(col.reorder) sortableList(col, listEl, items);
+    else items.forEach(it=> listEl.append(itemRow(col,it,false)));
   }catch(ex){ listEl.innerHTML=""; listEl.append(el("div",{class:"msg err"},ex.message)); }
 }
 
+// ---------- grouped list with drag-and-drop ordering ----------
+function sortableList(col, listEl, items){
+  const byPath={}; items.forEach(it=>byPath[it.path]=it);
+  const grouped = !!col.groupField;
+  const wrap = el("div",{});
+  const cats = grouped ? groupNames(col, items) : [""];
+
+  cats.forEach(cat=>{
+    const zone = el("div",{class:"zone","data-cat":cat});
+    items.filter(it=> !grouped || (it.fields[col.groupField]||"")===cat).forEach(it=> zone.append(itemRow(col,it,true)));
+    if(grouped){
+      const count = zone.children.length;
+      wrap.append(el("div",{class:"group"},[
+        el("h3",{class:"group__h"},[cat, el("span",{class:"group__n"}, count+" "+(count===1?(col.labelSingular||"item"):(col.label||"items")))]),
+        zone
+      ]));
+    } else wrap.append(zone);
+  });
+  listEl.append(wrap);
+
+  const bar = el("div",{class:"savebar hidden"});
+  const saveBtn = el("button",{},"Save new order");
+  const undoBtn = el("button",{class:"secondary"},"Undo");
+  bar.append(el("span",{},"Order changed — not published yet."), saveBtn, undoBtn);
+  listEl.append(bar);
+  undoBtn.addEventListener("click",()=>collectionView(col.name));
+
+  const refresh=()=>{
+    wrap.querySelectorAll(".zone").forEach(z=>{
+      const empty = !z.querySelector(".row, .dropph");
+      z.classList.toggle("zone--empty", empty);
+      const hint=z.querySelector(".zonehint");
+      if(empty && !hint) z.append(el("div",{class:"zonehint"},"Drag here"));
+      if(!empty && hint) hint.remove();
+    });
+    // group counts
+    wrap.querySelectorAll(".group").forEach(g=>{
+      const n=g.querySelectorAll(".zone > .row").length;
+      const badge=g.querySelector(".group__n");
+      if(badge) badge.textContent = n+" "+(n===1?(col.labelSingular||"item"):(col.label||"items"));
+    });
+  };
+  const onDrop=()=>{
+    refresh();
+    bar.classList.toggle("hidden", !plan().length);
+  };
+  const plan=()=>{
+    const out=[]; let n=1;
+    wrap.querySelectorAll(".zone").forEach(z=>{
+      const cat=z.getAttribute("data-cat");
+      z.querySelectorAll(":scope > .row[data-path]").forEach(r=>{
+        const it=byPath[r.getAttribute("data-path")];
+        if(it) out.push({ it, order:n++, cat });
+      });
+    });
+    return out.filter(p=> p.it.order!==p.order || (grouped && (p.it.fields[col.groupField]||"")!==p.cat));
+  };
+
+  wrap.querySelectorAll(".grip").forEach(g=>{
+    g.addEventListener("pointerdown", e=>startDrag(e, g.closest(".row"), wrap, onDrop));
+  });
+  refresh();
+
+  saveBtn.addEventListener("click", async()=>{
+    const changes=plan();
+    if(!changes.length){ bar.classList.add("hidden"); return; }
+    saveBtn.disabled=undoBtn.disabled=true; saveBtn.innerHTML='<span class="spin"></span> Saving…';
+    const files = changes.map(p=>{
+      const fields={...p.it.fields};
+      fields[col.sortField]=p.order;
+      if(grouped) fields[col.groupField]=p.cat;
+      if(col.bodyField) delete fields[col.bodyField];
+      return { path:p.it.path, content: emitContent(col, fields, p.it.body) };
+    });
+    try{
+      await api("/files",{method:"PUT",body:JSON.stringify({files, message:`CMS: reorder ${col.label}`})});
+      toast("New order saved — the site will update in ~1–2 minutes.","ok");
+      invalidate(col.name);
+      collectionView(col.name);
+    }catch(ex){
+      toast(ex.message,"err");
+      saveBtn.disabled=undoBtn.disabled=false; saveBtn.textContent="Save new order";
+    }
+  });
+}
+
+/** Pointer-based dragging — works with a mouse and with touch. */
+function startDrag(e, row, wrap, onDrop){
+  if(!row || (e.button!=null && e.button!==0)) return;
+  e.preventDefault();
+  const rect=row.getBoundingClientRect();
+  const offX=e.clientX-rect.left, offY=e.clientY-rect.top;
+  const ph=el("div",{class:"dropph"}); ph.style.height=rect.height+"px";
+  row.parentNode.insertBefore(ph,row);
+  row.classList.add("dragging");
+  Object.assign(row.style,{position:"fixed",zIndex:"60",width:rect.width+"px",
+    left:rect.left+"px",top:rect.top+"px",pointerEvents:"none",margin:"0"});
+  // float the row on <body> so its old group reads as empty and can be dropped back into
+  document.body.append(row);
+  const scroller=document.getElementById("main")||document.scrollingElement;
+
+  const move=(ev)=>{
+    row.style.left=(ev.clientX-offX)+"px";
+    row.style.top=(ev.clientY-offY)+"px";
+    // auto-scroll near the top/bottom edge
+    if(scroller){
+      const s=scroller.getBoundingClientRect ? scroller.getBoundingClientRect() : {top:0,bottom:innerHeight};
+      if(ev.clientY < s.top+70) scroller.scrollTop -= 14;
+      else if(ev.clientY > s.bottom-70) scroller.scrollTop += 14;
+    }
+    const under=document.elementFromPoint(ev.clientX, ev.clientY);
+    if(!under || !under.closest) return;
+    const overRow=under.closest(".row[data-path]");
+    if(overRow && overRow!==row && wrap.contains(overRow)){
+      const r=overRow.getBoundingClientRect();
+      const before = ev.clientY < r.top + r.height/2;
+      overRow.parentNode.insertBefore(ph, before?overRow:overRow.nextSibling);
+      return;
+    }
+    const zone=under.closest(".zone");
+    if(zone && wrap.contains(zone) && !zone.contains(ph) && !zone.querySelector(".row")) zone.append(ph);
+  };
+  const up=()=>{
+    document.removeEventListener("pointermove",move);
+    document.removeEventListener("pointerup",up);
+    document.removeEventListener("pointercancel",up);
+    row.classList.remove("dragging");
+    row.removeAttribute("style");
+    ph.parentNode.insertBefore(row, ph);
+    ph.remove();
+    onDrop();
+  };
+  document.addEventListener("pointermove",move);
+  document.addEventListener("pointerup",up);
+  document.addEventListener("pointercancel",up);
+}
+
 async function del(col,it){
-  if(!confirm(`Delete "${it.name}"? This cannot be undone.`)) return;
-  try{ await api("/file",{method:"DELETE",body:JSON.stringify({path:it.path,sha:it.sha})}); toast("Deleted — publishing…","ok"); collectionView(col.name); }
+  if(!confirm(`Delete "${it.title||it.name}"? This cannot be undone.`)) return;
+  try{ await api("/file",{method:"DELETE",body:JSON.stringify({path:it.path,sha:it.sha})}); toast("Deleted — publishing…","ok"); invalidate(col.name); collectionView(col.name); }
   catch(ex){ toast(ex.message,"err"); }
 }
 
 async function loadRelation(name){
-  if(relCache[name]) return relCache[name];
-  const col=getCol(name);
-  const {items}=await api("/list?folder="+encodeURIComponent(col.folder));
-  const out=await Promise.all(items.map(async(it)=>{ const id=it.name.replace(/\.(json|md)$/,""); let title=id; try{const f=await api("/file?path="+encodeURIComponent(it.path));title=parseContent(col,f.content).fields[col.summaryField]||id;}catch{} return {id,title}; }));
-  relCache[name]=out; return out;
+  const items = await loadItems(getCol(name));
+  return items.map(it=>({ id:it.id, title:it.title }));
+}
+
+/** Next free auto ID for a collection, e.g. faq-16. */
+function nextId(col, items){
+  const cfg = (col.autoId && typeof col.autoId==="object") ? col.autoId : {};
+  const prefix = cfg.prefix || (col.name.replace(/s$/,"")+"-");
+  const pad = cfg.pad || 2;
+  const re = new RegExp("^"+prefix.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"(\\d+)$");
+  const taken = new Set(items.map(it=>it.id));
+  let max=0;
+  items.forEach(it=>{ const m=re.exec(it.id); if(m) max=Math.max(max, parseInt(m[1],10)); });
+  let n=max+1, id;
+  do{ id = prefix + String(n).padStart(pad,"0"); n++; }while(taken.has(id));
+  return id;
+}
+/** Next order value — new items go to the end of the list. */
+function nextOrder(items){
+  return items.reduce((m,it)=>Math.max(m, Number.isFinite(it.order)?it.order:0), 0) + 1;
 }
 
 async function editorView(name, item, fileEntry){
@@ -328,14 +525,34 @@ async function editorView(name, item, fileEntry){
 
   const top=el("div",{class:"topbar"},[ el("h2",{},isNew?("New "+(spec.label||"item")):(spec.isFile?spec.label:(fields[spec.summaryField]||"Edit"))), el("button",{class:"secondary",onclick:()=>collectionView(name)},"← Back") ]);
   main.append(top);
+
+  // Hidden bookkeeping fields (ID / order) are filled in automatically for new
+  // items: the next free ID, and an order that puts the item last.
+  const auto={};
+  if(isNew && !spec.isFile && (col.autoId || col.autoOrder)){
+    try{
+      const existing = await loadItems(col);
+      if(col.autoId && spec.identifier) auto[spec.identifier] = nextId(col, existing);
+      if(col.autoOrder && col.sortField) auto[col.sortField] = nextOrder(existing);
+    }catch(ex){ main.append(el("div",{class:"msg err"},"Could not load the existing items: "+ex.message)); return; }
+  }
+
   const form=el("form",{class:"form",onsubmit:(e)=>e.preventDefault()});
   const getVal={}; // name -> fn returning value
 
   for(const f of spec.fields){
+    const cur = fields[f.name];
+    if(f.hidden){
+      getVal[f.name]=()=>{
+        if(cur!==undefined && cur!=="") return cur;
+        if(auto[f.name]!==undefined) return auto[f.name];
+        return f.default!==undefined ? f.default : "";
+      };
+      continue;
+    }
     const wrap=el("div",{});
     const idAttr="f_"+f.name;
     if(f.widget!=="object") wrap.append(el("label",{for:idAttr},f.label+(f.required?" *":"")));
-    const cur = fields[f.name];
 
     if(f.widget==="slug"){
       const inp=el("input",{id:idAttr,value:cur??(isNew?"":""),readonly:(f.readonly||(!isNew&&f.name===spec.identifier))?"":null});
@@ -432,7 +649,13 @@ async function editorView(name, item, fileEntry){
     if(spec.isFile){ targetPath=spec.path; }
     else {
       const idVal=getVal[spec.identifier]();
-      if(!idVal){ msg.textContent="Please provide an ID / slug."; msg.classList.remove("hidden"); return; }
+      if(!idVal){
+        const idField=spec.fields.find(f=>f.name===spec.identifier);
+        msg.textContent = idField && idField.hidden
+          ? "Couldn't work out the next ID — please go back and try again."
+          : "Please provide an ID / slug.";
+        msg.classList.remove("hidden"); return;
+      }
       targetPath = isNew ? `${spec.folder}/${idVal}.${spec.extension}` : path;
     }
     const bodyVal = spec.bodyField ? getVal[spec.bodyField]() : "";
@@ -444,7 +667,7 @@ async function editorView(name, item, fileEntry){
     try{
       await api("/file",{method:"PUT",body:JSON.stringify({path:targetPath, content, sha:isNew?undefined:sha, message:`CMS: ${isNew?"create":"update"} ${targetPath}`})});
       toast("Saved — the site will update in ~1–2 minutes.","ok");
-      relCache[name]=null;
+      invalidate(name);
       collectionView(name);
     }catch(ex){ msg.textContent=ex.message; msg.classList.remove("hidden"); saveBtn.disabled=false; saveBtn.textContent="Save & publish"; }
   }

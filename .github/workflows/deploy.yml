@@ -6,7 +6,7 @@ name: Build & Deploy
 on:
   push:
     branches:
-      - claude/balga-designs-static-rebuild-vbvcqa
+      - main
   workflow_dispatch:
 
 concurrency:

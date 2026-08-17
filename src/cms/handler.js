@@ -199,6 +199,29 @@ async function ghPut(env, path, contentB64, sha, message) {
   if (!r.ok) return { ok: false, status: r.status, error: r.data.message };
   return { ok: true, commit: r.data.commit?.sha, sha: r.data.content?.sha };
 }
+// Commit several files in ONE commit (Git data API) — used by drag-and-drop
+// reordering, which rewrites the `order` of many files at once. Doing it as a
+// single commit means a single build + deploy instead of one per file.
+async function ghCommitMany(env, files, message) {
+  const repo = `https://api.github.com/repos/${env.GH_OWNER}/${env.GH_REPO}`;
+  const br = branch(env);
+  const ref = await ghFetch(env, "GET", `${repo}/git/ref/heads/${encodeURI(br)}`);
+  if (!ref.ok) return { ok: false, status: ref.status, error: ref.data.message };
+  const headSha = ref.data.object?.sha;
+  const head = await ghFetch(env, "GET", `${repo}/git/commits/${headSha}`);
+  if (!head.ok) return { ok: false, status: head.status, error: head.data.message };
+  const tree = await ghFetch(env, "POST", `${repo}/git/trees`, {
+    base_tree: head.data.tree?.sha,
+    tree: files.map((f) => ({ path: f.path, mode: "100644", type: "blob", content: f.content })),
+  });
+  if (!tree.ok) return { ok: false, status: tree.status, error: tree.data.message };
+  const commit = await ghFetch(env, "POST", `${repo}/git/commits`, { message, tree: tree.data.sha, parents: [headSha] });
+  if (!commit.ok) return { ok: false, status: commit.status, error: commit.data.message };
+  const upd = await ghFetch(env, "PATCH", `${repo}/git/refs/heads/${encodeURI(br)}`, { sha: commit.data.sha });
+  if (!upd.ok) return { ok: false, status: upd.status, error: upd.data.message };
+  return { ok: true, commit: commit.data.sha };
+}
+
 async function ghDelete(env, path, sha, message) {
   const r = await ghFetch(env, "DELETE", `${ghBase(env)}/${encodeURI(path)}`, { message, sha, branch: branch(env) });
   if (!r.ok) return { ok: false, status: r.status, error: r.data.message };
@@ -332,6 +355,20 @@ export async function handleCms(request, env) {
     const body = await request.json().catch(() => ({}));
     if (!body.path || typeof body.content !== "string") return json({ error: "Missing path or content." }, 400);
     const r = await ghPut(env, body.path, encodeB64Utf8(body.content), body.sha, body.message || `CMS: update ${body.path}`);
+    return r.ok ? json(r) : json({ error: r.error }, r.status || 502);
+  }
+  // Batch save — many files, one commit, one deploy (used by reordering).
+  if (path === "files" && method === "PUT") {
+    const body = await request.json().catch(() => ({}));
+    const files = Array.isArray(body.files) ? body.files : null;
+    if (!files || !files.length) return json({ error: "Nothing to save." }, 400);
+    if (files.length > 200) return json({ error: "Too many files in one save." }, 400);
+    for (const f of files) {
+      if (!f || typeof f.path !== "string" || !f.path || typeof f.content !== "string") {
+        return json({ error: "Each file needs a path and content." }, 400);
+      }
+    }
+    const r = await ghCommitMany(env, files, body.message || `CMS: update ${files.length} files`);
     return r.ok ? json(r) : json({ error: r.error }, r.status || 502);
   }
   if (path === "file" && method === "DELETE") {

@@ -34,8 +34,9 @@ Developer settings → Fine-grained tokens), scoped to **this repo only**, with
 **Repository permissions → Contents: Read and write**. This is the "bot" that commits
 the client's edits. The client never sees it.
 
-`GH_OWNER` / `GH_REPO` / `GH_BRANCH` are already set as vars in `wrangler.jsonc`
-(currently the `claude/...` branch — change to `main` when the site is promoted).
+`GH_OWNER` / `GH_REPO` / `GH_BRANCH` are already set as vars in `wrangler.jsonc`.
+The site is promoted: `GH_BRANCH` is **`main`**, and the Build & Deploy workflow
+runs on pushes to `main` — so a CMS save commits to `main` and deploys from it.
 
 ### 2. GitHub Actions secrets (auto build + deploy on each save)
 
@@ -75,6 +76,23 @@ User accounts live in a Cloudflare **KV namespace** (binding `CMS_USERS` in
 
 Passwords are stored only as PBKDF2-SHA256 hashes; the `CMS_PASSWORD` secret is just
 the seed. Sessions last 8 hours and carry the role.
+
+## FAQs — ordering and categories
+
+The FAQs screen lists the questions **grouped by category**, in the order they
+appear on the site. Ordering is drag-and-drop:
+
+- Drag a question by its **⠿** handle to move it up or down inside a category, or
+  drop it in a different category heading to move it there.
+- Nothing is published until **Save new order** — the whole reshuffle then goes up
+  as a *single* commit (one build, one deploy) via `PUT /cms-api/files`.
+- Adding a question asks only for **category, question and answer**. The filename
+  (`faq-16`) and the sort position are filled in automatically, and a new question
+  lands at the end of its category.
+
+This is driven from `public/cms-config.json`, so any collection can behave the same
+way: `"reorder": true`, `"groupField": "<field>"`, `"autoId": {"prefix":"faq-","pad":2}`,
+`"autoOrder": true`, plus `"hidden": true` on the id/order fields.
 
 ## Notes / limits
 
