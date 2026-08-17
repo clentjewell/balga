@@ -131,7 +131,13 @@ in `src/data/media.json`, keyed by the image's public URL, and saved with
 and where a page hasn't got any, the library's alt text is used. Choosing an image
 in the editor also copies its library alt into that field's alt box when the box is
 empty — the same thing WordPress does on insert, and it never overwrites text
-someone has already written. Title, caption and description are stored for the
+someone has already written.
+
+The **Testimonials background image** has no alt-text box in the editor at all: its
+alt text comes from the media library alone. The other image fields still keep
+their own alt boxes; the same swap can be made for any of them by deleting the
+`…Alt` field from `public/cms-config.json` and dropping the second argument to
+`altFor()` in the template. Title, caption and description are stored for the
 client's own organisation; nothing on the site renders them yet.
 
 The library is one recursive tree call (`GET /cms-api/media`), cached for the
