@@ -195,7 +195,7 @@ function loginView(){
   const pass = el("input",{type:"password",placeholder:"Password",autocomplete:"current-password"});
   const btn = el("button",{type:"submit"},"Sign in");
   const form = el("form",{onsubmit:async(e)=>{ e.preventDefault(); err.classList.add("hidden"); btn.disabled=true; btn.textContent="Signing in…";
-    try{ const r=await api("/login",{method:"POST",body:JSON.stringify({email:email.value,password:pass.value})}); SESSION={email:r.email,role:r.role}; await boot(); }
+    try{ const r=await api("/login",{method:"POST",body:JSON.stringify({email:email.value,password:pass.value})}); SESSION={email:r.email,role:r.role,name:r.name||""}; await boot(); }
     catch(ex){ err.textContent=ex.message; err.classList.remove("hidden"); btn.disabled=false; btn.textContent="Sign in"; }
   }},[
     el("div",{class:"field"},[el("label",{},"Email"),email]),
@@ -271,7 +271,7 @@ function appShell(activeCollection){
   const accountBtns = [ el("button",{class:activeCollection==="__account"?"active":"",onclick:()=>accountView()},"👤 My account") ];
   if(SESSION && SESSION.role==="admin") accountBtns.push(el("button",{class:activeCollection==="__users"?"active":"",onclick:()=>usersView()},"🔑 Users"));
   const extra = el("nav",{style:"margin-top:.6rem;border-top:1px solid rgba(255,255,255,.18);padding-top:.6rem"}, accountBtns);
-  const who = SESSION ? SESSION.email + (SESSION.role==="admin"?"  ·  admin":"") : "";
+  const who = SESSION ? ((SESSION.name || SESSION.email) + (SESSION.role==="admin"?"  ·  admin":"")) : "";
   const side = el("aside",{class:"side"},[
     el("div",{class:"side__brand"},[el("span",{},"🌿"),"Balga CMS"]),
     nav, extra,
@@ -528,7 +528,7 @@ async function dashboardView(){
   const main = appShell("__dash");
   main.append(el("div",{class:"topbar"},[
     el("h2",{},"Dashboard"),
-    el("div",{class:"row__s"}, SESSION ? "Signed in as "+SESSION.email : ""),
+    el("div",{class:"row__s"}, SESSION ? "Signed in as "+(SESSION.name || SESSION.email) : ""),
   ]));
   const grid = el("div",{class:"cards"});
   main.append(grid);
@@ -644,11 +644,12 @@ async function loadActivityCard(card){
     if(!items.length) list.append(el("p",{class:"empty"},"No changes recorded yet."));
     items.forEach(c=>{
       const d = describeChange(c.message);
-      const who = (c.author||"").includes("@") ? c.author.split("@")[0] : (c.author||"someone");
+      // Only Content Manager accounts are named; anything else just shows when.
+      const when = ago(c.at);
       list.append(el("div",{class:"citem"},[
         el("div",{class:"citem__main"},[
           el("div",{class:"citem__t"}, d.what + (d.where? " · "+d.where : "")),
-          el("div",{class:"citem__s"}, "by "+who+" · "+ago(c.at)),
+          el("div",{class:"citem__s"}, c.author ? "by "+c.author+" · "+when : when),
         ]),
       ]));
     });
@@ -719,12 +720,33 @@ async function loadPostsCard(card){
 function accountView(){
   const main = appShell("__account");
   main.append(el("div",{class:"topbar"},[ el("h2",{},"My account") ]));
+
+  // --- your name (shown against your changes on the dashboard) ---
+  const nMsg = el("div",{class:"msg err hidden"});
+  const nInp = el("input",{value:SESSION&&SESSION.name?SESSION.name:"",placeholder:"e.g. Sarah Jones"});
+  const nBtn = el("button",{},"Save name");
+  const nameForm = el("form",{class:"card",style:"max-width:720px",onsubmit:async(e)=>{
+    e.preventDefault(); nMsg.classList.add("hidden"); nBtn.disabled=true; nBtn.innerHTML='<span class="spin"></span> Saving…';
+    try{
+      const r = await api("/profile",{method:"POST",body:JSON.stringify({name:nInp.value})});
+      if(SESSION) SESSION.name = r.name;
+      toast("Name updated.","ok"); accountView();
+    }catch(ex){ nMsg.textContent=ex.message; nMsg.classList.remove("hidden"); nBtn.disabled=false; nBtn.textContent="Save name"; }
+  }},[
+    el("h3",{},"Your name"),
+    el("div",{style:"display:grid;gap:.7rem"},[
+      el("div",{},[el("label",{},"Name"),nInp,el("p",{class:"hint"},"This is the name shown next to your changes on the dashboard.")]),
+      el("div",{class:"actions"},[nBtn]), nMsg,
+    ]),
+  ]);
+  main.append(nameForm);
+
   const msg = el("div",{class:"msg err hidden"});
   const cur = el("input",{type:"password",autocomplete:"current-password"});
   const nw = el("input",{type:"password",autocomplete:"new-password"});
   const cf = el("input",{type:"password",autocomplete:"new-password"});
   const btn = el("button",{},"Update password");
-  const form = el("form",{class:"form",onsubmit:async(e)=>{ e.preventDefault(); msg.classList.add("hidden");
+  const form = el("form",{class:"card",style:"max-width:720px;margin-top:1rem",onsubmit:async(e)=>{ e.preventDefault(); msg.classList.add("hidden");
     if(nw.value.length<8){ msg.textContent="New password must be at least 8 characters."; msg.classList.remove("hidden"); return; }
     if(nw.value!==cf.value){ msg.textContent="New passwords do not match."; msg.classList.remove("hidden"); return; }
     btn.disabled=true; btn.innerHTML='<span class="spin"></span> Saving…';
@@ -733,6 +755,7 @@ function accountView(){
     }catch(ex){ msg.textContent=ex.message; msg.classList.remove("hidden"); }
     btn.disabled=false; btn.textContent="Update password";
   }},[
+    el("h3",{},"Change password"),
     el("p",{class:"hint"},"Signed in as "+(SESSION?SESSION.email:"")+"."),
     el("div",{},[el("label",{},"Current password"),cur]),
     el("div",{},[el("label",{},"New password"),nw]),
@@ -747,19 +770,21 @@ async function usersView(){
   const main = appShell("__users");
   main.append(el("div",{class:"topbar"},[ el("h2",{},"Users") ]));
 
-  // Add-user card
+  // --- add a user ---
   const aMsg = el("div",{class:"msg err hidden"});
+  const aName = el("input",{placeholder:"e.g. Sarah Jones"});
   const aEmail = el("input",{type:"email",placeholder:"person@example.com"});
   const aPass = el("input",{type:"password",placeholder:"At least 8 characters",autocomplete:"new-password"});
   const aRole = el("select",{}, [el("option",{value:"editor"},"Editor — can edit content"), el("option",{value:"admin"},"Admin — can also manage users")]);
   const aBtn = el("button",{},"Add user");
-  const addCard = el("form",{class:"card",onsubmit:async(e)=>{ e.preventDefault(); aMsg.classList.add("hidden"); aBtn.disabled=true;
-    try{ await api("/users",{method:"POST",body:JSON.stringify({email:aEmail.value,password:aPass.value,role:aRole.value})});
-      toast("User added.","ok"); aEmail.value=aPass.value=""; aRole.value="editor"; usersView();
+  const addCard = el("form",{class:"card",style:"max-width:720px",onsubmit:async(e)=>{ e.preventDefault(); aMsg.classList.add("hidden"); aBtn.disabled=true;
+    try{ await api("/users",{method:"POST",body:JSON.stringify({name:aName.value,email:aEmail.value,password:aPass.value,role:aRole.value})});
+      toast("User added.","ok"); usersView();
     }catch(ex){ aMsg.textContent=ex.message; aMsg.classList.remove("hidden"); aBtn.disabled=false; }
   }},[
     el("h3",{},"Add a user"),
     el("div",{style:"display:grid;gap:.7rem"},[
+      el("div",{},[el("label",{},"Name"),aName]),
       el("div",{},[el("label",{},"Email"),aEmail]),
       el("div",{},[el("label",{},"Temporary password"),aPass]),
       el("div",{},[el("label",{},"Role"),aRole]),
@@ -775,44 +800,55 @@ async function usersView(){
     listEl.innerHTML="";
     users.forEach(u=>{
       const isMe = u.email===me;
-      const badge = el("span",{class:"row__s"}, u.role==="admin"?"Admin":"Editor");
+      const row = el("div",{class:"row",style:"flex-wrap:wrap"});
       const rowMsg = el("div",{class:"msg err hidden",style:"width:100%"});
       const actions = el("div",{class:"actions"});
-      // reset password (inline)
-      const rBtn = el("button",{class:"secondary"},"Reset password");
-      rBtn.addEventListener("click",()=>{
-        if(actions.querySelector(".resetbox")) return;
-        const np = el("input",{type:"password",placeholder:"New password (min 8)",style:"width:200px"});
-        const save = el("button",{},"Save");
-        const box = el("span",{class:"resetbox",style:"display:inline-flex;gap:.4rem;align-items:center;flex-wrap:wrap"},[np,save,
-          el("button",{class:"secondary",type:"button",onclick:()=>box.remove()},"Cancel")]);
-        save.addEventListener("click",async()=>{ rowMsg.classList.add("hidden"); save.disabled=true;
-          try{ await api("/users/reset",{method:"POST",body:JSON.stringify({email:u.email,newPassword:np.value})}); toast("Password reset for "+u.email,"ok"); box.remove(); }
-          catch(ex){ rowMsg.textContent=ex.message; rowMsg.classList.remove("hidden"); save.disabled=false; }
+
+      // Edit: name, role and (optionally) a new password — one save.
+      const eBtn = el("button",{class:"secondary"},"Edit");
+      eBtn.addEventListener("click",()=>{
+        if(row.querySelector(".editbox")) return;
+        const nInp = el("input",{value:u.name||"",placeholder:"Name"});
+        const rSel = el("select",{}, [el("option",{value:"editor"},"Editor"), el("option",{value:"admin"},"Admin")]);
+        rSel.value = u.role;
+        const pInp = el("input",{type:"password",placeholder:"Leave blank to keep current",autocomplete:"new-password"});
+        const save = el("button",{},"Save changes");
+        const box = el("div",{class:"editbox card",style:"width:100%;margin-top:.6rem"},[
+          el("div",{style:"display:grid;gap:.7rem"},[
+            el("div",{},[el("label",{},"Name"),nInp]),
+            el("div",{},[el("label",{},"Role"),rSel]),
+            el("div",{},[el("label",{},"New password"),pInp,el("p",{class:"hint"},"Only fill this in if you want to change their password.")]),
+            el("div",{class:"actions"},[save, el("button",{class:"secondary",type:"button",onclick:()=>box.remove()},"Cancel")]),
+          ])
+        ]);
+        save.addEventListener("click",async()=>{
+          rowMsg.classList.add("hidden"); save.disabled=true; save.innerHTML='<span class="spin"></span> Saving…';
+          try{
+            await api("/users/update",{method:"POST",body:JSON.stringify({email:u.email,name:nInp.value,role:rSel.value,newPassword:pInp.value||undefined})});
+            toast("User updated.","ok"); usersView();
+          }catch(ex){ rowMsg.textContent=ex.message; rowMsg.classList.remove("hidden"); save.disabled=false; save.textContent="Save changes"; }
         });
-        actions.append(box);
+        row.append(box);
       });
-      actions.append(rBtn);
-      // role toggle
-      const roleBtn = el("button",{class:"secondary"}, u.role==="admin"?"Make editor":"Make admin");
-      roleBtn.addEventListener("click",async()=>{ rowMsg.classList.add("hidden"); roleBtn.disabled=true;
-        try{ await api("/users/role",{method:"POST",body:JSON.stringify({email:u.email,role:u.role==="admin"?"editor":"admin"})}); usersView(); }
-        catch(ex){ rowMsg.textContent=ex.message; rowMsg.classList.remove("hidden"); roleBtn.disabled=false; }
-      });
-      actions.append(roleBtn);
-      // delete
+      actions.append(eBtn);
+
       if(!isMe){
         const dBtn = el("button",{class:"danger"},"Delete");
-        dBtn.addEventListener("click",async()=>{ if(!confirm("Delete "+u.email+"?")) return; rowMsg.classList.add("hidden"); dBtn.disabled=true;
+        dBtn.addEventListener("click",async()=>{ if(!confirm("Delete "+(u.name||u.email)+"?")) return; rowMsg.classList.add("hidden"); dBtn.disabled=true;
           try{ await api("/users",{method:"DELETE",body:JSON.stringify({email:u.email})}); toast("User deleted.","ok"); usersView(); }
           catch(ex){ rowMsg.textContent=ex.message; rowMsg.classList.remove("hidden"); dBtn.disabled=false; }
         });
         actions.append(dBtn);
       }
-      listEl.append(el("div",{class:"row",style:"flex-wrap:wrap"},[
-        el("div",{class:"rowmain"},[el("div",{},[el("div",{class:"row__t"}, u.email + (isMe?"  (you)":"")), badge])]),
+
+      row.append(
+        el("div",{class:"rowmain"},[el("div",{},[
+          el("div",{class:"row__t"}, (u.name || u.email.split("@")[0]) + (isMe?"  (you)":"")),
+          el("div",{class:"row__s"}, u.email + "  ·  " + (u.role==="admin"?"Admin":"Editor")),
+        ])]),
         actions, rowMsg
-      ]));
+      );
+      listEl.append(row);
     });
   }catch(ex){ listEl.innerHTML=""; listEl.append(el("div",{class:"msg err"},ex.message)); }
 }
@@ -1249,7 +1285,7 @@ async function boot(){
   // Arriving from a "reset your password" email.
   const reset = /[#&]reset=([^&]+)/.exec(location.hash);
   if(reset){ resetView(decodeURIComponent(reset[1])); return; }
-  try{ const me=await api("/me"); SESSION={email:me.email,role:me.role}; dashboardView(); }
+  try{ const me=await api("/me"); SESSION={email:me.email,role:me.role,name:me.name||""}; dashboardView(); }
   catch{ loginView(); }
 }
 // A reset link pasted into an already-open tab changes the hash without reloading.
