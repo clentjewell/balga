@@ -10,8 +10,9 @@
  * <h1>, every <img> has an alt attribute.
  */
 import { readFileSync, existsSync, readdirSync, statSync, writeFileSync, mkdirSync } from "node:fs";
-import { join, relative, dirname } from "node:path";
+import { join, relative, dirname, sep } from "node:path";
 import { parse } from "node-html-parser";
+import { createHash } from "node:crypto";
 
 const dist = process.argv[2] || "dist";
 if (!existsSync(dist)) {
@@ -123,6 +124,28 @@ for (const file of pages) {
     const href = (a.getAttribute("href") || "").trim();
     if (href) links.push({ page: "/" + rel.replace(/index\.html$/, ""), href, text: a.text.trim().slice(0, 80) });
   }
+}
+
+// --- Content-Security-Policy coverage -----------------------------------------
+// The Worker names every inline script by hash instead of allowing 'unsafe-inline'.
+// If a page's inline script isn't in the manifest the browser would refuse to run
+// it, so a miss is a build error, not a warning.
+try {
+  const manifest = JSON.parse(readFileSync(join(dist, "_cms", "csp.json"), "utf8"));
+  for (const file of pages) {
+    const rel = relative(dist, file);
+    let route = "/" + rel.split(sep).join("/");
+    route = route.endsWith("/index.html") ? route.slice(0, -"index.html".length) : route;
+    const listed = manifest[route];
+    if (!listed) { err(rel, "no CSP entry — inline scripts would be blocked"); continue; }
+    for (const m of readFileSync(file, "utf8").matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/g)) {
+      if (/\ssrc=/.test(m[1])) continue;
+      const hash = "sha256-" + createHash("sha256").update(m[2], "utf8").digest("base64");
+      if (!listed.includes(hash)) err(rel, "inline script missing from the CSP manifest — it would be blocked");
+    }
+  }
+} catch {
+  err("(site)", "missing _cms/csp.json — the CSP would fall back to 'unsafe-inline'");
 }
 
 if (!sawLocalBusiness) err("(site)", "LocalBusiness JSON-LD not found on any page");

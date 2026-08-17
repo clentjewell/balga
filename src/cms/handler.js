@@ -155,6 +155,38 @@ async function ensureSeed(env) {
   });
 }
 
+// ---- rate limiting (Cloudflare KV, same namespace) ----
+// A fixed window per caller. Deliberately simple and forgiving: it exists to stop
+// password guessing and form flooding, not to police normal use, and it always
+// expires on its own — nobody can be locked out permanently.
+const RL_PREFIX = "rl:";
+export const clientIp = (request) =>
+  request.headers.get("CF-Connecting-IP") || request.headers.get("X-Forwarded-For") || "unknown";
+
+/** Count this attempt. Returns { limited, retryAfter } — never throws. */
+export async function rateLimit(env, bucket, id, { limit, windowSeconds }) {
+  if (!env.CMS_USERS) return { limited: false };
+  const key = `${RL_PREFIX}${bucket}:${id}`;
+  try {
+    const raw = await env.CMS_USERS.get(key);
+    const count = raw ? parseInt(raw, 10) || 0 : 0;
+    if (count >= limit) return { limited: true, retryAfter: windowSeconds };
+    // expirationTtl keeps the window rolling forward from the first attempt.
+    await env.CMS_USERS.put(key, String(count + 1), { expirationTtl: windowSeconds });
+    return { limited: false };
+  } catch {
+    return { limited: false }; // a rate-limiter outage must not lock the client out
+  }
+}
+
+export async function clearRateLimit(env, bucket, id) {
+  if (!env.CMS_USERS) return;
+  try { await env.CMS_USERS.delete(`${RL_PREFIX}${bucket}:${id}`); } catch { /* nothing to do */ }
+}
+
+const tooMany = (retryAfter, message) =>
+  json({ error: message }, 429, { "Retry-After": String(retryAfter || 900) });
+
 // ---- contact enquiries (Cloudflare KV, same namespace as users) ----
 // Key: `enquiry:<iso timestamp>-<random>` so a prefix list comes back oldest-first
 // and can just be reversed. The summary (name, email, when, read flag, preview) is
@@ -465,6 +497,12 @@ export async function handleCms(request, env) {
   if (path === "login" && method === "POST") {
     const body = await request.json().catch(() => ({}));
     const email = normEmail(body.email);
+    // Throttle guessing, by source and by account, before touching the password.
+    const ip = clientIp(request);
+    for (const [bucket, id] of [["login-ip", ip], ["login-user", email]]) {
+      const rl = await rateLimit(env, bucket, id, { limit: 10, windowSeconds: 900 });
+      if (rl.limited) return tooMany(rl.retryAfter, "Too many sign-in attempts. Please wait 15 minutes and try again.");
+    }
     await ensureSeed(env);
     let user = await getUser(env, email);
     // Legacy fallback: if KV isn't bound, verify against the seed secrets directly.
@@ -475,6 +513,8 @@ export async function handleCms(request, env) {
     }
     const ok = user && user.pass ? await verifyPassword(body.password || "", user.pass) : !!(user && !user.pass);
     if (!user || !ok) return json({ error: "Incorrect email or password." }, 401);
+    await clearRateLimit(env, "login-ip", clientIp(request));
+    await clearRateLimit(env, "login-user", email);
     const token = await signSession(env, user.email, user.role);
     const cookie = `${COOKIE}=${encodeURIComponent(token)}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=${SESSION_TTL}`;
     return json({ ok: true, email: user.email, name: user.name || "", role: user.role }, 200, { "Set-Cookie": cookie });
@@ -487,6 +527,8 @@ export async function handleCms(request, env) {
     if (!mailConfigured(env)) {
       return json({ error: "Password reset by email isn't switched on yet. Ask an admin to reset your password." }, 501);
     }
+    const rl = await rateLimit(env, "forgot", clientIp(request), { limit: 5, windowSeconds: 900 });
+    if (rl.limited) return tooMany(rl.retryAfter, "Too many reset requests. Please wait 15 minutes and try again.");
     await ensureSeed(env);
     const user = await getUser(env, email);
     // Always answer the same way: never reveal whether an account exists.

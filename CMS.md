@@ -237,6 +237,40 @@ real hostname and `PUBLIC_NOINDEX=false`, and set the Worker var `PREVIEW_NOINDE
 to `"false"`. Until then robots.txt disallows everything and pages carry
 `X-Robots-Tag: noindex` — correct for a preview, fatal if it ships that way.
 
+## Security
+
+Hardening applied ahead of go-live (a passive scan of the deployed site drove this):
+
+- **Content-Security-Policy names every inline script by SHA-256 hash** instead of
+  allowing `'unsafe-inline'`. The build hashes each page's inline scripts into
+  `dist/_cms/csp.json`; the Worker emits a per-page policy from it. If XSS ever got
+  into a page, the browser would refuse to run it. `npm run audit` fails the build
+  if a page's inline script isn't covered, so it can't silently regress.
+  `style-src` keeps `'unsafe-inline'` — Astro emits scoped styles, and style
+  injection is cosmetic next to script injection.
+- **HSTS** (`max-age=31536000`), plus `object-src 'none'` and
+  `upgrade-insecure-requests`. `includeSubDomains` and `preload` are deliberately
+  left off until the production domain is live and its subdomains are confirmed
+  HTTPS — both are hard to undo once browsers cache them.
+- **Rate limits** (KV, fixed 15-minute window, self-expiring — nobody is locked out
+  permanently): sign-in 10 attempts per IP *and* per account; password-reset
+  requests 5 per IP; contact form 5 submissions per IP. A successful sign-in clears
+  the counter, and a KV outage fails open rather than locking the client out.
+- **Signed-in-only paths**: `/_cms/*` (build reports), `/cms-config.json` (the CMS
+  schema — no secrets, but it maps the repo) and `/review/*` (the internal planning
+  doc). Signed-out visitors get the normal 404.
+- A **malformed session cookie** is treated as "not signed in" rather than throwing
+  a 500.
+
+Already in place and verified: `HttpOnly; Secure; SameSite=Strict` session cookie,
+every CMS endpoint 401s unauthenticated, no CORS headers, no directory listings, no
+source maps, generic login errors, and no user enumeration on password reset.
+
+**Still worth doing outside the code:** a Cloudflare WAF rate-limiting rule in front
+of `/cms-api/login` (defence in depth over the app-level limit), Turnstile on the
+contact form if spam appears, and an [SSL Labs](https://www.ssllabs.com/ssltest/)
+run once the production domain is live.
+
 ## Notes / limits
 
 - The shared-sections file now also carries the **Testimonials** section heading,

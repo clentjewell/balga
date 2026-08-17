@@ -6,28 +6,66 @@
  *  - add X-Robots-Tag: noindex, nofollow on the preview (toggle with PREVIEW_NOINDEX=false).
  */
 
-import { handleCms, saveEnquiry, hasCmsSession, sendMail, mailConfigured } from "./cms/handler.js";
+import { handleCms, saveEnquiry, hasCmsSession, sendMail, mailConfigured, rateLimit, clientIp } from "./cms/handler.js";
 // The one source of business facts, so error copy can't drift from the site.
 import settings from "./data/content/settings.json";
+
+// Everything except the script policy, which is built per page below.
+const CSP_DIRECTIVES = [
+  "default-src 'self'",
+  "base-uri 'self'",
+  "img-src 'self' data:",
+  // Astro emits scoped <style> blocks and a handful of style attributes; style
+  // injection is a cosmetic risk, unlike script injection, so this stays.
+  "style-src 'self' 'unsafe-inline'",
+  "font-src 'self'",
+  "frame-src https://www.youtube.com https://www.youtube-nocookie.com https://maps.google.com https://www.google.com",
+  "connect-src 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'self'",
+  "object-src 'none'",
+  "upgrade-insecure-requests",
+];
 
 const SECURITY_HEADERS = {
   "X-Content-Type-Options": "nosniff",
   "X-Frame-Options": "SAMEORIGIN",
   "Referrer-Policy": "strict-origin-when-cross-origin",
   "Permissions-Policy": "camera=(), microphone=(), geolocation=(), browsing-topics=()",
-  "Content-Security-Policy": [
-    "default-src 'self'",
-    "base-uri 'self'",
-    "img-src 'self' data:",
-    "style-src 'self' 'unsafe-inline'",
-    "script-src 'self' 'unsafe-inline'",
-    "font-src 'self'",
-    "frame-src https://www.youtube.com https://www.youtube-nocookie.com https://maps.google.com https://www.google.com",
-    "connect-src 'self'",
-    "form-action 'self'",
-    "frame-ancestors 'self'",
-  ].join("; "),
+  // The site is HTTPS-only. includeSubDomains and preload are deliberately left
+  // off until the production domain is live and its subdomains are confirmed —
+  // both are hard to walk back once a browser has cached them.
+  "Strict-Transport-Security": "max-age=31536000",
 };
+
+/**
+ * The script policy for one page.
+ *
+ * Inline scripts (Astro's hoisted bundles, the JSON-LD the SEO work needs, the
+ * admin app) are named by SHA-256 hash, computed at build time — so the browser
+ * runs exactly those and refuses anything injected. Falls back to the old
+ * 'unsafe-inline' only if the manifest can't be read at all: a weaker policy for
+ * a moment beats a site whose scripts all stop running.
+ */
+let cspManifest; // undefined = not loaded yet, null = unavailable
+async function scriptSrcFor(env, url, status) {
+  if (cspManifest === undefined) {
+    try {
+      const res = await env.ASSETS.fetch(new URL("/_cms/csp.json", url.origin));
+      cspManifest = res.ok ? await res.json() : null;
+    } catch {
+      cspManifest = null;
+    }
+  }
+  if (!cspManifest) return "'self' 'unsafe-inline'";
+  // A miss is normally the 404 page being served for an unknown path.
+  const hashes = cspManifest[url.pathname] || (status === 404 ? cspManifest["/404.html"] : null);
+  return ["'self'", ...(hashes || []).map((h) => `'${h}'`)].join(" ");
+}
+
+const cspWith = (scriptSrc) => [...CSP_DIRECTIVES, `script-src ${scriptSrc}`].join("; ");
+/** For non-HTML responses, which never execute inline script. */
+const STATIC_CSP = cspWith("'self'");
 
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
@@ -56,6 +94,16 @@ async function handleContact(request, env) {
 
   // Honeypot: silently accept to waste bot effort.
   if (honeypot) return json({ status: "sent", message: "Thanks! Your message has been sent." });
+
+  // A person sends one or two messages; a script sends hundreds. This keeps the
+  // enquiry inbox — and, once mail is on, the sending quota — usable.
+  const rl = await rateLimit(env, "contact", clientIp(request), { limit: 5, windowSeconds: 900 });
+  if (rl.limited) {
+    return json({
+      status: "error",
+      message: `Thanks — we've already got your message. If you need to send another, please wait a few minutes or email ${settings.email}.`,
+    }, 429);
+  }
 
   const errors = {};
   if (!firstName) errors.firstName = "Required";
@@ -116,9 +164,13 @@ const CONTENT_TYPES = {
   ".txt": "text/plain; charset=utf-8",
 };
 
-function withHeaders(res, env, pathname) {
+async function withHeaders(res, env, url) {
+  const pathname = url.pathname;
   const headers = new Headers(res.headers);
   for (const [k, v] of Object.entries(SECURITY_HEADERS)) headers.set(k, v);
+
+  const isHtml = (headers.get("Content-Type") || "").includes("text/html");
+  headers.set("Content-Security-Policy", isHtml ? cspWith(await scriptSrcFor(env, url, res.status)) : STATIC_CSP);
 
   const ext = pathname.slice(pathname.lastIndexOf("."));
   if (CONTENT_TYPES[ext]) headers.set("Content-Type", CONTENT_TYPES[ext]);
@@ -146,6 +198,7 @@ export default {
       const res = await handleContact(request, env);
       const headers = new Headers(res.headers);
       for (const [k, v] of Object.entries(SECURITY_HEADERS)) headers.set(k, v);
+      headers.set("Content-Security-Policy", STATIC_CSP);
       headers.set("Cache-Control", "no-store");
       if ((env.PREVIEW_NOINDEX ?? "true") !== "false") headers.set("X-Robots-Tag", "noindex, nofollow");
       return new Response(res.body, { status: res.status, headers });
@@ -156,26 +209,31 @@ export default {
       const res = await handleCms(request, env);
       const headers = new Headers(res.headers);
       for (const [k, v] of Object.entries(SECURITY_HEADERS)) headers.set(k, v);
+      headers.set("Content-Security-Policy", STATIC_CSP);
       headers.set("X-Robots-Tag", "noindex, nofollow");
       return new Response(res.body, { status: res.status, headers });
     }
 
-    // Build reports the CMS dashboard reads (link check, page statuses). They name
-    // unpublished pages, so they're for signed-in editors only — everyone else gets
-    // the same 404 they'd get for any missing path.
-    if (url.pathname.startsWith("/_cms/")) {
+    // Signed-in-only paths:
+    //  /_cms/*           build reports naming unpublished pages
+    //  /cms-config.json  the CMS schema — no secrets, but it maps the repo layout
+    //  /review/*         internal content & local-search planning doc
+    // Everyone else gets the same 404 they'd get for any missing path.
+    if (url.pathname.startsWith("/_cms/") || url.pathname === "/cms-config.json" || url.pathname.startsWith("/review")) {
       if (!(await hasCmsSession(request, env))) {
         const notFound = await env.ASSETS.fetch(new URL("/404.html", url.origin));
-        return withHeaders(new Response(notFound.body, { status: 404, headers: notFound.headers }), env, url.pathname);
+        return withHeaders(new Response(notFound.body, { status: 404, headers: notFound.headers }), env, url);
       }
       const res = await env.ASSETS.fetch(request);
       const headers = new Headers(res.headers);
+      for (const [k, v] of Object.entries(SECURITY_HEADERS)) headers.set(k, v);
+      headers.set("Content-Security-Policy", STATIC_CSP);
       headers.set("Cache-Control", "no-store");
       headers.set("X-Robots-Tag", "noindex, nofollow");
       return new Response(res.body, { status: res.status, headers });
     }
 
     const assetRes = await env.ASSETS.fetch(request);
-    return withHeaders(assetRes, env, url.pathname);
+    return withHeaders(assetRes, env, url);
   },
 };
