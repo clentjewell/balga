@@ -204,18 +204,52 @@ async function setEnquiryRead(env, id, read) {
   return rec;
 }
 
-// ---- outgoing email (Resend) ----
-async function sendEmail(env, { to, subject, text }) {
-  if (!env.RESEND_API_KEY) return { ok: false, error: "not-configured" };
-  const from = env.CONTACT_FROM_EMAIL || "Balga Designs <onboarding@resend.dev>";
+// ---- outgoing email ----------------------------------------------------------
+// Cloudflare Workers can't hand a message to an SMTP server the way a normal host
+// would, so mail leaves the site over HTTPS. Two ways, tried in order:
+//
+//   1. Google Workspace, via a small Apps Script web app in the client's own
+//      account (GAS_MAIL_URL + GAS_MAIL_TOKEN). Mail is sent by their own mailbox,
+//      so it's already aligned with their SPF/DKIM and costs nothing. See CMS.md.
+//   2. Resend (RESEND_API_KEY), if they'd rather use a sending service.
+//
+// With neither configured, nothing is sent and the caller is told so plainly —
+// enquiries are still captured to the dashboard either way.
+
+async function sendViaWorkspace(env, { to, subject, text, replyTo, fromName }) {
+  const res = await fetch(env.GAS_MAIL_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ token: env.GAS_MAIL_TOKEN, to, subject, text, replyTo, fromName }),
+  });
+  const body = await res.text().catch(() => "");
+  if (!res.ok) return { ok: false, error: `Google Workspace relay: HTTP ${res.status} ${body.slice(0, 120)}` };
   try {
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ from, to: [to], subject, text }),
-    });
-    if (!res.ok) return { ok: false, error: (await res.text().catch(() => "")).slice(0, 200) };
-    return { ok: true };
+    const data = JSON.parse(body);
+    if (data && data.ok === false) return { ok: false, error: `Google Workspace relay: ${String(data.error).slice(0, 120)}` };
+  } catch { /* Apps Script can answer with HTML after a redirect; a 200 is good enough */ }
+  return { ok: true, via: "workspace" };
+}
+
+async function sendViaResend(env, { to, subject, text, replyTo }) {
+  const from = env.CONTACT_FROM_EMAIL || "Balga Designs <onboarding@resend.dev>";
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ from, to: [to], subject, text, ...(replyTo ? { reply_to: replyTo } : {}) }),
+  });
+  if (!res.ok) return { ok: false, error: (await res.text().catch(() => "")).slice(0, 200) };
+  return { ok: true, via: "resend" };
+}
+
+/** True when the site can actually send mail. */
+export const mailConfigured = (env) => !!((env.GAS_MAIL_URL && env.GAS_MAIL_TOKEN) || env.RESEND_API_KEY);
+
+export async function sendMail(env, msg) {
+  try {
+    if (env.GAS_MAIL_URL && env.GAS_MAIL_TOKEN) return await sendViaWorkspace(env, msg);
+    if (env.RESEND_API_KEY) return await sendViaResend(env, msg);
+    return { ok: false, error: "not-configured" };
   } catch (e) {
     return { ok: false, error: String(e.message || e).slice(0, 200) };
   }
@@ -447,7 +481,7 @@ export async function handleCms(request, env) {
     const body = await request.json().catch(() => ({}));
     const email = normEmail(body.email);
     if (!env.CMS_USERS) return json({ error: "User store not configured." }, 501);
-    if (!env.RESEND_API_KEY) {
+    if (!mailConfigured(env)) {
       return json({ error: "Password reset by email isn't switched on yet. Ask an admin to reset your password." }, 501);
     }
     await ensureSeed(env);
@@ -459,7 +493,7 @@ export async function handleCms(request, env) {
     await env.CMS_USERS.put(`reset:${jti}`, user.email, { expirationTtl: RESET_TTL });
     const token = await signPayload(env, { e: user.email, jti }, RESET_TTL);
     const link = `${new URL(request.url).origin}/admin/#reset=${encodeURIComponent(token)}`;
-    const sent = await sendEmail(env, {
+    const sent = await sendMail(env, {
       to: user.email,
       subject: "Reset your Balga Content Manager password",
       text:
