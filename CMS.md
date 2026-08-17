@@ -90,9 +90,11 @@ unchanged). Five cards:
   (`npm run audit`). Separates genuinely dead links from links pointing at a page
   the client has unpublished, and ignores sites that merely block robots (a 429 from
   Instagram is not a broken link).
-- **Last 20 changes** — who changed what, when. CMS commits are attributed to the
-  signed-in user, so this reads "Sarah · Updated the About page · 2 hours ago"
-  rather than crediting the shared bot token.
+- **Last 20 changes** — who changed what, when, in the client's own terms:
+  "Updated testimonial “Jane D.” · by sarah · 2 hours ago". Only changes made in
+  the Content Manager appear; developer commits, merges and deploys are filtered
+  out, because this is a record of the website, not of the repository. Changes are
+  attributed to the signed-in user rather than the shared bot token.
 - **Pages** — publish / unpublish each page (below), plus a **+ New page** button
   that explains new pages need design work and to contact the admin.
 - **Blog posts** — the post list with Edit, plus New post.
@@ -110,6 +112,18 @@ are deliberately not self-serve; they need layout/design work.
 
 Any links *inside page content* that point at a page the client unpublishes show up
 on the Broken links card as "points at a page you've unpublished".
+
+## Images — the media library
+
+Every image field opens the **media library**: a grid of every image already on the
+site (`public/assets/**`), with a search box and an **Upload new image** button, the
+WordPress pattern. Choosing an existing image is the default path; uploading is one
+option rather than the only one, which stops the same photo being uploaded five
+times under five names.
+
+The library is one recursive tree call (`GET /cms-api/media`), cached for the
+session and invalidated after an upload. Uploads still go to the field's own
+`mediaFolder`.
 
 ## Contact enquiries + email (Resend)
 

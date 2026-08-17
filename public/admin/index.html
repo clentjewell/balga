@@ -51,6 +51,27 @@
   .row__t{font-weight:600}
   .row__s{color:var(--muted);font-size:.85rem}
 
+  /* Media library (image picker) */
+  .modalbg{position:fixed;inset:0;background:rgba(20,22,18,.55);display:grid;place-items:center;padding:1rem;z-index:80}
+  .modal{background:var(--surface);border-radius:var(--radius);width:min(900px,100%);max-height:min(86vh,760px);
+         display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+  .modal__h{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1rem 1.2rem;border-bottom:1px solid var(--line)}
+  .modal__h h3{margin:0;font-size:1.1rem}
+  .modal__bar{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;padding:.8rem 1.2rem;border-bottom:1px solid var(--line)}
+  .modal__bar input[type=search]{flex:1;min-width:180px}
+  .modal__body{padding:1rem 1.2rem;overflow:auto}
+  .modal__f{padding:.8rem 1.2rem;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:.6rem;align-items:center}
+  .media{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:.7rem}
+  .mtile{border:2px solid transparent;border-radius:10px;padding:.3rem;background:#f7f6f1;cursor:pointer;text-align:left;color:inherit;font:inherit;font-weight:400}
+  .mtile:hover{border-color:var(--khaki)}
+  .mtile[aria-current="true"]{border-color:var(--green);background:#eef0e8}
+  .mtile img{width:100%;height:92px;object-fit:cover;border-radius:6px;background:#e7e6de;display:block}
+  .mtile__n{font-size:.75rem;color:var(--muted);margin-top:.3rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .uploadbtn{position:relative;overflow:hidden}
+  .uploadbtn input{position:absolute;inset:0;opacity:0;cursor:pointer}
+  .imgfield{display:flex;gap:1rem;align-items:flex-start;flex-wrap:wrap}
+  .imgfield__meta{display:grid;gap:.5rem}
+
   /* Dashboard */
   .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:1rem;align-items:start}
   .cards .card{margin:0}
@@ -98,7 +119,6 @@
   .form{max-width:720px;display:grid;gap:1.2rem}
   .card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:1rem 1.1rem}
   .card>legend,.card>h3{font-weight:700;margin:0 0 .8rem;padding:0}
-  .imgwrap{display:flex;gap:1rem;align-items:flex-start;flex-wrap:wrap}
   .imgprev{width:150px;height:110px;object-fit:cover;border-radius:8px;border:1px solid var(--line);background:#eee}
   .checks{display:grid;gap:.4rem;max-height:240px;overflow:auto;border:1px solid var(--line);border-radius:8px;padding:.6rem}
   .listw{display:grid;gap:.5rem}
@@ -250,6 +270,120 @@ function appShell(activeCollection){
   return main;
 }
 
+// ---------- media library ----------
+let mediaCache = null;
+async function loadMedia(force){
+  if(!force && mediaCache) return mediaCache;
+  const {items} = await api("/media");
+  mediaCache = items;
+  return items;
+}
+async function uploadImage(file, folder){
+  const b64 = await new Promise(r=>{ const fr=new FileReader(); fr.onload=()=>r(String(fr.result).split(",")[1]); fr.readAsDataURL(file); });
+  const up = await api("/upload",{method:"POST",body:JSON.stringify({folder, filename:file.name, dataBase64:b64})});
+  mediaCache = null; // the library has a new item
+  return up.path;
+}
+
+/**
+ * Pick an image: the library first (like WordPress), with uploading as one of the
+ * options rather than the only one. Resolves with a path, or null if cancelled.
+ */
+function mediaPicker({ current, folder }){
+  return new Promise((resolve)=>{
+    let selected = current || null;
+    const grid = el("div",{class:"media"}, el("p",{class:"hint"},[el("span",{class:"spin"})," Loading your images…"]));
+    const search = el("input",{type:"search",placeholder:"Search images by name or folder…"});
+    const status = el("span",{class:"hint"});
+    const chooseBtn = el("button",{disabled:selected?null:""},"Use this image");
+    const close = (val)=>{ document.removeEventListener("keydown",onKey); bg.remove(); resolve(val); };
+    const onKey = (e)=>{ if(e.key==="Escape") close(null); };
+
+    const fileInput = el("input",{type:"file",accept:"image/*"});
+    fileInput.addEventListener("change", async()=>{
+      const f = fileInput.files[0]; if(!f) return;
+      status.innerHTML='<span class="spin"></span> Uploading…';
+      try{
+        const path = await uploadImage(f, folder);
+        status.textContent = "Uploaded ✓";
+        selected = path; close(path);
+      }catch(ex){ status.textContent=""; toast(ex.message,"err"); }
+    });
+    const uploadBtn = el("label",{class:"uploadbtn secondary",style:"display:inline-flex;align-items:center;gap:.4rem;background:#e8e7df;color:var(--ink);border-radius:8px;padding:.6rem 1rem;font-weight:600;cursor:pointer"},["⬆ Upload new image", fileInput]);
+
+    const paint = (items)=>{
+      grid.innerHTML="";
+      if(!items.length){ grid.append(el("p",{class:"empty"},"No images found. Upload one to get started.")); return; }
+      items.forEach(m=>{
+        const tile = el("button",{class:"mtile",type:"button","aria-current":selected===m.url?"true":"false",title:m.url},[
+          el("img",{src:m.url,alt:"",loading:"lazy"}),
+          el("div",{class:"mtile__n"},m.name),
+        ]);
+        tile.addEventListener("click",()=>{
+          selected = m.url;
+          grid.querySelectorAll(".mtile").forEach(t=>t.setAttribute("aria-current","false"));
+          tile.setAttribute("aria-current","true");
+          chooseBtn.disabled = false;
+        });
+        tile.addEventListener("dblclick",()=>close(m.url));
+        grid.append(tile);
+      });
+    };
+
+    let all = [];
+    const filter = ()=>{
+      const q = search.value.trim().toLowerCase();
+      paint(!q ? all : all.filter(m=>(m.name+" "+m.folder).toLowerCase().includes(q)));
+    };
+    search.addEventListener("input", filter);
+    chooseBtn.addEventListener("click",()=>close(selected));
+
+    const modal = el("div",{class:"modal"},[
+      el("div",{class:"modal__h"},[ el("h3",{},"Media library"), el("button",{class:"secondary",onclick:()=>close(null)},"✕") ]),
+      el("div",{class:"modal__bar"},[ search, uploadBtn, status ]),
+      el("div",{class:"modal__body"},[grid]),
+      el("div",{class:"modal__f"},[
+        el("span",{class:"hint"},"Click an image to select it, or double-click to use it straight away."),
+        el("div",{class:"actions"},[ el("button",{class:"secondary",onclick:()=>close(null)},"Cancel"), chooseBtn ]),
+      ]),
+    ]);
+    const bg = el("div",{class:"modalbg",onclick:(e)=>{ if(e.target===bg) close(null); }},[modal]);
+    document.body.append(bg);
+    document.addEventListener("keydown",onKey);
+    search.focus();
+
+    loadMedia().then(items=>{ all=items; filter(); })
+      .catch(ex=>{ grid.innerHTML=""; grid.append(el("div",{class:"msg err"},ex.message)); });
+  });
+}
+
+/** The image form field: preview + "Choose/Change image" + Remove. */
+function imageField(current, folder, onChange){
+  let value = current || "";
+  const prev = el("img",{class:"imgprev",src:value||"",alt:""});
+  if(!value) prev.style.visibility="hidden";
+  const name = el("div",{class:"hint"}, value ? value.split("/").pop() : "No image chosen");
+  const removeBtn = el("button",{class:"secondary",type:"button",onclick:()=>set("")},"Remove");
+  const chooseBtn = el("button",{class:"secondary",type:"button",onclick:async()=>{
+    const picked = await mediaPicker({ current:value, folder });
+    if(picked) set(picked);
+  }}, value?"Change image":"Choose image");
+  function set(v){
+    value = v || "";
+    prev.src = value; prev.style.visibility = value ? "visible" : "hidden";
+    name.textContent = value ? value.split("/").pop() : "No image chosen";
+    chooseBtn.textContent = value ? "Change image" : "Choose image";
+    removeBtn.classList.toggle("hidden", !value);
+    if(onChange) onChange(value);
+  }
+  removeBtn.classList.toggle("hidden", !value);
+  const node = el("div",{class:"imgfield"},[
+    prev,
+    el("div",{class:"imgfield__meta"},[ el("div",{class:"actions"},[chooseBtn, removeBtn]), name ]),
+  ]);
+  return { node, get:()=>value, set };
+}
+
 // ---------- dashboard ----------
 /** "3 minutes ago" / "2 days ago" from an ISO date. */
 function ago(iso){
@@ -264,21 +398,31 @@ function ago(iso){
   return n+" "+label+(n===1?"":"s")+" ago";
 }
 
-/** Turn "CMS: update src/data/faqs/faq-02.json" into "Updated FAQ · faq-02". */
+/**
+ * Turn a recorded change into a line the client recognises, e.g.
+ *   "CMS: update testimonial “Jane D.”"  →  "Updated testimonial “Jane D.”"
+ * Older entries recorded a file path instead of a name; those are translated too
+ * so the feed doesn't show src/data/... to the client.
+ */
+const PAST_TENSE = { add:"Added", create:"Added", update:"Updated", edit:"Updated", delete:"Deleted",
+                     remove:"Deleted", upload:"Uploaded", reorder:"Reordered", publish:"Published", unpublish:"Unpublished" };
+
 function describeChange(message){
-  const msg = message || "";
-  const pub = /^CMS:\s+(un)?publish the (.+) page$/.exec(msg);
+  const msg = (message||"").replace(/^CMS:\s*/,"");
+  const pub = /^(un)?publish the (.+) page$/.exec(msg);
   if(pub){
-    const key = pub[2];
-    const known = (CONFIG.sitePages||[]).find(p=>p.key===key);
-    return { what: (pub[1]?"Unpublished":"Published")+" the "+((known&&known.label)||key)+" page", where: "" };
+    const known = (CONFIG.sitePages||[]).find(p=>p.key===pub[2]);
+    return { what: (pub[1]?"Unpublished":"Published")+" the "+((known&&known.label)||pub[2])+" page", where: "" };
   }
-  const m = /^CMS:\s+(create|update|delete|upload|reorder)\s+(.+)$/.exec(msg);
-  // Anything else (a developer commit, say) shows as written, minus the CMS prefix.
-  if(!m) return { what: msg.replace(/^CMS:\s*/,"") || "Change", where: "" };
-  const verbs = { create:"Added", update:"Updated", delete:"Deleted", upload:"Uploaded", reorder:"Reordered" };
-  const verb = verbs[m[1]] || "Changed";
+  const m = /^([a-z]+)\s+(.+)$/.exec(msg);
+  if(!m) return { what: msg || "Change", where: "" };
+  const verb = PAST_TENSE[m[1]] || (m[1].charAt(0).toUpperCase()+m[1].slice(1));
   const target = m[2].trim();
+
+  // Modern entries already name the thing ("FAQ “How much…”") — show them as-is.
+  if(!/\//.test(target)) return { what: `${verb} ${target}`, where: "" };
+
+  // Legacy entries: a repo path. Translate it into something recognisable.
   const KINDS = [
     [/^src\/data\/faqs\//, "FAQ"], [/^src\/data\/projects\//, "project"],
     [/^src\/data\/services\//, "service"], [/^src\/data\/pricing\//, "pricing package"],
@@ -290,15 +434,12 @@ function describeChange(message){
     [/^public\/assets\//, "an image"],
   ];
   const name = target.split("/").pop().replace(/\.(json|md|jpe?g|png|webp|svg)$/i,"");
-  // A page's own content file — name it the way the client knows it ("the About page").
   const pageMatch = /^src\/data\/content\/([a-z-]+)\.json$/.exec(target);
   const known = pageMatch && (CONFIG.sitePages||[]).find(p=>p.key===pageMatch[1]);
   if(known) return { what: `${verb} the ${known.label} page`, where: "" };
   if(pageMatch) return { what: `${verb} a page`, where: name };
-
   const kind = (KINDS.find(([re])=>re.test(target))||[null,"content"])[1];
-  const multi = /^\d+ files$/.test(target) || /^[A-Z]/.test(target);
-  return { what: multi ? `${verb} ${target}` : `${verb} ${kind}`, where: multi ? "" : name };
+  return { what: `${verb} ${kind}`, where: name };
 }
 
 function dashCard(title, opts={}){
@@ -818,13 +959,29 @@ function startDrag(e, row, wrap, onDrop){
 
 async function del(col,it){
   if(!confirm(`Delete "${it.title||it.name}"? This cannot be undone.`)) return;
-  try{ await api("/file",{method:"DELETE",body:JSON.stringify({path:it.path,sha:it.sha})}); toast("Deleted — publishing…","ok"); invalidate(col.name); collectionView(col.name); }
+  const message = `CMS: delete ${lowerLabel(shortLabel(col.labelSingular||col.label))}${quoteTitle(it.title)}`;
+  try{ await api("/file",{method:"DELETE",body:JSON.stringify({path:it.path,sha:it.sha,message})}); toast("Deleted — publishing…","ok"); invalidate(col.name); collectionView(col.name); }
   catch(ex){ toast(ex.message,"err"); }
 }
 
 async function loadRelation(name){
   const items = await loadItems(getCol(name));
   return items.map(it=>({ id:it.id, title:it.title }));
+}
+
+/**
+ * What to record for a change. These strings are what the client reads on the
+ * dashboard ("Updated testimonial “Jane D.”"), so they're written for them, not
+ * as file paths.
+ */
+const shortLabel = (label) => String(label||"item").split(" (")[0];
+// "Testimonial" → "testimonial" mid-sentence, but leave FAQ (and other acronyms) alone.
+const lowerLabel = (label) => /^[A-Z][a-z]/.test(label) ? label.charAt(0).toLowerCase()+label.slice(1) : label;
+const quoteTitle = (s) => { const t=String(s||"").replace(/\s+/g," ").trim(); return t? " “"+(t.length>60? t.slice(0,57)+"…" : t)+"”" : ""; };
+function changeMessage(spec, values, isNew){
+  if(spec.isFile) return `CMS: update ${shortLabel(spec.label)}`;
+  const what = lowerLabel(shortLabel(spec.label));
+  return `CMS: ${isNew?"add":"update"} ${what}${quoteTitle(values[spec.summaryField])}`;
 }
 
 /** Next free auto ID for a collection, e.g. faq-16. */
@@ -899,17 +1056,9 @@ async function editorView(name, item, fileEntry){
     else if(f.widget==="number"){ const inp=el("input",{id:idAttr,type:"number",value:cur??(f.default??"")}); wrap.append(inp); getVal[f.name]=()=>inp.value===""?undefined:Number(inp.value); }
     else if(f.widget==="text"||f.widget==="markdown"){ const ta=el("textarea",{id:idAttr,rows:f.widget==="markdown"?16:3},cur??""); wrap.append(ta); getVal[f.name]=()=>ta.value; }
     else if(f.widget==="image"){
-      const prev=el("img",{class:"imgprev",src:cur||"",alt:""}); if(!cur) prev.style.visibility="hidden";
-      const urlInp=el("input",{id:idAttr,value:cur??"",placeholder:"/assets/..."});
-      const file=el("input",{type:"file",accept:"image/*"});
-      const status=el("span",{class:"hint"});
-      file.addEventListener("change",async()=>{ const fl=file.files[0]; if(!fl)return; status.textContent="Uploading…";
-        const b64=await new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(String(fr.result).split(",")[1]);fr.readAsDataURL(fl);});
-        try{ const up=await api("/upload",{method:"POST",body:JSON.stringify({folder:spec.mediaFolder,filename:fl.name,dataBase64:b64})}); urlInp.value=up.path; prev.src=up.path; prev.style.visibility="visible"; status.textContent="Uploaded ✓"; }
-        catch(ex){ status.textContent=""; toast(ex.message,"err"); }
-      });
-      wrap.append(el("div",{class:"imgwrap"},[prev, el("div",{style:"flex:1;min-width:200px;display:grid;gap:.5rem"},[urlInp,file,status])]));
-      getVal[f.name]=()=>urlInp.value.trim();
+      const field = imageField(cur, spec.mediaFolder);
+      wrap.append(field.node);
+      getVal[f.name]=()=>field.get();
     }
     else if(f.widget==="relation"){
       const box=el("div",{class:"checks"},[el("span",{class:"hint"},[el("span",{class:"spin"})," Loading projects…"])]);
@@ -948,7 +1097,7 @@ async function editorView(name, item, fileEntry){
           for(const sf of f.fields){
             const sw=el("div",{style:"margin-bottom:.6rem"},[el("label",{},sf.label)]);
             if(sf.widget==="text"){ const ta=el("textarea",{rows:2},(val&&val[sf.name])||""); sw.append(ta); sub[sf.name]=()=>ta.value; }
-            else if(sf.widget==="image"){ const inp=el("input",{value:(val&&val[sf.name])||"",placeholder:"/assets/..."}); const fp=el("input",{type:"file",accept:"image/*",style:"margin-top:.3rem"}); fp.addEventListener("change",async()=>{const fl=fp.files[0];if(!fl)return;const b64=await new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(String(fr.result).split(",")[1]);fr.readAsDataURL(fl);});try{const up=await api("/upload",{method:"POST",body:JSON.stringify({folder:spec.mediaFolder,filename:fl.name,dataBase64:b64})});inp.value=up.path;}catch(ex){toast(ex.message,"err");}}); sw.append(inp,fp); sub[sf.name]=()=>inp.value; }
+            else if(sf.widget==="image"){ const field=imageField((val&&val[sf.name])||"", spec.mediaFolder); sw.append(field.node); sub[sf.name]=()=>field.get(); }
             else { const inp=el("input",{value:(val&&val[sf.name])||""}); sw.append(inp); sub[sf.name]=()=>inp.value; }
             fs.append(sw);
           }
@@ -1002,7 +1151,7 @@ async function editorView(name, item, fileEntry){
     const content=emitContent(spec, fieldsOut, bodyVal);
     saveBtn.disabled=true; saveBtn.innerHTML='<span class="spin"></span> Saving…';
     try{
-      await api("/file",{method:"PUT",body:JSON.stringify({path:targetPath, content, sha:isNew?undefined:sha, message:`CMS: ${isNew?"create":"update"} ${targetPath}`})});
+      await api("/file",{method:"PUT",body:JSON.stringify({path:targetPath, content, sha:isNew?undefined:sha, message:changeMessage(spec, out, isNew)})});
       toast("Saved — the site will update in ~1–2 minutes.","ok");
       invalidate(name);
       collectionView(name);
