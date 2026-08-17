@@ -56,11 +56,14 @@ async function signPayload(env, obj, ttlSeconds) {
 }
 async function verifyPayload(env, token) {
   if (!token || !token.includes(".")) return null;
-  const [payload, sig] = token.split(".");
-  const key = await hmacKey(env.CMS_SESSION_SECRET || "dev-secret");
-  const ok = await crypto.subtle.verify("HMAC", key, b64urlToBytes(sig), enc.encode(payload)).catch(() => false);
-  if (!ok) return null;
+  // A malformed cookie is just "not signed in". Decoding it must never throw:
+  // b64urlToBytes() rejects invalid base64, and anyone can send any cookie they
+  // like, so an exception here would turn junk input into a 500.
   try {
+    const [payload, sig] = token.split(".");
+    const key = await hmacKey(env.CMS_SESSION_SECRET || "dev-secret");
+    const ok = await crypto.subtle.verify("HMAC", key, b64urlToBytes(sig), enc.encode(payload)).catch(() => false);
+    if (!ok) return null;
     const data = JSON.parse(new TextDecoder().decode(b64urlToBytes(payload)));
     if (!data.exp || data.exp < Math.floor(Date.now() / 1000)) return null;
     return data;
