@@ -1,6 +1,7 @@
 ---
+import { site } from "../data/site";
 ---
-<form class="cform" data-contact-form novalidate>
+<form class="cform" data-contact-form data-email={site.contact.email} novalidate>
   <div class="cform__field">
     <label for="firstName" class="sr-only">First Name</label>
     <input id="firstName" name="firstName" type="text" placeholder="First Name" autocomplete="given-name" required aria-required="true" />
@@ -55,6 +56,8 @@
 <script>
   const form = document.querySelector<HTMLFormElement>("[data-contact-form]");
   if (form) {
+    // Business email comes from the one NAP source via a data attribute.
+    const contactEmail = form.dataset.email || "";
     const status = form.querySelector<HTMLElement>("[data-status]")!;
     const submit = form.querySelector<HTMLButtonElement>("[data-submit]")!;
     const fields = ["firstName", "lastName", "email", "message"];
@@ -110,11 +113,11 @@
           form.reset();
         } else {
           status.classList.add("is-err");
-          status.textContent = data.message || "Sorry, something went wrong. Please email info@balgadesigns.com.au.";
+          status.textContent = data.message || `Sorry, something went wrong. Please email ${contactEmail}.`;
         }
       } catch {
         status.hidden = false; status.classList.add("is-err");
-        status.textContent = "Network error. Please email info@balgadesigns.com.au.";
+        status.textContent = `Network error. Please email ${contactEmail}.`;
       } finally {
         submit.removeAttribute("aria-busy"); submit.textContent = original;
       }

@@ -22,7 +22,8 @@ export const site = {
     email: settings.email,
     phone: settings.phone,
     phoneHref: "tel:" + settings.phone.replace(/[^\d+]/g, ""),
-    phoneE164: "+61413731670",
+    // Derived from the CMS phone number — never a second copy to keep in sync.
+    phoneE164: "+61" + settings.phone.replace(/[^\d]/g, "").replace(/^0/, ""),
     hours: settings.hours,
     openingHours: { days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], opens: "07:00", closes: "16:00" },
     serviceArea: settings.serviceArea,

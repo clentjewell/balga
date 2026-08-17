@@ -1,7 +1,13 @@
 import { defineConfig } from 'astro/config';
-import { writeFileSync, readFileSync, rmSync, mkdirSync } from 'node:fs';
+import { writeFileSync, readFileSync, rmSync, mkdirSync, readdirSync, statSync } from 'node:fs';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { parse } from 'node-html-parser';
+import sharp from 'sharp';
 import { draftPaths } from './src/data/pages.mjs';
+// The one source of business facts (NAP) — edited by the client in the CMS.
+// llms.txt reads it from here so it can never drift from the rest of the site.
+import settings from './src/data/content/settings.json';
 
 // Preview deployment URL (workers.dev). Override with SITE_URL when promoting
 // to a production domain so canonicals/sitemap use the right origin.
@@ -34,6 +40,55 @@ const PAGE_META = {
   '/balga-meaning-purpose/': ['Balga Meaning & Purpose', 'The meaning behind the name Balga and our Country-rooted design philosophy.'],
 };
 
+/**
+ * Give every <img> its intrinsic width/height.
+ *
+ * Markdown images and a couple of components emit <img> with no dimensions, which
+ * costs layout shift (CLS) on load. Rather than hand-annotating each one — and
+ * re-doing it whenever the client swaps an image in the CMS — the build reads the
+ * real file and writes the attributes in. Global CSS keeps `height: auto`, so the
+ * attributes only supply the aspect ratio.
+ */
+async function addImageDimensions(dir) {
+  const root = fileURLToPath(dir);
+  const sizes = new Map(); // src -> "width height" | null
+  let touched = 0;
+
+  const files = [];
+  const walk = (d) => {
+    for (const name of readdirSync(d)) {
+      const p = join(d, name);
+      if (statSync(p).isDirectory()) { if (name !== 'admin' && name !== '_cms') walk(p); }
+      else if (name.endsWith('.html')) files.push(p);
+    }
+  };
+  walk(root);
+
+  for (const file of files) {
+    const html = readFileSync(file, 'utf8');
+    const tags = [...html.matchAll(/<img\b[^>]*>/g)].map((m) => m[0]);
+    let out = html;
+    for (const tag of tags) {
+      if (/\bwidth=/.test(tag) && /\bheight=/.test(tag)) continue;
+      const src = (tag.match(/\bsrc="([^"]+)"/) || [])[1];
+      if (!src || !src.startsWith('/') || /\.svg(\?|$)/i.test(src)) continue;
+      if (!sizes.has(src)) {
+        try {
+          const meta = await sharp(join(root, decodeURI(src.split(/[?#]/)[0]))).metadata();
+          sizes.set(src, meta.width && meta.height ? `${meta.width} ${meta.height}` : null);
+        } catch { sizes.set(src, null); }
+      }
+      const dims = sizes.get(src);
+      if (!dims) continue;
+      const [w, h] = dims.split(' ');
+      out = out.replace(tag, tag.replace(/(\s*\/?>)$/, ` width="${w}" height="${h}"$1`));
+      touched++;
+    }
+    if (out !== html) writeFileSync(file, out);
+  }
+  return touched;
+}
+
 function toUrls(pages) {
   return [...new Set(
     pages
@@ -49,7 +104,7 @@ function seoFiles() {
   return {
     name: 'balga-seo-files',
     hooks: {
-      'astro:build:done': ({ pages, dir }) => {
+      'astro:build:done': async ({ pages, dir }) => {
         // Pages the client has unpublished from the CMS dashboard: delete the built
         // HTML so the URL falls through to the 404 page, and keep them out of the
         // sitemap / llms files below.
@@ -128,11 +183,11 @@ ${servicePages.map(link).join('\n')}
 ${articles.map(link).join('\n')}
 
 ## Contact
-- Email: info@balgadesigns.com.au
-- Phone: 041 373 1670 (+61 413 731 670)
-- Location: Lennox Head, NSW 2478, Australia
-- Service area: Northern Rivers (NSW) to Southern Gold Coast (QLD)
-- Hours: Monday–Friday, 07:00–16:00 AEST
+- Email: ${settings.email}
+- Phone: ${settings.phone}
+- Location: ${settings.address}
+- Service area: ${settings.serviceArea}
+- Hours: ${settings.hours}
 `;
         writeFileSync(new URL('llms.txt', dir), llms);
 
@@ -159,10 +214,13 @@ ${articles.map(link).join('\n')}
 
 > Extractable text content of balgadesigns.com.au for AI answer engines and LLMs.
 > Sustainable landscape & native garden design, Lennox Head NSW, serving the Northern Rivers to the Southern Gold Coast.
-> Contact: info@balgadesigns.com.au · 041 373 1670
+> Contact: ${settings.email} · ${settings.phone}
 
 ${sections.join('\n---\n\n')}`;
         writeFileSync(new URL('llms-full.txt', dir), llmsFull);
+
+        const withDims = await addImageDimensions(dir);
+        if (withDims) console.log(`balga-seo-files: added width/height to ${withDims} image(s)`);
       },
     },
   };

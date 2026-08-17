@@ -87,17 +87,34 @@ for (const file of pages) {
   }
   if (!root.querySelector('link[rel="canonical"]')) err(rel, "missing canonical");
   if (!root.querySelector('meta[property="og:title"]')) err(rel, "missing og:title");
-  if (!root.querySelector('meta[property="og:image"]')) err(rel, "missing og:image");
+  const ogImage = root.querySelector('meta[property="og:image"]')?.getAttribute("content");
+  if (!ogImage) err(rel, "missing og:image");
+  else {
+    // A share card that 404s is the same as having none — check the file is really there.
+    const ogPath = ogImage.replace(/^https?:\/\/[^/]+/, "").split(/[?#]/)[0];
+    if (ogPath.startsWith("/") && !existsSync(join(dist, decodeURI(ogPath).slice(1)))) {
+      err(rel, `og:image not found in build: ${ogPath}`);
+    }
+  }
 
-  // headings
+  // headings — exactly one <h1>, and no skipped levels down the page
   const h1s = root.querySelectorAll("h1");
   if (h1s.length === 0) err(rel, "no <h1>");
   else if (h1s.length > 1) err(rel, `${h1s.length} <h1> elements (must be exactly 1)`);
 
-  // images alt
+  let prevLevel = 0;
+  for (const h of root.querySelectorAll("h1, h2, h3, h4, h5, h6")) {
+    const level = Number(h.rawTagName.slice(1));
+    if (prevLevel && level > prevLevel + 1) warn(rel, `heading level skips h${prevLevel} → h${level}`);
+    prevLevel = level;
+  }
+
+  // images — alt text, and dimensions so the page doesn't shift as they load
   for (const img of root.querySelectorAll("img")) {
-    if (img.getAttribute("alt") === undefined) {
-      err(rel, `<img> missing alt attribute (src=${(img.getAttribute("src") || "?").slice(0, 60)})`);
+    const src = (img.getAttribute("src") || "?").slice(0, 60);
+    if (img.getAttribute("alt") === undefined) err(rel, `<img> missing alt attribute (src=${src})`);
+    if (!img.getAttribute("width") || !img.getAttribute("height")) {
+      warn(rel, `<img> without width/height — layout shift (src=${src})`);
     }
   }
 

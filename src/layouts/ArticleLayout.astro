@@ -30,7 +30,7 @@ const jsonLd = {
   mainEntityOfPage: { "@type": "WebPage", "@id": siteUrl + "/" + post.slug + "/" },
 };
 ---
-<BaseLayout title={data.title} description={data.description} ogImage={data.image} preloadImage="/assets/blog/articles-header.webp">
+<BaseLayout title={data.seoTitle ?? data.title} description={data.description} ogImage={data.image} preloadImage="/assets/blog/articles-header.webp">
   <section class="article-hero" style={`--hero-img:url('/assets/blog/articles-header.webp')`}>
     <div class="article-hero__overlay"></div>
     <div class="container article-hero__inner">

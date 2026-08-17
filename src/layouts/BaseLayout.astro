@@ -6,6 +6,7 @@ import "../styles/components.css";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import { site } from "../data/site";
+import { services } from "../data/services";
 
 export interface Props {
   title: string;
@@ -69,6 +70,23 @@ const schemaGraph = {
         },
       ],
       sameAs: [site.social.facebook, site.social.instagram, site.social.google],
+      // What the business actually offers — lets Google and AI assistants answer
+      // "what do they do?" from the same list the site publishes.
+      hasOfferCatalog: {
+        "@type": "OfferCatalog",
+        name: "Garden design & horticulture services",
+        itemListElement: services.map((s) => ({
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: s.title,
+            description: s.description,
+            url: `${siteUrl}/services/${s.slug}/`,
+            areaServed: site.contact.serviceArea,
+            provider: { "@id": `${siteUrl}/#business` },
+          },
+        })),
+      },
       knowsAbout: [
         "Native gardens", "Sustainable landscape design", "Regenerative planting",
         "Horticulture", "Water-wise gardens", "Landscape architecture",
