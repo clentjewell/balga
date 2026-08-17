@@ -6,7 +6,7 @@
  *  - add X-Robots-Tag: noindex, nofollow on the preview (toggle with PREVIEW_NOINDEX=false).
  */
 
-import { handleCms } from "./cms/handler.js";
+import { handleCms, saveEnquiry, hasCmsSession } from "./cms/handler.js";
 
 const SECURITY_HEADERS = {
   "X-Content-Type-Options": "nosniff",
@@ -64,16 +64,23 @@ async function handleContact(request, env) {
     return json({ status: "error", message: "Please check the highlighted fields.", errors }, 422);
   }
 
+  // Store the enquiry first, so it reaches the CMS dashboard even if email delivery
+  // isn't configured yet or Resend has a bad day. A storage failure must never lose
+  // the client a lead, so it doesn't block the send below.
+  const stored = await saveEnquiry(env, { firstName, lastName, email, message }).catch(() => ({ ok: false }));
+
   const apiKey = env.RESEND_API_KEY;
   const to = env.CONTACT_TO_EMAIL || "rao@jewellprojects.com";
   const from = env.CONTACT_FROM_EMAIL || "Balga Designs <onboarding@resend.dev>";
 
-  // No delivery credentials configured -> honest preview response (never fake a send).
+  // No delivery credentials configured -> honest response (never fake a send). The
+  // enquiry is still recorded above, so the client sees it in the CMS dashboard.
   if (!apiKey || !to || !from) {
     return json({
-      status: "preview",
-      message:
-        "Preview mode: your message validated correctly, but email delivery isn’t configured on this preview deployment. Please email info@balgadesigns.com.au directly.",
+      status: stored.ok ? "sent" : "preview",
+      message: stored.ok
+        ? "Thanks! Your message has been received — we’ll be in touch soon. For anything urgent, email info@balgadesigns.com.au."
+        : "Preview mode: your message validated correctly, but email delivery isn’t configured on this preview deployment. Please email info@balgadesigns.com.au directly.",
     });
   }
 
@@ -147,6 +154,21 @@ export default {
       const res = await handleCms(request, env);
       const headers = new Headers(res.headers);
       for (const [k, v] of Object.entries(SECURITY_HEADERS)) headers.set(k, v);
+      headers.set("X-Robots-Tag", "noindex, nofollow");
+      return new Response(res.body, { status: res.status, headers });
+    }
+
+    // Build reports the CMS dashboard reads (link check, page statuses). They name
+    // unpublished pages, so they're for signed-in editors only — everyone else gets
+    // the same 404 they'd get for any missing path.
+    if (url.pathname.startsWith("/_cms/")) {
+      if (!(await hasCmsSession(request, env))) {
+        const notFound = await env.ASSETS.fetch(new URL("/404.html", url.origin));
+        return withHeaders(new Response(notFound.body, { status: 404, headers: notFound.headers }), env, url.pathname);
+      }
+      const res = await env.ASSETS.fetch(request);
+      const headers = new Headers(res.headers);
+      headers.set("Cache-Control", "no-store");
       headers.set("X-Robots-Tag", "noindex, nofollow");
       return new Response(res.body, { status: res.status, headers });
     }

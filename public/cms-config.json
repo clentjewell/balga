@@ -1,4 +1,48 @@
 {
+  "sitePages": [
+    {
+      "key": "home",
+      "label": "Home",
+      "path": "/",
+      "locked": true
+    },
+    {
+      "key": "about",
+      "label": "About",
+      "path": "/about/"
+    },
+    {
+      "key": "services",
+      "label": "Services",
+      "path": "/services/"
+    },
+    {
+      "key": "projects",
+      "label": "Projects",
+      "path": "/projects/"
+    },
+    {
+      "key": "pricing",
+      "label": "Pricing",
+      "path": "/pricing/"
+    },
+    {
+      "key": "faqs",
+      "label": "FAQs",
+      "path": "/faqs/"
+    },
+    {
+      "key": "blog",
+      "label": "Blog",
+      "path": "/balga-blog/"
+    },
+    {
+      "key": "contact",
+      "label": "Contact",
+      "path": "/contact/",
+      "locked": true
+    }
+  ],
   "repoNote": "Edit content here. Saves commit to the site repo and go live in ~1–2 minutes.",
   "collections": [
     {
@@ -238,7 +282,7 @@
         },
         {
           "name": "sections",
-          "label": "Shared sections (Why choose / How we work / Video / CTA / Hero cards)",
+          "label": "Shared sections (Why choose / How we work / Testimonials / Video / CTA)",
           "path": "src/data/content/sections.json",
           "format": "json",
           "fields": [
@@ -355,6 +399,31 @@
                   "widget": "image"
                 }
               ]
+            },
+            {
+              "name": "testimonialsEyebrow",
+              "label": "Testimonials — eyebrow",
+              "widget": "string"
+            },
+            {
+              "name": "testimonialsTitle",
+              "label": "Testimonials — heading",
+              "widget": "string"
+            },
+            {
+              "name": "testimonialsIntro",
+              "label": "Testimonials — intro",
+              "widget": "text"
+            },
+            {
+              "name": "testimonialsImage",
+              "label": "Testimonials — background image",
+              "widget": "image"
+            },
+            {
+              "name": "testimonialsImageAlt",
+              "label": "Testimonials — image alt text",
+              "widget": "string"
             }
           ]
         },
@@ -1025,7 +1094,10 @@
       "groupField": "category",
       "reorder": true,
       "reorderHint": "Questions are grouped by category. Drag the ⠿ handle to change the order, or drag a question into another category — then press “Save new order”.",
-      "autoId": { "prefix": "faq-", "pad": 2 },
+      "autoId": {
+        "prefix": "faq-",
+        "pad": 2
+      },
       "autoOrder": true,
       "fields": [
         {
