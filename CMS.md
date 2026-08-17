@@ -187,6 +187,28 @@ This is driven from `public/cms-config.json`, so any collection can behave the s
 way: `"reorder": true`, `"groupField": "<field>"`, `"autoId": {"prefix":"faq-","pad":2}`,
 `"autoOrder": true`, plus `"hidden": true` on the id/order fields.
 
+## SEO / GEO — Layer 1
+
+The site is audited against the Maxxim Layer 1 checklist by `npm run audit`, which
+runs on every publish and blocks a deploy on any ERROR. What it enforces:
+LocalBusiness + WebSite JSON-LD, sitemap / robots / llms.txt, per-page
+title + description + canonical + OG (**including that the og:image really exists
+in the build**), exactly one `<h1>` with no skipped heading levels, alt text on
+every image, and width/height on every image so pages don't shift as they load.
+
+Two build-time mechanisms keep it that way without hand-maintenance:
+
+- **Image dimensions** are written into the built HTML from the real files, so
+  markdown images and CMS-swapped images get them automatically.
+- **NAP comes only from `src/data/content/settings.json`** (the CMS "Site settings"
+  screen). The schema, footer, llms.txt, contact-form copy and the Worker's error
+  messages all read it, so the business's phone/email/address can never drift.
+
+**Before the site goes to its production domain**, build with `SITE_URL` set to the
+real hostname and `PUBLIC_NOINDEX=false`, and set the Worker var `PREVIEW_NOINDEX`
+to `"false"`. Until then robots.txt disallows everything and pages carry
+`X-Robots-Tag: noindex` — correct for a preview, fatal if it ships that way.
+
 ## Notes / limits
 
 - The shared-sections file now also carries the **Testimonials** section heading,

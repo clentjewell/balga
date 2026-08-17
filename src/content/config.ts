@@ -4,6 +4,8 @@ const blog = defineCollection({
   type: "content",
   schema: z.object({
     title: z.string(),
+    /** Optional shorter <title> when the headline is too long for a SERP. */
+    seoTitle: z.string().optional(),
     description: z.string(),
     excerpt: z.string(),
     date: z.string(),

@@ -1,5 +1,6 @@
 ---
 title: "Why Designing and Planning are Crucial for Successful Landscaping?"
+seoTitle: "Why Garden Design & Planning Matter"
 description: "Why thoughtful landscape design and planning save money, time and frustration — and create a garden that thrives long-term."
 excerpt: "When it comes to landscaping, many homeowners approach their outdoor space with excitement and enthusiasm, but often without a clear plan in place."
 date: "May 8, 2025"
