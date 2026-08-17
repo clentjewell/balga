@@ -34,8 +34,9 @@ Developer settings → Fine-grained tokens), scoped to **this repo only**, with
 **Repository permissions → Contents: Read and write**. This is the "bot" that commits
 the client's edits. The client never sees it.
 
-`GH_OWNER` / `GH_REPO` / `GH_BRANCH` are already set as vars in `wrangler.jsonc`
-(currently the `claude/...` branch — change to `main` when the site is promoted).
+`GH_OWNER` / `GH_REPO` / `GH_BRANCH` are already set as vars in `wrangler.jsonc`.
+The site is promoted: `GH_BRANCH` is **`main`**, and the Build & Deploy workflow
+runs on pushes to `main` — so a CMS save commits to `main` and deploys from it.
 
 ### 2. GitHub Actions secrets (auto build + deploy on each save)
 
