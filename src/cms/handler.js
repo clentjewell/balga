@@ -317,19 +317,50 @@ async function ghDelete(env, path, sha, message, actor) {
   return { ok: true };
 }
 
-/** Recent commits on the deploy branch — the dashboard's "Recent changes" feed. */
+/**
+ * Recent content changes for the dashboard feed.
+ *
+ * Only changes made through the Content Manager count: the client's feed is a
+ * record of what happened to their website, not of the repository. Developer
+ * commits, merges and deploys are filtered out, so we over-fetch and then trim.
+ */
 async function ghCommits(env, limit = 20) {
-  const url = `https://api.github.com/repos/${env.GH_OWNER}/${env.GH_REPO}/commits?sha=${encodeURIComponent(branch(env))}&per_page=${limit}`;
+  const url = `https://api.github.com/repos/${env.GH_OWNER}/${env.GH_REPO}/commits?sha=${encodeURIComponent(branch(env))}&per_page=100`;
   const r = await ghFetch(env, "GET", url);
   if (!r.ok) return { ok: false, status: r.status, error: r.data.message };
-  const items = (Array.isArray(r.data) ? r.data : []).map((c) => ({
-    sha: (c.sha || "").slice(0, 7),
-    message: (c.commit?.message || "").split("\n")[0],
-    author: c.commit?.author?.email || c.commit?.author?.name || "",
-    at: c.commit?.author?.date || "",
-    url: c.html_url,
-  }));
+  const items = (Array.isArray(r.data) ? r.data : [])
+    .map((c) => ({
+      sha: (c.sha || "").slice(0, 7),
+      message: (c.commit?.message || "").split("\n")[0],
+      author: c.commit?.author?.email || c.commit?.author?.name || "",
+      at: c.commit?.author?.date || "",
+    }))
+    .filter((c) => /^CMS:\s/.test(c.message))
+    .slice(0, limit);
   return { ok: true, items };
+}
+
+/**
+ * Every image already on the site — the media library behind the image picker.
+ * One recursive tree call rather than walking folders one contents-API page at
+ * a time.
+ */
+const MEDIA_ROOT = "public/assets/";
+const IMAGE_EXT = /\.(jpe?g|png|webp|gif|svg|avif)$/i;
+
+async function ghMedia(env) {
+  const url = `https://api.github.com/repos/${env.GH_OWNER}/${env.GH_REPO}/git/trees/${encodeURIComponent(branch(env))}?recursive=1`;
+  const r = await ghFetch(env, "GET", url);
+  if (!r.ok) return { ok: false, status: r.status, error: r.data.message };
+  const items = (r.data.tree || [])
+    .filter((n) => n.type === "blob" && n.path.startsWith(MEDIA_ROOT) && IMAGE_EXT.test(n.path))
+    .map((n) => {
+      const name = n.path.split("/").pop();
+      const folder = n.path.slice(0, n.path.length - name.length - 1);
+      return { path: n.path, url: "/" + n.path.replace(/^public\//, ""), name, folder: folder.replace(/^public\//, ""), size: n.size };
+    })
+    .sort((a, b) => a.folder.localeCompare(b.folder) || a.name.localeCompare(b.name));
+  return { ok: true, items, truncated: !!r.data.truncated };
 }
 
 // Pages the client may publish / unpublish. `locked` mirrors src/data/pages.mjs —
@@ -514,6 +545,12 @@ export async function handleCms(request, env) {
     return r.ok ? json({ items: r.items }) : json({ error: r.error }, r.status || 502);
   }
 
+  // --- media library (image picker) ---
+  if (path === "media" && method === "GET") {
+    const r = await ghMedia(env);
+    return r.ok ? json({ items: r.items, truncated: r.truncated }) : json({ error: r.error }, r.status || 502);
+  }
+
   // --- dashboard: contact form enquiries ---
   if (path === "enquiries" || path.startsWith("enquiries/")) {
     if (!env.CMS_USERS) return json({ error: "Enquiry store not configured." }, 501);
@@ -616,7 +653,7 @@ export async function handleCms(request, env) {
     let sha;
     const existing = await ghFetch(env, "GET", `${ghBase(env)}/${encodeURI(target)}?ref=${branch(env)}`);
     if (existing.ok) sha = existing.data.sha;
-    const r = await ghPut(env, target, body.dataBase64, sha, `CMS: upload ${target}`, session.e);
+    const r = await ghPut(env, target, body.dataBase64, sha, `CMS: upload image ${safe}`, session.e);
     if (!r.ok) return json({ error: r.error }, r.status || 502);
     // public URL = path with leading "public" stripped
     const publicUrl = "/" + target.replace(/^public\//, "");
