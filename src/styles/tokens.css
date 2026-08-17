@@ -14,6 +14,8 @@
   --color-sand: #dad3be;         /* section bg / stat block */
   --color-hero: #939b8a;         /* hero green */
   --color-card: #a7a489;         /* service card khaki */
+  --color-panel: #d9d8c8;        /* "how we work" band (home) */
+  --color-border-light: #e7e6e0; /* hairline card outline */
   --color-white: #fefefc;
   --color-background: #fffdfb;    /* warm off-white */
   --color-footer: #5a674e;

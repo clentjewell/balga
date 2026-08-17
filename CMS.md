@@ -66,10 +66,15 @@ User accounts live in a Cloudflare **KV namespace** (binding `CMS_USERS` in
 `CMS_PASSWORD` secrets as the first **admin**, so the original login keeps working.
 
 - **Roles:** *Admin* (edit content **and** manage users) and *Editor* (edit content only).
-- **My account** (everyone): change your own password.
-- **Users** (admins only): add a user, delete a user, switch a user's role, and
-  reset any user's password. Guards stop you deleting your own account or removing
-  the last admin.
+- **Names:** every account has a display name. It's asked for when an admin adds a
+  user, everyone can change their own under **My account**, and it's the name shown
+  against changes on the dashboard.
+- **My account** (everyone): change your own name and password.
+- **Users** (admins only): add a user (name, email, temporary password, role),
+  **Edit** a user — name, role and optionally a new password in one save, the way
+  WordPress does it, with a blank password box meaning "leave it alone" — and
+  delete a user. Guards stop you deleting your own account or removing the last
+  admin.
 - **Forgot password:** an admin resets it from **Users**. If the *only* admin is
   locked out, reset the seed by clearing the KV record (or `wrangler kv key delete
   "user:<email>" --binding CMS_USERS`) — it re-seeds from `CMS_PASSWORD` on next login.
@@ -94,7 +99,10 @@ unchanged). Five cards:
   "Updated testimonial “Jane D.” · by sarah · 2 hours ago". Only changes made in
   the Content Manager appear; developer commits, merges and deploys are filtered
   out, because this is a record of the website, not of the repository. Changes are
-  attributed to the signed-in user rather than the shared bot token.
+  attributed by matching the author against the Content Manager accounts and showing
+  that person's **name**. A change whose author isn't a registered account (an older
+  change, or one made in the repository directly) is listed without a name rather
+  than showing a GitHub identity.
 - **Pages** — publish / unpublish each page (below), plus a **+ New page** button
   that explains new pages need design work and to contact the admin.
 - **Blog posts** — the post list with Edit, plus New post.

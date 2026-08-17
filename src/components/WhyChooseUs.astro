@@ -4,14 +4,19 @@ import { altFor } from "../data/media";
 export interface Props { showIntro?: boolean; }
 const { showIntro = true } = Astro.props;
 
-// Pillar icons (matching the live site): house · two people · award medal
+// Pillar icons: certificate · person in view-finder · leaves.
+const svg = (paths: string) =>
+  `<svg viewBox="0 0 40 40" width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${paths}</svg>`;
 const icons = [
-  // house — Personal Expertise
-  `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9.5 21v-6h5v6"/></svg>`,
-  // two people — Dedicated Approach
-  `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7.5" r="3"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3 3 0 0 1 0 6"/><path d="M17.5 14a6.5 6.5 0 0 1 4 6"/></svg>`,
-  // award medal — Passion for Sustainability
-  `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 3h11l-5.5 8z"/><circle cx="12" cy="16" r="5"/><path d="M11 14.4l1.2-.9V18.5"/></svg>`,
+  // certificate — Personal Expertise
+  svg(`<rect x="3" y="6" width="26" height="20" rx="1.6"/><path d="M8 12h14M8 17h14M8 22h7"/>
+       <circle cx="28" cy="25.5" r="5.5"/><path d="M25 30l-1.4 6 4.4-2.4 4.4 2.4L31 30"/>`),
+  // person in a view-finder — Dedicated Approach
+  svg(`<circle cx="20" cy="20" r="9"/><circle cx="20" cy="17.4" r="2.9"/><path d="M15 25.6a5.4 5.4 0 0 1 10 0"/>
+       <path d="M13.4 13.4 8 8M8 12.6V8h4.6M26.6 13.4 32 8M27.4 8H32v4.6M13.4 26.6 8 32M8 27.4V32h4.6M26.6 26.6 32 32M32 27.4V32h-4.6"/>`),
+  // leaves — Passion for Sustainability
+  svg(`<path d="M20 20C20 10 24 7 33 7C33 16 30 20 20 20z"/><path d="M22 18C25 14.5 28 11.5 31 9.5"/>
+       <path d="M20 20C20 30 16 33 7 33C7 24 10 20 20 20z"/><path d="M18 22C15 25.5 12 28.5 9 30.5"/>`),
 ];
 ---
 <section class="why">
@@ -48,9 +53,9 @@ const icons = [
   .why .eyebrow { color: var(--color-accent); }
   .why h2 { color: #fff; }
   .why__intro { color: rgba(255, 255, 255, 0.88); margin: 1rem 0 1.8rem; max-width: 52ch; }
-  .why__pillars { display: flex; flex-direction: column; gap: 1.4rem; }
-  .why__pillars li { display: flex; gap: 1rem; align-items: flex-start; }
-  .why__icon { flex: 0 0 auto; width: 42px; height: 42px; border-radius: 50%; background: rgba(255, 255, 255, 0.14); color: var(--color-accent); display: grid; place-items: center; }
+  .why__pillars { display: flex; flex-direction: column; gap: 1.8rem; }
+  .why__pillars li { display: flex; gap: 1.2rem; align-items: flex-start; }
+  .why__icon { flex: 0 0 auto; width: 44px; height: 44px; color: #d8d4bf; display: grid; place-items: center; margin-top: 2px; }
   .why__pillars h3 { color: #fff; font-size: 1.2rem; margin-bottom: 0.3rem; }
   .why__pillars p { color: rgba(255, 255, 255, 0.82); font-size: 0.95rem; }
   @media (max-width: 860px) {

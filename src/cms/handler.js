@@ -107,7 +107,10 @@ const USER_PREFIX = "user:";
 const normEmail = (e) => String(e || "").trim().toLowerCase();
 const validEmail = (e) => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e);
 const userKey = (email) => USER_PREFIX + normEmail(email);
-const publicUser = (u) => ({ email: u.email, role: u.role, createdAt: u.createdAt, updatedAt: u.updatedAt });
+const publicUser = (u) => ({ email: u.email, name: u.name || "", role: u.role, createdAt: u.createdAt, updatedAt: u.updatedAt });
+/** What to call someone in the UI when they haven't set a name yet. */
+const displayName = (u) => (u && (u.name || String(u.email || "").split("@")[0])) || "";
+const cleanName = (v) => String(v || "").replace(/\s+/g, " ").trim().slice(0, 80);
 
 async function getUser(env, email) {
   if (!env.CMS_USERS) return null;
@@ -437,7 +440,7 @@ export async function handleCms(request, env) {
     if (!user || !ok) return json({ error: "Incorrect email or password." }, 401);
     const token = await signSession(env, user.email, user.role);
     const cookie = `${COOKIE}=${encodeURIComponent(token)}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=${SESSION_TTL}`;
-    return json({ ok: true, email: user.email, role: user.role }, 200, { "Set-Cookie": cookie });
+    return json({ ok: true, email: user.email, name: user.name || "", role: user.role }, 200, { "Set-Cookie": cookie });
   }
   // --- forgot password: email a one-time reset link (no session required) ---
   if (path === "forgot" && method === "POST") {
@@ -499,7 +502,11 @@ export async function handleCms(request, env) {
 
   // --- everything below requires a valid session ---
   const session = await verifySession(env, getCookie(request, COOKIE));
-  if (path === "me") return session ? json({ email: session.e, role: session.r || "editor" }) : json({ error: "Not signed in." }, 401);
+  if (path === "me") {
+    if (!session) return json({ error: "Not signed in." }, 401);
+    const me = await getUser(env, session.e);
+    return json({ email: session.e, role: session.r || "editor", name: me ? me.name || "" : "" });
+  }
   if (!session) return json({ error: "Not signed in." }, 401);
   const isAdmin = (session.r || "editor") === "admin";
 
@@ -515,6 +522,18 @@ export async function handleCms(request, env) {
     user.updatedAt = Date.now();
     await putUser(env, user);
     return json({ ok: true });
+  }
+
+  // --- change own display name ---
+  if (path === "profile" && method === "POST") {
+    const body = await request.json().catch(() => ({}));
+    if (!env.CMS_USERS) return json({ error: "User store not configured." }, 501);
+    const user = await getUser(env, session.e);
+    if (!user) return json({ error: "Account not found." }, 404);
+    user.name = cleanName(body.name);
+    user.updatedAt = Date.now();
+    await putUser(env, user);
+    return json({ ok: true, name: user.name });
   }
 
   // --- user management (admin only) ---
@@ -535,33 +554,37 @@ export async function handleCms(request, env) {
       if ((body.password || "").length < MIN_PASSWORD) return json({ error: `Password must be at least ${MIN_PASSWORD} characters.` }, 400);
       if (await getUser(env, email)) return json({ error: "A user with that email already exists." }, 409);
       const now = Date.now();
-      await putUser(env, { email, role, pass: await hashPassword(body.password), createdAt: now, updatedAt: now });
+      await putUser(env, { email, name: cleanName(body.name), role, pass: await hashPassword(body.password), createdAt: now, updatedAt: now });
       return json({ ok: true });
     }
-    if (path === "users/role" && method === "POST") {
+    // Edit a user: name, role and (optionally) a new password — one save, like WordPress.
+    if (path === "users/update" && method === "POST") {
       const body = await request.json().catch(() => ({}));
       const email = normEmail(body.email);
-      const role = body.role === "admin" ? "admin" : "editor";
       const user = await getUser(env, email);
       if (!user) return json({ error: "User not found." }, 404);
-      if (user.role === "admin" && role !== "admin" && (await countAdmins(env)) <= 1) {
-        return json({ error: "You can't remove the last admin." }, 400);
+
+      if (body.name !== undefined) user.name = cleanName(body.name);
+
+      if (body.role !== undefined) {
+        const role = body.role === "admin" ? "admin" : "editor";
+        if (user.role === "admin" && role !== "admin" && (await countAdmins(env)) <= 1) {
+          return json({ error: "You can't remove the last admin." }, 400);
+        }
+        user.role = role;
       }
-      user.role = role;
+
+      // Blank means "leave the password alone".
+      if (body.newPassword) {
+        if (String(body.newPassword).length < MIN_PASSWORD) {
+          return json({ error: `Password must be at least ${MIN_PASSWORD} characters.` }, 400);
+        }
+        user.pass = await hashPassword(body.newPassword);
+      }
+
       user.updatedAt = Date.now();
       await putUser(env, user);
-      return json({ ok: true });
-    }
-    if (path === "users/reset" && method === "POST") {
-      const body = await request.json().catch(() => ({}));
-      const email = normEmail(body.email);
-      const user = await getUser(env, email);
-      if (!user) return json({ error: "User not found." }, 404);
-      if ((body.newPassword || "").length < MIN_PASSWORD) return json({ error: `Password must be at least ${MIN_PASSWORD} characters.` }, 400);
-      user.pass = await hashPassword(body.newPassword);
-      user.updatedAt = Date.now();
-      await putUser(env, user);
-      return json({ ok: true });
+      return json({ ok: true, user: publicUser(user) });
     }
     if (path === "users" && method === "DELETE") {
       const body = await request.json().catch(() => ({}));
@@ -580,7 +603,13 @@ export async function handleCms(request, env) {
   if (path === "activity" && method === "GET") {
     const limit = Math.min(parseInt(url.searchParams.get("limit") || "20", 10) || 20, 50);
     const r = await ghCommits(env, limit);
-    return r.ok ? json({ items: r.items }) : json({ error: r.error }, r.status || 502);
+    if (!r.ok) return json({ error: r.error }, r.status || 502);
+    // Attribute changes to Content Manager accounts by name. A change whose author
+    // isn't a registered user (an older change, or one made outside the CMS) is
+    // listed without a name rather than showing a GitHub identity.
+    const byEmail = new Map((await listUsers(env)).map((u) => [normEmail(u.email), u]));
+    const items = r.items.map((c) => ({ ...c, author: displayName(byEmail.get(normEmail(c.author))) }));
+    return json({ items });
   }
 
   // --- media library (image picker) ---
