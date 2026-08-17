@@ -419,11 +419,6 @@
               "name": "testimonialsImage",
               "label": "Testimonials — background image",
               "widget": "image"
-            },
-            {
-              "name": "testimonialsImageAlt",
-              "label": "Testimonials — image alt text",
-              "widget": "string"
             }
           ]
         },
