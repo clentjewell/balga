@@ -1,12 +1,13 @@
 ---
 import type { Service } from "../data/services";
+import { altFor } from "../data/media";
 export interface Props { service: Service; }
 const { service } = Astro.props;
 ---
 <article class="svc-card reveal">
   <a class="svc-card__link" href={`/services/${service.slug}/`} aria-label={`${service.title} — learn more`}>
     <div class="svc-card__media">
-      <img src={service.image} alt={service.alt} width={service.width} height={service.height} loading="lazy" />
+      <img src={service.image} alt={altFor(service.image, service.alt)} width={service.width} height={service.height} loading="lazy" />
     </div>
     <div class="svc-card__body">
       <h3>{service.title}</h3>

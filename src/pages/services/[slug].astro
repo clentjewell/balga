@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { altFor } from "../../data/media";
 import PageHero from "../../components/PageHero.astro";
 import CTASection from "../../components/CTASection.astro";
 import BeforeAfterSlider from "../../components/BeforeAfterSlider.astro";
@@ -69,7 +70,7 @@ const serviceSchema = {
 
         <aside class="svc-detail__aside reveal">
           <figure class="svc-img">
-            <img src={contentImg.src} alt={contentImg.alt} loading="lazy" />
+            <img src={contentImg.src} alt={altFor(contentImg.src, contentImg.alt)} loading="lazy" />
           </figure>
         </aside>
       </div>
@@ -118,7 +119,7 @@ const serviceSchema = {
         {related.map((s) => (
           <a class="svc-related__card reveal" href={`/services/${s.slug}/`}>
             <div class="svc-related__media">
-              <img src={s.image} alt={s.alt} width={s.width} height={s.height} loading="lazy" />
+              <img src={s.image} alt={altFor(s.image, s.alt)} width={s.width} height={s.height} loading="lazy" />
             </div>
             <div class="svc-related__body">
               <h3>{s.title}</h3>

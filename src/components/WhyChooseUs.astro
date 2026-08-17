@@ -1,5 +1,6 @@
 ---
 import { whyChooseUs } from "../data/content";
+import { altFor } from "../data/media";
 export interface Props { showIntro?: boolean; }
 const { showIntro = true } = Astro.props;
 
@@ -17,7 +18,7 @@ const icons = [
   <div class="why__bg" aria-hidden="true"></div>
   <div class="why__grid">
     <div class="why__media reveal">
-      <img src={whyChooseUs.image} alt={whyChooseUs.imageAlt} width="600" height="800" loading="lazy" />
+      <img src={whyChooseUs.image} alt={altFor(whyChooseUs.image, whyChooseUs.imageAlt)} width="600" height="800" loading="lazy" />
     </div>
     <div class="why__content reveal">
       <span class="eyebrow">{whyChooseUs.eyebrow}</span>

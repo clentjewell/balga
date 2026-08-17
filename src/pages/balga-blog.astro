@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { altFor } from "../data/media";
 import PageHero from "../components/PageHero.astro";
 import CTASection from "../components/CTASection.astro";
 import { getCollection } from "astro:content";
@@ -22,7 +23,7 @@ const posts = (await getCollection("blog")).sort((a, b) => a.data.order - b.data
         {posts.map((post) => (
           <article class="blog-card reveal">
             <a href={`/${post.slug}/`} class="blog-card__media" tabindex="-1" aria-hidden="true">
-              <img src={post.data.image} alt={post.data.imageAlt} width="600" height="384" loading="lazy" />
+              <img src={post.data.image} alt={altFor(post.data.image, post.data.imageAlt)} width="600" height="384" loading="lazy" />
             </a>
             <div class="blog-card__body">
               <time datetime={post.data.dateISO}>{post.data.date}</time>

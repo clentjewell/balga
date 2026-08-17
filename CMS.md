@@ -121,9 +121,27 @@ WordPress pattern. Choosing an existing image is the default path; uploading is 
 option rather than the only one, which stops the same photo being uploaded five
 times under five names.
 
+Selecting an image shows its **details**, WordPress-style: **title, alt text,
+caption, description** and a **Copy** button for the file URL. Details are stored
+in `src/data/media.json`, keyed by the image's public URL, and saved with
+`PUT /cms-api/media-meta`.
+
+**Alt text is the part the website uses.** `src/data/media.ts` exposes
+`altFor(src, own)`, and the page templates call it: a page's own alt text wins,
+and where a page hasn't got any, the library's alt text is used. Choosing an image
+in the editor also copies its library alt into that field's alt box when the box is
+empty — the same thing WordPress does on insert, and it never overwrites text
+someone has already written. Title, caption and description are stored for the
+client's own organisation; nothing on the site renders them yet.
+
 The library is one recursive tree call (`GET /cms-api/media`), cached for the
 session and invalidated after an upload. Uploads still go to the field's own
 `mediaFolder`.
+
+A **just-uploaded image only reaches the live site after the next build**, so its
+public URL 404s for a minute or two. Thumbnails and previews fall back to
+`GET /cms-api/media-file?path=…`, which reads the file straight from the repo, so
+new uploads are visible in the CMS immediately.
 
 ## Contact enquiries + email (Resend)
 

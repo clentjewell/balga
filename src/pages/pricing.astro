@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { altFor } from "../data/media";
 import PageHero from "../components/PageHero.astro";
 import VideoBand from "../components/VideoBand.astro";
 import TestimonialSlider from "../components/TestimonialSlider.astro";
@@ -48,7 +49,7 @@ const offerSchema = {
             <p class="price-card__sub">{p.subtitle}</p>
             <p class="price-card__amount">{p.price}</p>
             <div class="price-card__media">
-              <img src={p.image} alt={p.alt} width="717" height="512" loading="lazy" />
+              <img src={p.image} alt={altFor(p.image, p.alt)} width="717" height="512" loading="lazy" />
             </div>
             <p class="price-card__radius">{p.radius}</p>
             <div class="stack price-card__intro">

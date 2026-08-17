@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { altFor } from "../data/media";
 import ServiceCard from "../components/ServiceCard.astro";
 import WhyChooseUs from "../components/WhyChooseUs.astro";
 import HowWeWork from "../components/HowWeWork.astro";
@@ -69,8 +70,8 @@ import home from "../data/content/home.json";
         <a href="/about/" class="btn btn--primary home-about__btn">Read More</a>
       </div>
       <div class="home-about__imgs reveal">
-        <img src={home.aboutImage1} alt={home.aboutImage1Alt} width="1000" height="750" loading="lazy" />
-        <img src={home.aboutImage2} alt={home.aboutImage2Alt} width="1000" height="750" loading="lazy" />
+        <img src={home.aboutImage1} alt={altFor(home.aboutImage1, home.aboutImage1Alt)} width="1000" height="750" loading="lazy" />
+        <img src={home.aboutImage2} alt={altFor(home.aboutImage2, home.aboutImage2Alt)} width="1000" height="750" loading="lazy" />
       </div>
     </div>
   </section>
