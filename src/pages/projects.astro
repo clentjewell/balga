@@ -8,6 +8,12 @@ import VideoModal from "../components/VideoModal.astro";
 import { projects } from "../data/projects";
 import { faqsByCategory } from "../data/faqs";
 import page from "../data/content/projects.json";
+
+// The grid is two-up. A full-width last project finishes the pattern when there's
+// an odd number of them; with an even number it would strand the second-to-last
+// one alone in its row, so they all stay the same size instead.
+const lastIndex = projects.length - 1;
+const oddCount = projects.length % 2 === 1;
 ---
 <BaseLayout title="Garden Projects & Transformations" description="Explore Balga Designs before-and-after garden transformations across the Northern Rivers — sustainable, contemporary native landscaping built to thrive." preloadImage={page.heroImage}>
   <PageHero title={page.heroTitle} image={page.heroImage} crumbs={[{ label: "Home", href: "/" }, { label: "Projects" }]} />
@@ -20,13 +26,13 @@ import page from "../data/content/projects.json";
       </div>
       <div class="proj-grid">
         {projects.map((p, i) => (
-          <div class:list={["proj-item reveal", { "proj-item--wide": i === projects.length - 1 }]}>
+          <div class:list={["proj-item reveal", { "proj-item--wide": i === lastIndex && oddCount }]}>
             <BeforeAfterSlider
               before={p.before}
               after={p.after}
               beforeAlt={p.beforeAlt}
               afterAlt={p.afterAlt}
-              ratio={i === projects.length - 1 ? "16 / 8" : "4 / 3"}
+              ratio={i === lastIndex && oddCount ? "16 / 8" : "4 / 3"}
             />
           </div>
         ))}
