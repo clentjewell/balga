@@ -138,9 +138,17 @@ preview regardless of tags, as does the home page. That trio is the first three
 published projects in the client's own order — it used to be a hard-coded list,
 which is why deleting a project once left its photos on those pages.
 
-**Hide instead of delete:** each project has a *Hide this project* checkbox. Hidden
-work drops off the Projects page, both previews and any service page immediately,
-stays in the CMS marked **Hidden**, and is flagged as hidden in pickers.
+**Hide instead of delete:** every row in the Projects list has **Hide** next to Edit
+and Delete — one click, no need to open the project. Hidden work drops off the
+Projects page, both previews and any service page immediately, is marked **Hidden**
+in the list (the button becomes **Show**), and is flagged as hidden in pickers.
+Editing a project leaves its hidden state alone.
+
+Driven by `"hideField": "draft"` on the collection in `public/cms-config.json`, so
+any collection can get the same toggle.
+
+**Delete is in both places:** the list row and, for an existing item, next to
+*Save & publish* in the editor.
 
 **Deleting never removes photos.** A delete removes only the project's own entry —
 every uploaded image stays in the media library for reuse, and the delete
