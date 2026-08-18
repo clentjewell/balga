@@ -778,6 +778,13 @@
           "label": "Description",
           "widget": "text",
           "required": false
+        },
+        {
+          "name": "draft",
+          "label": "Hide this project",
+          "widget": "boolean",
+          "checkboxLabel": "Hide from the website (keeps it here so you can bring it back)",
+          "hint": "Hidden projects drop off the Projects page and out of the home and services previews straight away."
         }
       ],
       "thumbField": "after"

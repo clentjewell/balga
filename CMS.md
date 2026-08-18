@@ -121,6 +121,25 @@ are deliberately not self-serve; they need layout/design work.
 Any links *inside page content* that point at a page the client unpublishes show up
 on the Broken links card as "points at a page you've unpublished".
 
+## Projects feed the rest of the site automatically
+
+The home and services pages show a three-project preview, and each service page
+shows related projects. Both now follow the client's project list on their own:
+
+- The preview trio is **the first three published projects**, in the order set in
+  the CMS. It used to be a hard-coded list, which is why deleting a project left
+  its photos on the home and services pages — the image files stay in the repo even
+  after the project is gone.
+- A service's **related projects** keep the ones the client picked, silently drop
+  any since deleted or hidden, and top themselves up from the remaining projects.
+  A service can't end up with an empty section or with work that's no longer on
+  the site.
+
+**Hide instead of delete:** each project has a *Hide this project* checkbox. A
+hidden project drops off the Projects page and out of both previews immediately,
+but stays in the CMS (marked **Hidden** in the list) so it can come back. Deleting
+still works and behaves the same way for the site.
+
 ## Images — the media library
 
 Every image field opens the **media library**: a grid of every image already on the
