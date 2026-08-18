@@ -780,6 +780,14 @@
           "required": false
         },
         {
+          "name": "services",
+          "label": "Relevant services",
+          "widget": "relation",
+          "collection": "services",
+          "multiple": true,
+          "hint": "Tick every service this project is an example of. It then shows in that service page's project section. Tick nothing and it simply won't appear on any service page."
+        },
+        {
           "name": "draft",
           "label": "Hide this project",
           "widget": "boolean",
@@ -847,13 +855,6 @@
           "name": "height",
           "label": "Image height",
           "widget": "number"
-        },
-        {
-          "name": "relatedProjects",
-          "label": "Related projects (shown on the page)",
-          "widget": "relation",
-          "collection": "projects",
-          "multiple": true
         },
         {
           "name": "contentImage",
