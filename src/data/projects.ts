@@ -9,6 +9,8 @@ export interface Project {
   service?: string;
   date?: string;
   description?: string;
+  /** Hidden from the website without deleting it (CMS checkbox). */
+  draft?: boolean;
 }
 
 // Projects are stored as one JSON file per project in ./projects/ so the CMS can
@@ -22,36 +24,34 @@ export const projects: Project[] = Object.entries(modules)
     const { order, ...rest } = data as ProjectFile;
     return { id, ...rest } as Project;
   })
+  // A hidden project drops out of every list on the site at once.
+  .filter((p) => !p.draft)
   .sort((a, b) => {
     const oa = (modules[`./projects/${a.id}.json`] as ProjectFile)?.order ?? 0;
     const ob = (modules[`./projects/${b.id}.json`] as ProjectFile)?.order ?? 0;
     return oa - ob;
   });
 
-// Home / Services projects-preview trio (curated showcase — not CMS-managed).
-export const projectsPreview: Project[] = [
-  {
-    id: "preview-01",
-    title: "Backyard Transformation",
-    before: "/assets/projects/project-02/before.webp",
-    after: "/assets/projects/project-02/after.webp",
-    beforeAlt: "Backyard before transformation",
-    afterAlt: "Backyard after transformation",
-  },
-  {
-    id: "preview-02",
-    title: "Native Garden Renewal",
-    before: "/assets/projects/project-03/before.webp",
-    after: "/assets/projects/preview-01-after.webp",
-    beforeAlt: "Garden before native renewal",
-    afterAlt: "Garden after native renewal",
-  },
-  {
-    id: "preview-03",
-    title: "Courtyard Makeover",
-    before: "/assets/projects/project-04/before.webp",
-    after: "/assets/projects/project-04/after.webp",
-    beforeAlt: "Courtyard before makeover",
-    afterAlt: "Courtyard after makeover",
-  },
-];
+/**
+ * The trio shown on the home and services pages.
+ *
+ * Derived from the client's own projects rather than a fixed list: when they add,
+ * remove or hide a project in the CMS, these follow. (They used to be hard-coded,
+ * so deleting a project left its photos on both pages — the image files stay in
+ * the repo even after the project itself is gone.)
+ */
+export const projectsPreview: Project[] = projects.slice(0, 3);
+
+/**
+ * Projects to show against a service.
+ *
+ * Keeps the ones the client picked, silently drops any that have since been
+ * deleted or hidden, and tops the list up from the remaining projects so the
+ * section never empties out or shows work that isn't on the site any more.
+ */
+export const relatedProjectsFor = (ids: string[] = [], count = 2): Project[] => {
+  const picked = ids.map((id) => projects.find((p) => p.id === id)).filter((p): p is Project => !!p);
+  const fill = projects.filter((p) => !picked.some((q) => q.id === p.id));
+  return [...picked, ...fill].slice(0, Math.max(count, picked.length));
+};
+

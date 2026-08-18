@@ -889,8 +889,11 @@ function itemRow(col, it, drag){
   return el("div",{class:"row"+(drag?" row--drag":""),"data-path":it.path},[
     el("div",{class:"rowmain"},[
       drag ? el("span",{class:"grip",title:"Drag to reorder","aria-hidden":"true"},"⠿") : null,
-      (it.thumb? el("img",{class:"rowthumb",src:it.thumb,alt:"",loading:"lazy"}):null),
-      el("div",{},[el("div",{class:"row__t"},it.title), drag?null:el("div",{class:"row__s"},it.id)])
+      (it.thumb? mediaImg(it.thumb,{class:"rowthumb",loading:"lazy"}):null),
+      el("div",{},[
+        el("div",{class:"row__t"},[it.title, it.fields && it.fields.draft===true ? el("span",{class:"pill pill--draft",style:"margin-left:.5rem"},"Hidden") : null]),
+        drag?null:el("div",{class:"row__s"},it.id),
+      ])
     ]),
     el("div",{class:"actions"},[
       el("button",{class:"secondary",onclick:()=>editorView(col.name,it)},"Edit"),
@@ -1073,7 +1076,8 @@ async function del(col,it){
 
 async function loadRelation(name){
   const items = await loadItems(getCol(name));
-  return items.map(it=>({ id:it.id, title:it.title }));
+  // Hidden items stay pickable — they're only hidden from the website — but say so.
+  return items.map(it=>({ id:it.id, title: it.title + (it.fields && it.fields.draft===true ? "  (hidden)" : "") }));
 }
 
 /**
@@ -1197,6 +1201,12 @@ async function editorView(name, item, fileEntry){
         fs.append(sw);
       }
       wrap.append(fs); getVal[f.name]=()=>{ const o={}; for(const k in subVal)o[k]=subVal[k](); return o; };
+    }
+    else if(f.widget==="boolean"){
+      const box=el("input",{type:"checkbox",id:idAttr,style:"width:auto;margin-right:.5rem"});
+      box.checked = cur===true;
+      wrap.append(el("label",{class:"checkline",style:"display:flex;align-items:center;font-weight:500"},[box, f.checkboxLabel||"Yes"]));
+      getVal[f.name]=()=>box.checked;
     }
     else if(f.widget==="select"){
       const sel=el("select",{id:idAttr}); (f.options||[]).forEach(o=>{ const opt=el("option",{value:o},o); if(cur===o)opt.selected=true; sel.append(opt); });

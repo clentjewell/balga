@@ -5,7 +5,7 @@ import PageHero from "../../components/PageHero.astro";
 import CTASection from "../../components/CTASection.astro";
 import BeforeAfterSlider from "../../components/BeforeAfterSlider.astro";
 import { services } from "../../data/services";
-import { projects } from "../../data/projects";
+import { relatedProjectsFor } from "../../data/projects";
 import { site } from "../../data/site";
 
 export function getStaticPaths() {
@@ -16,9 +16,9 @@ const { service } = Astro.props;
 const d = service.detail;
 const siteUrl = Astro.site?.toString().replace(/\/$/, "") ?? "";
 const related = services.filter((s) => s.slug !== service.slug);
-const relatedProjects = service.relatedProjects
-  .map((id) => projects.find((p) => p.id === id))
-  .filter((p) => p !== undefined);
+// Dead references (deleted or hidden projects) drop out and the list tops itself
+// up, so this section always shows current work.
+const relatedProjects = relatedProjectsFor(service.relatedProjects, 2);
 // Photo for the two-column content (set directly in the CMS).
 const contentImg = service.contentImage
   ? { src: service.contentImage, alt: service.contentImageAlt || service.alt }
