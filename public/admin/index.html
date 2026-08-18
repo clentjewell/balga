@@ -885,17 +885,41 @@ function groupNames(col, items){
   return names;
 }
 
+/** Flip an item's hide flag from the list, without opening it. */
+async function toggleHidden(col, it, btn){
+  const field = col.hideField;
+  const next = !(it.fields[field] === true);
+  btn.disabled = true;
+  const label = shortLabel(col.labelSingular||col.label);
+  try{
+    const fields = { ...it.fields, [field]: next };
+    if(col.bodyField) delete fields[col.bodyField];
+    await api("/file",{method:"PUT",body:JSON.stringify({
+      path: it.path, sha: it.sha, content: emitContent(col, fields, it.body),
+      message: `CMS: ${next?"hide":"show"} ${lowerLabel(label)}${quoteTitle(it.title)}`,
+    })});
+    toast((next?"Hidden from the website":"Showing on the website again")+" — publishing…","ok");
+    invalidate(col.name); collectionView(col.name);
+  }catch(ex){ toast(ex.message,"err"); btn.disabled=false; }
+}
+
 function itemRow(col, it, drag){
+  const hidden = col.hideField && it.fields[col.hideField] === true;
+  const hideBtn = col.hideField
+    ? el("button",{class:"secondary",title:hidden?"Show this on the website again":"Take this off the website, keeping it here"},hidden?"Show":"Hide")
+    : null;
+  if(hideBtn) hideBtn.addEventListener("click",()=>toggleHidden(col,it,hideBtn));
   return el("div",{class:"row"+(drag?" row--drag":""),"data-path":it.path},[
     el("div",{class:"rowmain"},[
       drag ? el("span",{class:"grip",title:"Drag to reorder","aria-hidden":"true"},"⠿") : null,
       (it.thumb? mediaImg(it.thumb,{class:"rowthumb",loading:"lazy"}):null),
       el("div",{},[
-        el("div",{class:"row__t"},[it.title, it.fields && it.fields.draft===true ? el("span",{class:"pill pill--draft",style:"margin-left:.5rem"},"Hidden") : null]),
+        el("div",{class:"row__t"},[it.title, hidden ? el("span",{class:"pill pill--draft",style:"margin-left:.5rem"},"Hidden") : null]),
         drag?null:el("div",{class:"row__s"},it.id),
       ])
     ]),
     el("div",{class:"actions"},[
+      hideBtn,
       el("button",{class:"secondary",onclick:()=>editorView(col.name,it)},"Edit"),
       col.delete?el("button",{class:"danger",onclick:()=>del(col,it)},"Delete"):null
     ])
@@ -1253,7 +1277,11 @@ async function editorView(name, item, fileEntry){
 
   const msg=el("div",{class:"msg err hidden"});
   const saveBtn=el("button",{onclick:save},"Save & publish");
-  form.append(el("div",{class:"actions"},[saveBtn, el("button",{class:"secondary",type:"button",onclick:()=>collectionView(name)},"Cancel"), msg]));
+  // Deleting from in here saves a trip back to the list.
+  const deleteBtn = (!isNew && !spec.isFile && col.delete)
+    ? el("button",{class:"danger",type:"button",style:"margin-left:auto",onclick:()=>del(col, item)},"Delete")
+    : null;
+  form.append(el("div",{class:"actions"},[saveBtn, el("button",{class:"secondary",type:"button",onclick:()=>collectionView(name)},"Cancel"), msg, deleteBtn]));
   main.append(form);
 
   async function save(){
