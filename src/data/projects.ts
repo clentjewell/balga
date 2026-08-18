@@ -9,6 +9,8 @@ export interface Project {
   service?: string;
   date?: string;
   description?: string;
+  /** Slugs of the services this project is an example of (CMS checkboxes). */
+  services?: string[];
   /** Hidden from the website without deleting it (CMS checkbox). */
   draft?: boolean;
 }
@@ -43,15 +45,13 @@ export const projects: Project[] = Object.entries(modules)
 export const projectsPreview: Project[] = projects.slice(0, 3);
 
 /**
- * Projects to show against a service.
+ * The projects tagged as examples of one service.
  *
- * Keeps the ones the client picked, silently drops any that have since been
- * deleted or hidden, and tops the list up from the remaining projects so the
- * section never empties out or shows work that isn't on the site any more.
+ * Tagging lives on the project ("which services is this an example of?"), so adding
+ * a project puts it on the right service pages in one step and removing it takes it
+ * off them. A service with no tagged projects hides its project section rather than
+ * showing something unrelated.
  */
-export const relatedProjectsFor = (ids: string[] = [], count = 2): Project[] => {
-  const picked = ids.map((id) => projects.find((p) => p.id === id)).filter((p): p is Project => !!p);
-  const fill = projects.filter((p) => !picked.some((q) => q.id === p.id));
-  return [...picked, ...fill].slice(0, Math.max(count, picked.length));
-};
+export const projectsForService = (slug: string): Project[] =>
+  projects.filter((p) => (p.services ?? []).includes(slug));
 

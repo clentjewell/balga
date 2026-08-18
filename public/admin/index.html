@@ -613,8 +613,8 @@ async function loadLinksCard(card){
   }
   const unpublished = report.toUnpublished || [];
   const broken = [
-    ...report.internalBroken.map(b=>({ t:b.href, s:"on "+b.page })),
-    ...report.externalBroken.map(b=>({ t:b.url, s:"HTTP "+b.status+" · on "+b.pages.length+" page"+(b.pages.length===1?"":"s") })),
+    ...(report.internalBroken||[]).map(b=>({ t:b.href, s:"on "+b.page })),
+    ...(report.externalBroken||[]).map(b=>({ t:b.url, s:"HTTP "+b.status+" · on "+(b.pages||[]).length+" page"+((b.pages||[]).length===1?"":"s") })),
     ...unpublished.map(b=>({ t:b.href, s:"points at a page you've unpublished · on "+b.page })),
   ];
   const list = el("div",{class:"clist"});
@@ -624,13 +624,13 @@ async function loadLinksCard(card){
   ])));
   if(broken.length>12) list.append(el("p",{class:"hint"},"+ "+(broken.length-12)+" more"));
   const extras = [];
-  if(report.unreachable.length) extras.push(report.unreachable.length+" link(s) didn't respond");
+  if((report.unreachable||[]).length) extras.push(report.unreachable.length+" link(s) didn't respond");
   if(report.blocked && report.blocked.length) extras.push(report.blocked.length+" blocked automated checks (not broken)");
   card.set(
     el("div",{class:"stats"},[
       stat(broken.length,"broken", broken.length?"stat--alert":"stat--ok"),
-      stat(report.checkedLinks,"links checked"),
-      stat(report.checkedPages,"pages"),
+      stat(report.checkedLinks ?? 0,"links checked"),
+      stat(report.checkedPages ?? 0,"pages"),
     ]),
     list,
     el("p",{class:"hint"}, "Checked "+ago(report.generatedAt)+(extras.length? " · "+extras.join(" · "):"")),
@@ -1068,7 +1068,7 @@ function startDrag(e, row, wrap, onDrop){
 }
 
 async function del(col,it){
-  if(!confirm(`Delete "${it.title||it.name}"? This cannot be undone.`)) return;
+  if(!confirm(`Delete "${it.title||it.name}"?\n\nIts photos stay in your media library, so you can reuse them later. This cannot be undone.`)) return;
   const message = `CMS: delete ${lowerLabel(shortLabel(col.labelSingular||col.label))}${quoteTitle(it.title)}`;
   try{ await api("/file",{method:"DELETE",body:JSON.stringify({path:it.path,sha:it.sha,message})}); toast("Deleted — publishing…","ok"); invalidate(col.name); collectionView(col.name); }
   catch(ex){ toast(ex.message,"err"); }

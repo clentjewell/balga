@@ -16,8 +16,6 @@ export interface Service {
   alt: string;
   width: number;
   height: number;
-  /** ids of related projects (see src/data/projects) to showcase; empty = no section. */
-  relatedProjects: string[];
   /** photo shown in the two-column content (right side). */
   contentImage: string;
   contentImageAlt: string;

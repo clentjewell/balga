@@ -121,24 +121,30 @@ are deliberately not self-serve; they need layout/design work.
 Any links *inside page content* that point at a page the client unpublishes show up
 on the Broken links card as "points at a page you've unpublished".
 
-## Projects feed the rest of the site automatically
+## Projects and services
 
-The home and services pages show a three-project preview, and each service page
-shows related projects. Both now follow the client's project list on their own:
+**Each project says which services it's an example of.** Editing a project shows
+*Relevant services* — a checkbox per service. That service's page then shows the
+project in its projects section. Tick nothing and the project simply doesn't appear
+on any service page; if a service has no projects tagged, its project section is
+left off the page entirely rather than padded with unrelated work.
 
-- The preview trio is **the first three published projects**, in the order set in
-  the CMS. It used to be a hard-coded list, which is why deleting a project left
-  its photos on the home and services pages — the image files stay in the repo even
-  after the project is gone.
-- A service's **related projects** keep the ones the client picked, silently drop
-  any since deleted or hidden, and top themselves up from the remaining projects.
-  A service can't end up with an empty section or with work that's no longer on
-  the site.
+Tagging lives on the project so adding one piece of work puts it on the right
+service pages in a single step. (The mirror-image "related projects" picker on the
+service editor is gone — one place to set this, not two.)
 
-**Hide instead of delete:** each project has a *Hide this project* checkbox. A
-hidden project drops off the Projects page and out of both previews immediately,
-but stays in the CMS (marked **Hidden** in the list) so it can come back. Deleting
-still works and behaves the same way for the site.
+**The main services page is unconditional:** it keeps showing the three-project
+preview regardless of tags, as does the home page. That trio is the first three
+published projects in the client's own order — it used to be a hard-coded list,
+which is why deleting a project once left its photos on those pages.
+
+**Hide instead of delete:** each project has a *Hide this project* checkbox. Hidden
+work drops off the Projects page, both previews and any service page immediately,
+stays in the CMS marked **Hidden**, and is flagged as hidden in pickers.
+
+**Deleting never removes photos.** A delete removes only the project's own entry —
+every uploaded image stays in the media library for reuse, and the delete
+confirmation says so.
 
 ## Images — the media library
 

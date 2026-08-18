@@ -8,5 +8,10 @@
   "location": "Northern Rivers",
   "service": "Gardening",
   "date": "10-08-2024",
-  "description": "Through meticulous planning and execution, we transformed this Bangalow backyard outdoor space into a breathtaking oasis that harmonises with the area’s natural beauty."
+  "description": "Through meticulous planning and execution, we transformed this Bangalow backyard outdoor space into a breathtaking oasis that harmonises with the area’s natural beauty.",
+  "services": [
+    "decorative-plants",
+    "garden-facelift",
+    "landscape-design"
+  ]
 }
