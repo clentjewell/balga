@@ -6,7 +6,9 @@ const videoSchema = {
   name: site.video.title,
   description: site.video.description,
   thumbnailUrl: [site.video.thumbnail],
-  embedUrl: `https://www.youtube.com/embed/${site.video.youtubeId}`,
+  // Matches the player the page actually loads; contentUrl below stays on the
+  // public watch page, which is the canonical URL for the video itself.
+  embedUrl: `https://www.youtube-nocookie.com/embed/${site.video.youtubeId}`,
   contentUrl: `https://www.youtube.com/watch?v=${site.video.youtubeId}`,
   publisher: { "@type": "Organization", name: "Balga Designs" },
 };
