@@ -142,21 +142,22 @@ See `.env.example`. Local dev secrets can go in `.dev.vars` (git-ignored).
 
 ## Disabling preview noindex
 
-The preview blocks indexing in three places. To allow indexing on a production
-domain:
+The site is live at **https://balgadesigns.com.au** and indexable by default — no
+build flags needed. Three switches control this, all defaulting to "live":
 
-1. **Response header** — set the Worker var `PREVIEW_NOINDEX=false` (in
-   `wrangler.jsonc` `vars`, or per-environment) so the Worker stops sending
-   `X-Robots-Tag`.
-2. **Meta tag + robots.txt** — build with `PUBLIC_NOINDEX=false`. This swaps the
-   `<meta name="robots">` tag to `index, follow …` **and** regenerates
-   `robots.txt` with an `Allow: /` rule plus AI/answer-engine crawler grants.
+| Switch | Where | Default | Controls |
+| --- | --- | --- | --- |
+| `SITE_URL` | build-time env | `https://balgadesigns.com.au` | canonicals, sitemap, `og:url`, `llms.txt` |
+| `PUBLIC_NOINDEX` | build-time env | unset (= indexable) | `<meta name="robots">` and `robots.txt` |
+| `PREVIEW_NOINDEX` | Worker var in `wrangler.jsonc` | `"false"` | the `X-Robots-Tag` response header |
 
-Also set `SITE_URL=https://your-domain` at build time so canonicals, the sitemap,
-`robots.txt` and `llms.txt` all use the production origin. Example go-live build:
+To stand up a **preview or staging clone** that must stay out of search results,
+flip all three together — half-measures leak (a `robots.txt` that allows crawling
+on a clone whose canonicals point at the live site is worse than either alone):
 
 ```bash
-SITE_URL=https://balgadesigns.com.au PUBLIC_NOINDEX=false npm run build
+SITE_URL=https://your-preview.workers.dev PUBLIC_NOINDEX=true npm run build
+# …and set "PREVIEW_NOINDEX": "true" in that deployment's wrangler vars.
 ```
 
 ## SEO & structured data

@@ -265,10 +265,11 @@ Two build-time mechanisms keep it that way without hand-maintenance:
   screen). The schema, footer, llms.txt, contact-form copy and the Worker's error
   messages all read it, so the business's phone/email/address can never drift.
 
-**Before the site goes to its production domain**, build with `SITE_URL` set to the
-real hostname and `PUBLIC_NOINDEX=false`, and set the Worker var `PREVIEW_NOINDEX`
-to `"false"`. Until then robots.txt disallows everything and pages carry
-`X-Robots-Tag: noindex` — correct for a preview, fatal if it ships that way.
+**The site is live at https://balgadesigns.com.au** and open to search engines:
+canonicals, the sitemap and `llms.txt` all use that origin, `robots.txt` allows
+crawling, and no `X-Robots-Tag: noindex` is sent. Nothing needs setting for a
+normal deploy. A preview clone hides itself with `SITE_URL` + `PUBLIC_NOINDEX=true`
+at build time and the Worker var `PREVIEW_NOINDEX: "true"` — see the README table.
 
 ## Security
 

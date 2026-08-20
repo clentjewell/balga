@@ -1,4 +1,4 @@
-const BASE = process.env.DEPLOY_URL || 'https://balga-designs-preview.clent.workers.dev';
+const BASE = process.env.DEPLOY_URL || 'https://balgadesigns.com.au';
 const routes = ['/', '/about/', '/services/', '/projects/', '/pricing/', '/balga-blog/', '/contact/', '/what-are-native-gardens/', '/why-designing-and-planning-are-crucial-for-successful-landscaping/', '/balga-meaning-purpose/'];
 let fail = 0;
 const okmark = (b) => (b ? 'OK ' : (fail++, 'FAIL'));

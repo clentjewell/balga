@@ -29,8 +29,8 @@ const {
 const siteUrl = Astro.site?.toString().replace(/\/$/, "") ?? "";
 const canonicalUrl = canonical ?? new URL(Astro.url.pathname, Astro.site ?? "http://localhost").toString();
 const ogImageUrl = ogImage.startsWith("http") ? ogImage : siteUrl + ogImage;
-// Preview clone: block indexing unless explicitly disabled.
-const noindex = (import.meta.env.PUBLIC_NOINDEX ?? "true") !== "false";
+// The live site is indexable; a preview clone opts out with PUBLIC_NOINDEX=true.
+const noindex = (import.meta.env.PUBLIC_NOINDEX ?? "false") === "true";
 const fullTitle = title.includes("Balga Designs") ? title : `${title} – Balga Designs`;
 const metaDescription = description;
 
