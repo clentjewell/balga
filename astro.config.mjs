@@ -10,12 +10,13 @@ import { draftPaths } from './src/data/pages.mjs';
 // llms.txt reads it from here so it can never drift from the rest of the site.
 import settings from './src/data/content/settings.json';
 
-// Preview deployment URL (workers.dev). Override with SITE_URL when promoting
-// to a production domain so canonicals/sitemap use the right origin.
-const SITE = process.env.SITE_URL || 'https://balga-designs-preview.clent.workers.dev';
-// Production build (allow indexing) is signalled the same way the pages are:
-// PUBLIC_NOINDEX=false. Anything else keeps the deployment private (preview).
-const INDEXABLE = process.env.PUBLIC_NOINDEX === 'false';
+// The live origin — canonicals, the sitemap, og:url and llms.txt are all built
+// from it. A preview or staging clone points somewhere else with SITE_URL so it
+// can't claim to be the real site.
+const SITE = process.env.SITE_URL || 'https://balgadesigns.com.au';
+// The live site is meant to be found. A preview clone hides itself the same way
+// the pages do: build with PUBLIC_NOINDEX=true.
+const INDEXABLE = (process.env.PUBLIC_NOINDEX ?? 'false') !== 'true';
 
 const BASE = SITE.replace(/\/$/, '');
 const HOST = BASE.replace(/^https?:\/\//, '');
@@ -189,7 +190,7 @@ function seoFiles() {
         } else {
           robots =
             `# Balga Designs — preview deployment. Indexing is disabled for this clone.\n` +
-            `# Production build (PUBLIC_NOINDEX=false) emits an allow rule automatically.\n` +
+            `# Building without PUBLIC_NOINDEX=true emits the production allow rules.\n` +
             `User-agent: *\n` +
             `Disallow: /\n\n` +
             `Sitemap: ${BASE}/sitemap.xml\n`;

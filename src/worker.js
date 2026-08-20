@@ -3,7 +3,7 @@
  * Runs before assets (run_worker_first: true) to:
  *  - handle POST /api/contact (email via Resend if configured, else preview mode),
  *  - add security + caching headers,
- *  - add X-Robots-Tag: noindex, nofollow on the preview (toggle with PREVIEW_NOINDEX=false).
+ *  - add X-Robots-Tag: noindex, nofollow on a preview clone (PREVIEW_NOINDEX=true).
  */
 
 import { handleCms, saveEnquiry, hasCmsSession, sendMail, mailConfigured, rateLimit, clientIp } from "./cms/handler.js";
@@ -66,6 +66,13 @@ async function scriptSrcFor(env, url, status) {
 const cspWith = (scriptSrc) => [...CSP_DIRECTIVES, `script-src ${scriptSrc}`].join("; ");
 /** For non-HTML responses, which never execute inline script. */
 const STATIC_CSP = cspWith("'self'");
+
+/**
+ * Whether this deployment should tell crawlers to stay away. The live site is
+ * findable, so only a preview clone opts in — with PREVIEW_NOINDEX="true", the
+ * same polarity as the build-time PUBLIC_NOINDEX switch.
+ */
+const noindexing = (env) => (env.PREVIEW_NOINDEX ?? "false") === "true";
 
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
@@ -175,7 +182,7 @@ async function withHeaders(res, env, url) {
   const ext = pathname.slice(pathname.lastIndexOf("."));
   if (CONTENT_TYPES[ext]) headers.set("Content-Type", CONTENT_TYPES[ext]);
 
-  if ((env.PREVIEW_NOINDEX ?? "true") !== "false") {
+  if (noindexing(env)) {
     headers.set("X-Robots-Tag", "noindex, nofollow");
   }
 
@@ -200,7 +207,7 @@ export default {
       for (const [k, v] of Object.entries(SECURITY_HEADERS)) headers.set(k, v);
       headers.set("Content-Security-Policy", STATIC_CSP);
       headers.set("Cache-Control", "no-store");
-      if ((env.PREVIEW_NOINDEX ?? "true") !== "false") headers.set("X-Robots-Tag", "noindex, nofollow");
+      if (noindexing(env)) headers.set("X-Robots-Tag", "noindex, nofollow");
       return new Response(res.body, { status: res.status, headers });
     }
 
