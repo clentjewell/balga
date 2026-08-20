@@ -162,7 +162,13 @@ function toast(msg, kind){ const t=el("div",{class:"toast "+(kind||"")},msg); do
 async function api(path, opts={}){
   const res = await fetch(API+path, { headers:{"Content-Type":"application/json"}, ...opts });
   const data = await res.json().catch(()=>({}));
-  if(!res.ok) throw new Error(data.error || ("Error "+res.status));
+  if(!res.ok){
+    // Cloudflare's edge rate limiter blocks before the Worker runs and answers
+    // in plain text ("error code: 1015"), so there's no data.error to show.
+    // Without this the client would just read "Error 429".
+    if(res.status===429 && !data.error) throw new Error("Too many attempts in a row. Please wait about a minute and try again.");
+    throw new Error(data.error || ("Error "+res.status));
+  }
   return data;
 }
 
