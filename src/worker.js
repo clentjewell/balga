@@ -182,7 +182,9 @@ async function withHeaders(res, env, url) {
   const ext = pathname.slice(pathname.lastIndexOf("."));
   if (CONTENT_TYPES[ext]) headers.set("Content-Type", CONTENT_TYPES[ext]);
 
-  if (noindexing(env)) {
+  // The admin app is private whatever the deployment is. Its own page already
+  // carries a noindex meta tag; the header covers the assets around it too.
+  if (noindexing(env) || pathname.startsWith("/admin")) {
     headers.set("X-Robots-Tag", "noindex, nofollow");
   }
 
@@ -207,7 +209,8 @@ export default {
       for (const [k, v] of Object.entries(SECURITY_HEADERS)) headers.set(k, v);
       headers.set("Content-Security-Policy", STATIC_CSP);
       headers.set("Cache-Control", "no-store");
-      if (noindexing(env)) headers.set("X-Robots-Tag", "noindex, nofollow");
+      // A JSON form endpoint, never a search result — regardless of deployment.
+      headers.set("X-Robots-Tag", "noindex, nofollow");
       return new Response(res.body, { status: res.status, headers });
     }
 
