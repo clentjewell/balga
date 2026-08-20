@@ -76,7 +76,15 @@ const verifySession = (env, token) => verifyPayload(env, token);
 function getCookie(request, name) {
   const c = request.headers.get("Cookie") || "";
   const m = c.match(new RegExp("(?:^|; )" + name + "=([^;]+)"));
-  return m ? decodeURIComponent(m[1]) : null;
+  if (!m) return null;
+  // A cookie is text an attacker chooses. An invalid percent-escape ("%%%%")
+  // makes decodeURIComponent throw, which would turn "bad cookie" into a 500
+  // instead of a clean 401. Undecodable means unusable, so treat it as absent.
+  try {
+    return decodeURIComponent(m[1]);
+  } catch {
+    return null;
+  }
 }
 function timingSafeEqual(a, b) {
   if (typeof a !== "string" || typeof b !== "string" || a.length !== b.length) return false;
