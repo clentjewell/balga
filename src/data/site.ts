@@ -36,7 +36,9 @@ export const site = {
   },
   video: {
     youtubeId: "pY_lOt_Yogk",
-    embed: "https://www.youtube.com/embed/pY_lOt_Yogk?autoplay=1&rel=0",
+    // youtube-nocookie.com is YouTube's own privacy-preserving player host: same
+    // video, same controls, but no tracking cookie until someone hits play.
+    embed: "https://www.youtube-nocookie.com/embed/pY_lOt_Yogk?autoplay=1&rel=0",
     title: "Balga Designs — Sustainable Landscapes",
     description:
       "A short introduction to Balga Designs and our approach to beautiful, regenerative native gardens across the Northern Rivers to the Southern Gold Coast.",
