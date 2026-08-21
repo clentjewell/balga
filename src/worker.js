@@ -191,9 +191,10 @@ async function withHeaders(res, env, url) {
   const ext = pathname.slice(pathname.lastIndexOf("."));
   if (CONTENT_TYPES[ext]) headers.set("Content-Type", CONTENT_TYPES[ext]);
 
-  // The admin app is private whatever the deployment is. Its own page already
-  // carries a noindex meta tag; the header covers the assets around it too.
-  if (noindexing(env) || pathname.startsWith("/admin")) {
+  // The admin app and the client handoff document are private whatever the
+  // deployment is. Their pages already carry a noindex meta tag; the header
+  // covers the assets around them too.
+  if (noindexing(env) || pathname.startsWith("/admin") || pathname.startsWith("/handoff")) {
     headers.set("X-Robots-Tag", "noindex, nofollow");
   }
 

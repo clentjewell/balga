@@ -66,6 +66,9 @@ Worker (`src/worker.js`) can add security headers, caching and the preview
 public/
   assets/          branding · icons · home · about · services · projects · pricing · blog · video
   fonts/           montserrat-var.woff2 (self-hosted)
+  admin/           the Content Manager app (CMS UI)
+  review/          content & local-search review pack (signed-in only)
+  handoff/         client handoff document — what changed, SEO/GEO, updates requested
   sitemap.xsl      stylesheet for the human-readable sitemap view
   site.webmanifest
   (robots.txt, llms.txt & sitemap.xml are generated into dist/ at build time)
@@ -99,6 +102,24 @@ wrangler.jsonc     Workers Static Assets config
 | `/why-designing-and-planning-are-crucial-for-successful-landscaping/` | Article |
 | `/balga-meaning-purpose/` | Article |
 | `*` | Custom 404 |
+
+### Internal pages
+
+Documents and tooling that ship with the site but are not part of the public
+website. They carry `noindex, nofollow` (meta tag *and* `X-Robots-Tag`), never
+appear in `sitemap.xml`, `llms.txt` or `llms-full.txt`, and are skipped by the
+Layer 1 SEO audit.
+
+| Route | Page | Access |
+|-------|------|--------|
+| `/admin/` | Content Manager (CMS UI) | Sign-in required |
+| `/review/` | Content & local-search review pack | Signed-in only — served as 404 otherwise |
+| `/handoff/` | Client handoff document — what changed, the SEO/GEO work, every update requested from the 29 Jul – 20 Aug 2026 email thread, and the remaining go-live steps | Link-shareable (noindex) |
+
+`/handoff/` is deliberately reachable without a login so it can be emailed to the
+client, the way `/review/` could not be. It carries no credentials. To put it
+behind the CMS session instead, add `/handoff` to the gated-path check in
+`src/worker.js`.
 
 ## Asset policy
 

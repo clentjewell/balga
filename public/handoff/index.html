@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#5a674e">
+<meta name="description" content="Balga Designs website handoff — what changed in the rebuild, the SEO and GEO work that shipped, every update requested by the client, and what happens now the site is live.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%8C%BF%3C/text%3E%3C/svg%3E">
+<title>Balga Designs — Website Handoff</title>
+</head>
+<body>
+
+<style>
+:root{
+  --bg:#f7f6f1; --surface:#ffffff; --surface-2:#fbfbf6;
+  --ink:#1b1b1b; --muted:#6b6f63; --faint:#8b8f81;
+  --accent:#5a674e; --accent-2:#b7b597; --link:#4d5a42;
+  --border:#e6e6df; --chip:#efe9d6; --chip-ink:#6a5b1f;
+  --done-bg:#e4ecdc; --done-ink:#3b5230; --done-line:#c9dbbb;
+  --open-bg:#f6ecd2; --open-ink:#6a5b1f; --open-line:#e6d7ad;
+  --next-bg:#e6eaf0; --next-ink:#3f4a5a; --next-line:#d2d9e3;
+  --radius:14px; --maxw:70ch;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14160e; --surface:#1b1e14; --surface-2:#20241a;
+    --ink:#e9ece2; --muted:#a7ab9b; --faint:#8b8f7f;
+    --accent:#9db584; --accent-2:#b7b597; --link:#bccca7;
+    --border:#2c3123; --chip:#33341f; --chip-ink:#e6dca6;
+    --done-bg:#25321d; --done-ink:#bcd7a7; --done-line:#3a4b2d;
+    --open-bg:#33341f; --open-ink:#e6dca6; --open-line:#4a4a2b;
+    --next-bg:#22262d; --next-ink:#c3cddc; --next-line:#333a45;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#f7f6f1; --surface:#ffffff; --surface-2:#fbfbf6; --ink:#1b1b1b; --muted:#6b6f63; --faint:#8b8f81;
+  --accent:#5a674e; --accent-2:#b7b597; --link:#4d5a42; --border:#e6e6df; --chip:#efe9d6; --chip-ink:#6a5b1f;
+  --done-bg:#e4ecdc; --done-ink:#3b5230; --done-line:#c9dbbb;
+  --open-bg:#f6ecd2; --open-ink:#6a5b1f; --open-line:#e6d7ad;
+  --next-bg:#e6eaf0; --next-ink:#3f4a5a; --next-line:#d2d9e3;
+}
+:root[data-theme="dark"]{
+  --bg:#14160e; --surface:#1b1e14; --surface-2:#20241a; --ink:#e9ece2; --muted:#a7ab9b; --faint:#8b8f7f;
+  --accent:#9db584; --accent-2:#b7b597; --link:#bccca7; --border:#2c3123; --chip:#33341f; --chip-ink:#e6dca6;
+  --done-bg:#25321d; --done-ink:#bcd7a7; --done-line:#3a4b2d;
+  --open-bg:#33341f; --open-ink:#e6dca6; --open-line:#4a4a2b;
+  --next-bg:#22262d; --next-ink:#c3cddc; --next-line:#333a45;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  line-height:1.72;font-size:17px;-webkit-font-smoothing:antialiased;}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px;}
+h1,h2,h3,h4,h5{font-family:Georgia,"Iowan Old Style","Times New Roman",serif;line-height:1.22;text-wrap:balance;color:var(--ink);}
+
+/* Masthead */
+.mast{background:var(--accent);color:#fff;}
+:root[data-theme="dark"] .mast{color:#12140d;}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .mast{color:#12140d;}}
+.mast .wrap{padding-top:42px;padding-bottom:34px;}
+.eyebrow{font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.18em;font-size:.72rem;font-weight:600;opacity:.9;margin:0 0 .5rem;}
+.mast h1{margin:0;font-size:clamp(1.9rem,1.3rem+2.4vw,2.9rem);color:inherit;}
+.mast p{margin:.7rem 0 0;max-width:60ch;opacity:.94;font-size:1.02rem;}
+
+/* Tabs */
+.tabs{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--border);
+  display:flex;gap:2px;flex-wrap:wrap;padding-top:6px;}
+.tabs .wrapflex{max-width:960px;margin:0 auto;padding:0 12px;display:flex;gap:4px;flex-wrap:wrap;width:100%;}
+.tab{font-family:system-ui,sans-serif;font-size:.95rem;font-weight:600;color:var(--muted);
+  background:transparent;border:0;border-bottom:3px solid transparent;
+  padding:14px 16px;cursor:pointer;transition:color .15s,border-color .15s;}
+.tab:hover{color:var(--ink);}
+.tab[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent);}
+.tab:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px;}
+
+/* Document body */
+.panel{padding:34px 0 72px;}
+.panel[hidden]{display:none;}
+.doc{max-width:var(--maxw);margin:0 auto;overflow-wrap:anywhere;}
+.doc>h2:first-child,.doc>.d:first-child{margin-top:0;}
+.doc h2{font-size:clamp(1.5rem,1.1rem+1.4vw,2rem);margin:0 0 .4rem;padding-bottom:.35rem;}
+.doc h3{font-size:1.28rem;margin:2.4rem 0 .6rem;color:var(--accent);}
+.doc h4{font-size:1.06rem;margin:1.7rem 0 .4rem;}
+.doc h5{font-size:.95rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:1.3rem 0 .3rem;font-family:system-ui,sans-serif;}
+.doc p{margin:0 0 1.05rem;}
+.doc ul,.doc ol{margin:0 0 1.2rem;padding-left:1.3rem;}
+.doc li{margin-bottom:.5rem;}
+.doc li::marker{color:var(--accent-2);}
+.doc a{color:var(--link);text-underline-offset:2px;}
+.doc strong{color:var(--ink);}
+.doc blockquote{margin:1.4rem 0;padding:.6rem 0 .6rem 1.2rem;border-left:3px solid var(--accent-2);color:var(--muted);font-style:italic;}
+.doc hr{border:0;border-top:1px solid var(--border);margin:2.4rem 0;}
+.doc code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.9em;background:var(--surface-2);padding:.1em .4em;border-radius:5px;border:1px solid var(--border);}
+
+/* First doc-title of each panel */
+.doc h2.d:first-child{font-size:clamp(1.7rem,1.2rem+1.8vw,2.3rem);color:var(--ink);
+  border-bottom:2px solid var(--accent-2);padding-bottom:.5rem;margin-bottom:1.4rem;}
+
+/* Tables */
+.doc table{width:100%;border-collapse:collapse;margin:1.2rem 0 1.8rem;font-size:.92rem;
+  font-variant-numeric:tabular-nums;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.tablewrap{overflow-x:auto;}
+.doc th,.doc td{text-align:left;padding:.7rem .9rem;border-bottom:1px solid var(--border);vertical-align:top;overflow-wrap:anywhere;word-break:break-word;}
+.doc .tablewrap{overflow-x:auto;margin:1.2rem 0 1.8rem;-webkit-overflow-scrolling:touch;}
+.doc .tablewrap>table{margin:0;min-width:480px;}
+.doc thead th{background:var(--surface-2);color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-size:.72rem;font-family:system-ui,sans-serif;}
+.doc tbody tr:last-child td{border-bottom:0;}
+.doc tbody tr:hover td{background:var(--surface-2);}
+
+/* Score cards (the before/after proof) */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin:1.5rem 0 2rem;}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;}
+.stat .k{font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.09em;font-size:.68rem;color:var(--muted);font-weight:700;}
+.stat .v{font-family:Georgia,"Iowan Old Style",serif;font-size:2.1rem;line-height:1.05;margin:.4rem 0 .15rem;color:var(--accent);}
+.stat .v .was{color:var(--faint);font-size:1.05rem;font-family:system-ui,sans-serif;}
+.stat .s{font-size:.82rem;color:var(--muted);line-height:1.5;}
+
+/* Status pills */
+.pill{display:inline-block;font-family:system-ui,sans-serif;font-size:.68rem;font-weight:700;
+  letter-spacing:.07em;text-transform:uppercase;padding:.25em .65em;border-radius:999px;
+  border:1px solid var(--border);background:var(--surface-2);color:var(--muted);white-space:nowrap;}
+.pill.done{background:var(--done-bg);color:var(--done-ink);border-color:var(--done-line);}
+.pill.open{background:var(--open-bg);color:var(--open-ink);border-color:var(--open-line);}
+.pill.next{background:var(--next-bg);color:var(--next-ink);border-color:var(--next-line);}
+
+/* Requested updates */
+.doc .reqs{list-style:none;margin:1.4rem 0 2rem;padding:0;}
+.doc .req{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent-2);
+  border-radius:12px;padding:16px 18px;margin:0 0 14px;}
+.doc .req.is-open{border-left-color:var(--open-line);}
+.req-head{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:.5rem;}
+.req-when{font-family:system-ui,sans-serif;font-size:.78rem;color:var(--faint);letter-spacing:.02em;}
+.req h4{margin:0 0 .5rem;font-size:1.02rem;}
+.req p{margin:0 0 .7rem;font-size:.95rem;}
+.req p:last-child{margin-bottom:0;}
+.req q{color:var(--muted);font-style:italic;}
+
+.todo{display:inline;background:var(--chip);color:var(--chip-ink);border-radius:6px;
+  padding:.05em .45em;font-size:.85em;font-weight:600;font-family:system-ui,sans-serif;white-space:normal;}
+.note{max-width:var(--maxw);margin:0 auto 1.6rem;padding:.9rem 1.1rem;background:var(--surface-2);
+  border:1px solid var(--border);border-left:3px solid var(--accent-2);border-radius:10px;color:var(--muted);font-size:.92rem;}
+.doc .note{margin-left:0;margin-right:0;}
+.foot{max-width:var(--maxw);margin:2.5rem auto 0;padding-top:1.3rem;border-top:1px solid var(--border);color:var(--faint);font-size:.85rem;}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;}}
+@media (max-width:560px){body{font-size:16px;} .tab{padding:12px 12px;}}
+</style>
+
+<header class="mast">
+  <div class="wrap">
+    <p class="eyebrow">For Margarida · Balga Designs · Project handoff</p>
+    <h1>Your new website — what changed, and what happens next</h1>
+    <p>The written handover for the rebuild of balgadesigns.com.au: what we changed and why it matters, the search and AI-search work that shipped with it, every update you asked for and where it landed, and what happens now the site is live.</p>
+  </div>
+</header>
+
+<nav class="tabs" aria-label="Sections"><div class="wrapflex" role="tablist">
+<button class="tab" role="tab" id="tab-changed" aria-controls="panel-changed" aria-selected="true" data-target="changed">What changed</button>
+<button class="tab" role="tab" id="tab-seo" aria-controls="panel-seo" aria-selected="false" data-target="seo">SEO &amp; GEO</button>
+<button class="tab" role="tab" id="tab-updates" aria-controls="panel-updates" aria-selected="false" data-target="updates">Updates requested</button>
+<button class="tab" role="tab" id="tab-live" aria-controls="panel-live" aria-selected="false" data-target="live">Going live</button>
+</div></nav>
+
+<div class="wrap"><p class="note" role="note">Everything on the <strong>Updates requested</strong> tab comes straight from our email thread &ldquo;Balga Designs, your website upgrades are done (and it&rsquo;s flying)&rdquo; (29 July &ndash; 20 August 2026). Each item quotes what you asked for, on the day you asked, and says exactly where it ended up.</p></div>
+
+<main class="wrap">
+
+<!-- ─────────────────────────  WHAT CHANGED  ───────────────────────── -->
+<section class="panel" role="tabpanel" id="panel-changed" aria-labelledby="tab-changed">
+<div class="doc">
+<h2 class="d">What changed, in plain English</h2>
+
+<p>Your website looks like your website. Underneath, almost nothing is the same. The old WordPress and page-builder engine is gone, replaced by lightweight hand-coded pages served from Cloudflare&rsquo;s global network. That single change is where most of the speed, the security and the lower running cost come from.</p>
+
+<div class="stats">
+  <div class="stat">
+    <p class="k">Google PageSpeed · Desktop</p>
+    <p class="v">98 <span class="was">was 64</span></p>
+    <p class="s">Measured on Google&rsquo;s own PageSpeed Insights, old site vs new.</p>
+  </div>
+  <div class="stat">
+    <p class="k">Google PageSpeed · Mobile</p>
+    <p class="v">93 <span class="was">was 67</span></p>
+    <p class="s">Most of your visitors arrive on a phone, so this is the one that counts.</p>
+  </div>
+</div>
+
+<p>Jumping from the 60s into the 90s matters beyond bragging rights: Google uses speed as a ranking factor, a fast site keeps visitors reading instead of leaving, and more of them turn into enquiries.</p>
+
+<h3>1. Your site moved to Cloudflare</h3>
+<p>The site is served from Cloudflare&rsquo;s edge network, so pages load from a location near whoever is visiting. You also get their security layer in front of the site by default &mdash; no plugin to buy, keep updated or renew.</p>
+
+<h3>2. Rebuilt as clean, modern code</h3>
+<p>We rebuilt Balga Designs from the ground up as hand-written pages. No WordPress, no Elementor, no plugin stack, no theme updates to chase. Nothing on the page is loaded that the page doesn&rsquo;t actually need, which is why it is so much quicker and so much cheaper to maintain.</p>
+<p>What&rsquo;s on the site today:</p>
+<div class="tablewrap"><table>
+<thead><tr><th>Section</th><th>What&rsquo;s there</th></tr></thead>
+<tbody>
+<tr><td>Main pages</td><td>Home, About, Services, Projects, Pricing, FAQs, Blog, Contact</td></tr>
+<tr><td>Service pages</td><td>Six &mdash; Landscape Design, Garden Facelift, Decorative Plants &amp; Pot Styling, Integrated Pest Management, Weed Control, Horticulture Consultation</td></tr>
+<tr><td>Projects</td><td>Eight before-and-after transformations, each able to be tagged to the services it demonstrates</td></tr>
+<tr><td>FAQs</td><td>Fourteen questions, grouped by topic and marked up so Google can show them as answers</td></tr>
+<tr><td>Articles</td><td>Three guides on native gardens, design and the meaning behind the name Balga</td></tr>
+</tbody>
+</table></div>
+
+<h3>3. You can edit it yourself</h3>
+<p>The site comes with its own Content Manager &mdash; a private editor at <code>/admin/</code> with your own login. From there you can change FAQs, services, projects, pricing, images, page text and the shared details (phone, email, hours, service area) that appear across the site.</p>
+<ul>
+  <li>A <strong>media library</strong> so photos are uploaded once and reused anywhere.</li>
+  <li><strong>Publish / unpublish</strong> per page, so a page you&rsquo;re not ready to show can be taken down without deleting it.</li>
+  <li>An <strong>enquiry inbox</strong> holding every message the contact form receives.</li>
+  <li>A plain-language <strong>change feed</strong>, so you can see what was edited and when.</li>
+</ul>
+<p>Every save is recorded and the site rebuilds and republishes itself automatically &mdash; there&rsquo;s no separate &ldquo;publish to the server&rdquo; step for you to remember.</p>
+
+<h3>4. The contact form actually delivers</h3>
+<p>Enquiries are checked on the server before they&rsquo;re accepted, saved to your inbox in the editor, and emailed to you. If email delivery isn&rsquo;t configured, the form says so honestly rather than pretending a message was sent &mdash; so a lost enquiry can&rsquo;t hide.</p>
+
+<h3>5. Security, quietly, in the background</h3>
+<p>Nothing you need to manage, but worth knowing it&rsquo;s there: strict browser security headers on every response, a content policy that blocks injected scripts, sign-in rate limiting on the editor, hardened login sessions, and the admin area kept out of search results entirely.</p>
+
+<div class="note">Nothing about the way you work changes. Same brand, same photos, same words &mdash; just a much faster, safer, easier-to-edit version of the site you already had.</div>
+</div>
+</section>
+
+<!-- ─────────────────────────  SEO & GEO  ───────────────────────── -->
+<section class="panel" role="tabpanel" id="panel-seo" aria-labelledby="tab-seo" hidden>
+<div class="doc">
+<h2 class="d">SEO &amp; GEO — built into the pages</h2>
+
+<p>Two audiences have to understand your website. <strong>SEO</strong> is the familiar one: helping Google rank you when someone searches &ldquo;native garden designer Ballina&rdquo;. <strong>GEO</strong> &mdash; Generative Engine Optimisation &mdash; is the newer one: helping the AI assistants people now ask instead (ChatGPT, Claude, Gemini, Google&rsquo;s AI answers) describe your business correctly when they answer on your behalf.</p>
+<p>Both come down to the same thing: state plainly, in a form machines can read, who you are, what you do, where you do it and what it costs. That is what the rebuild does.</p>
+
+<h3>What Google sees</h3>
+<ul>
+  <li><strong>A business record on every page</strong> &mdash; structured data describing Balga Designs as a local business: name, phone, email, address, hours, service area, map position, social profiles and the full list of services with prices.</li>
+  <li><strong>Service, pricing and FAQ markup</strong> &mdash; your six services and four packages are described as real offers, and the FAQ page is marked up so its questions can appear directly in search results.</li>
+  <li><strong>A page per service</strong>, rather than one page listing everything, so each service can rank for its own searches.</li>
+  <li><strong>Breadcrumbs, article and video markup</strong> so guides and the homepage video are understood as what they are.</li>
+  <li><strong>A sitemap</strong> at <code>/sitemap.xml</code> (with a readable view for humans) and a <code>robots.txt</code> that welcomes search crawlers.</li>
+  <li><strong>Written-once page details</strong> &mdash; a unique title, description, canonical address and branded share image on every page, so links posted to Facebook, Instagram or a text message preview properly.</li>
+  <li><strong>Clean page structure</strong> &mdash; one main heading per page, headings in order, alt text on every image, and image sizes declared up front so nothing jumps around as the page loads.</li>
+</ul>
+
+<h3>What AI assistants see</h3>
+<ul>
+  <li><strong><code>llms.txt</code></strong> &mdash; a plain-English summary of the business, its services and its contact details, published in the format AI answer engines look for.</li>
+  <li><strong><code>llms-full.txt</code></strong> &mdash; the full readable text of the site in one file, so an assistant quoting you quotes your words rather than guessing.</li>
+  <li><strong>Named permission for AI crawlers</strong> &mdash; GPTBot, OAI-SearchBot, ClaudeBot, PerplexityBot, Google-Extended, Applebot-Extended and others are explicitly allowed, so your site is eligible to be used as a source rather than silently skipped.</li>
+  <li><strong>Answer-first writing</strong> &mdash; each FAQ opens with a short, direct, quotable sentence, then explains. That first sentence is what an assistant repeats.</li>
+</ul>
+
+<h3>Local signals</h3>
+<p>Lennox Head, NSW is stated once in a single source and flows to every place it appears &mdash; the business record, the page footers, the location tags, the sitemap and <code>llms.txt</code>. It can&rsquo;t drift out of step, which is exactly what Google looks for when deciding whether two mentions of a business are the same business. Service area is stated the same way: the Northern Rivers through to the Southern Gold Coast, including Lennox Head, Ballina and Byron Bay.</p>
+
+<h3>Checked on every build</h3>
+<p>All of the above is verified automatically each time the site is rebuilt. If a page ever loses its description, its business record, an image&rsquo;s alt text or its share image, the build reports it rather than quietly publishing a weaker page.</p>
+
+<h3>What&rsquo;s still yours to do (off the website)</h3>
+<p>On-page work is done. The rest of local search happens off your site, and it&rsquo;s where the next real gains are:</p>
+<ul>
+  <li><strong>Google Business Profile</strong> &mdash; the single biggest lever for &ldquo;near me&rdquo; searches. Claim it, fill in every field, and match the name, address and phone exactly as they appear on the site.</li>
+  <li><strong>Directory listings</strong> &mdash; we&rsquo;ve prepared a prioritised list of 26 places to list Balga Designs, with the exact wording to paste in, so every listing agrees with every other one.</li>
+  <li><strong>Reviews</strong> &mdash; steady, genuine Google reviews from happy clients move local rankings more than almost anything else you can do.</li>
+</ul>
+<p>Your socials person can work through this, or we can quote it as a small package &mdash; just say the word.</p>
+</div>
+</section>
+
+<!-- ─────────────────────────  UPDATES REQUESTED  ───────────────────────── -->
+<section class="panel" role="tabpanel" id="panel-updates" aria-labelledby="tab-updates" hidden>
+<div class="doc">
+<h2 class="d">Updates you asked for</h2>
+
+<p class="note">Source: the email thread <em>&ldquo;Balga Designs, your website upgrades are done (and it&rsquo;s flying)&rdquo;</em>, 29 July &ndash; 20 August 2026, between Margarida Gata China and the Jewell Projects team (Clent Jewell, Ronnie Ignacio, Rao Waqar Akram). Every request in that thread is listed below with what happened to it.</p>
+
+<h3>Everything requested</h3>
+
+<ol class="reqs">
+
+<li class="req">
+  <div class="req-head"><span class="pill done">Done</span><span class="req-when">29 July · Marga</span></div>
+  <h4>&ldquo;I couldn&rsquo;t approve or write anything on this page you sent me&rdquo;</h4>
+  <p>The review page was a read-only summary, so there was nowhere to type &mdash; our fault for not saying so. We gave you your own login to the Content Manager at <code>/admin/</code> instead, where you can edit the site directly rather than sending changes back to us.</p>
+</li>
+
+<li class="req">
+  <div class="req-head"><span class="pill done">Done</span><span class="req-when">11 August · Marga</span></div>
+  <h4>&ldquo;I did replace a few of the photos, even tho I can&rsquo;t see what they look like yet&rdquo;</h4>
+  <p>Your image changes are live on the site now, and the media library was improved so uploads appear immediately, show their details, and can be reused anywhere without uploading twice. Swap a photo, refresh the page, see it.</p>
+</li>
+
+<li class="req">
+  <div class="req-head"><span class="pill done">Done</span><span class="req-when">11 &amp; 13 August · Marga</span></div>
+  <h4>&ldquo;It would be wonderful if all text could be revised by AI to better suit the SEO strategy&rdquo;</h4>
+  <p>Done. The descriptions and site copy were reworked against the SEO strategy &mdash; FAQ answers and service-page sections rewritten in the words customers actually search with, each answer opening with a short quotable sentence for Google and AI assistants, then explaining properly for the human reading it.</p>
+</li>
+
+<li class="req">
+  <div class="req-head"><span class="pill done">Fixed</span><span class="req-when">9&ndash;13 August · Marga</span></div>
+  <h4>&ldquo;I couldn&rsquo;t really change the FAQs. When I change the question and try to save it, it shows the error&rdquo;</h4>
+  <p>Confirmed from your screenshot and fixed. The FAQ editor was rebuilt: editing a question saves cleanly, and questions can now be reordered by dragging rather than by juggling numbers.</p>
+  <p>The first question you deleted has stayed deleted, and the remaining fourteen are live and grouped by topic.</p>
+</li>
+
+<li class="req">
+  <div class="req-head"><span class="pill done">Done</span><span class="req-when">13 August · Marga</span></div>
+  <h4>&ldquo;Could you please replace the image on the website and replace with the attached photo &lsquo;beach garden&rsquo;&rdquo;</h4>
+  <p>Replaced with the beach garden photo you sent.</p>
+</li>
+
+<li class="req">
+  <div class="req-head"><span class="pill done">Fixed</span><span class="req-when">17&ndash;18 August · Marga</span></div>
+  <h4>&ldquo;The page &lsquo;Services&rsquo; still shows these old projects &hellip; I would like to update those with the new projects&rdquo;</h4>
+  <p>Fixed at the root rather than by hand. The Services page and each individual service page now read your live project list automatically. Any project you add from now on appears in the right places on its own, and anything you delete or hide disappears from them straight away &mdash; no one has to touch the code.</p>
+  <p>To control which work shows against which service, each project now has a <strong>Relevant services</strong> field. Open a project in the editor and tick the service(s) it&rsquo;s an example of &mdash; you can tick more than one.</p>
+  <p><span class="todo">Over to you:</span> Integrated Pest Management, Weed Control and Horticulture Consultation have no projects ticked yet, so those three pages don&rsquo;t show a projects section at all. Tick something for them whenever you have a spare few minutes.</p>
+</li>
+
+<li class="req">
+  <div class="req-head"><span class="pill done">Done</span><span class="req-when">18 August · Marga</span></div>
+  <h4>Your new garden projects added</h4>
+  <p>Your latest projects are in and the old ones you removed are gone &mdash; from the Projects page and from everywhere else they used to appear. The projects grid also stays evenly paired now, so it doesn&rsquo;t look lopsided as you add and remove work.</p>
+</li>
+
+<li class="req is-open">
+  <div class="req-head"><span class="pill open">Quote to come</span><span class="req-when">11 &amp; 19 August · Marga</span></div>
+  <h4>&ldquo;I would love to add another page, a &lsquo;Gallery&rsquo; page &hellip; not a before/after, just an organised gallery with nice photographs&rdquo;</h4>
+  <p>Not built &mdash; this one sits outside the current scope, and you asked us to quote it. Send through roughly how many photographs you&rsquo;d like shown and whether they should be grouped by project or shown as one continuous gallery, and we&rsquo;ll put a price together.</p>
+</li>
+
+<li class="req">
+  <div class="req-head"><span class="pill done">Received</span><span class="req-when">19 August · Marga</span></div>
+  <h4>&ldquo;Everything looks great! If everyone is happy, you can have the website go live!&rdquo;</h4>
+  <p>Approval received &mdash; thank you. The remaining steps are on the <strong>Going live</strong> tab.</p>
+</li>
+
+<li class="req">
+  <div class="req-head"><span class="pill done">Done</span><span class="req-when">20 August · Rao</span></div>
+  <h4>Domain and email-sending access, for the move to balgadesigns.com.au</h4>
+  <p>Received on 20 August, security checks run, and the switch is done &mdash; <strong>balgadesigns.com.au now serves the new site</strong>. Nothing on your side to do.</p>
+  <p>For your own records: the access you shared by email is being used only for this cutover. Once the site is live, please change those passwords &mdash; anything sent over email should be treated as no longer private.</p>
+</li>
+
+</ol>
+
+<h3>Questions you&rsquo;ve already answered</h3>
+<p>The original review pack had a handful of details marked <span class="todo">Please confirm</span> because only you could answer them. They&rsquo;re now answered and published:</p>
+<div class="tablewrap"><table>
+<thead><tr><th>Question</th><th>Answer now on the site</th></tr></thead>
+<tbody>
+<tr><td>Is the first quote / consultation free?</td><td>Yes &mdash; the first consultation is free, with no obligation.</td></tr>
+<tr><td>How long does a design take?</td><td>Most designs are completed within a few weeks of the onsite assessment, depending on size and scope.</td></tr>
+<tr><td>Package prices</td><td>Small NativeScapes $2,500 · Potted Greenery / Pot Styling $2,000 · Balga Inspo (DIY guidance) $2,000 · Complete Design Package $4,500.</td></tr>
+</tbody>
+</table></div>
+<p>If any of those has changed, tell us and we&rsquo;ll update them &mdash; or change them yourself in the editor, since the FAQs and pricing are both yours to edit now.</p>
+
+<h3>Still open, at a glance</h3>
+<ul>
+  <li><strong>You:</strong> tick <em>Relevant services</em> on your projects, so Integrated Pest Management, Weed Control and Horticulture Consultation have work to show.</li>
+  <li><strong>You:</strong> send any remaining new photographs whenever you&rsquo;re ready.</li>
+  <li><strong>You:</strong> a short brief for the Gallery page, and we&rsquo;ll quote it.</li>
+  <li><strong>Us:</strong> submit the sitemap to Google Search Console, and confirm contact-form email is delivering from your domain.</li>
+</ul>
+</div>
+</section>
+
+<!-- ─────────────────────────  GOING LIVE  ───────────────────────── -->
+<section class="panel" role="tabpanel" id="panel-live" aria-labelledby="tab-live" hidden>
+<div class="doc">
+<h2 class="d">Going live, and what happens after</h2>
+
+<p><strong>The site is live.</strong> balgadesigns.com.au now serves the new build &mdash; the domain was switched to Cloudflare and the old host is out of the picture. What follows is what that changed, and what is worth doing next.</p>
+
+<h3>Where things stand</h3>
+<div class="tablewrap"><table>
+<thead><tr><th>Step</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Site rebuilt, reviewed and approved</td><td><span class="pill done">Done</span> 19 August</td></tr>
+<tr><td>Domain access provided (Namecheap)</td><td><span class="pill done">Done</span> 20 August</td></tr>
+<tr><td>Email-sending account created</td><td><span class="pill done">Done</span> 20 August</td></tr>
+<tr><td>Security checks before cutover</td><td><span class="pill done">Done</span></td></tr>
+<tr><td>Nameservers switched to Cloudflare</td><td><span class="pill done">Done</span></td></tr>
+<tr><td>Site answering on balgadesigns.com.au</td><td><span class="pill done">Done</span> 21 August</td></tr>
+<tr><td>Sitemap submitted to Google Search Console</td><td><span class="pill next">Next</span></td></tr>
+<tr><td>Contact-form email confirmed from your domain</td><td><span class="pill next">Next</span></td></tr>
+</tbody>
+</table></div>
+<p>The nameserver change was the actual switch: your domain stopped pointing at the old host and now points at Cloudflare. Domain changes take a little while to spread around the world, so for a short period some people may still be served a cached copy of the old site. Nothing is lost in that window &mdash; both versions answer.</p>
+
+<h3>What being live changed</h3>
+<ul>
+  <li><strong>Search engines can now see the site.</strong> Through the whole build it was deliberately hidden so the preview couldn&rsquo;t compete with your real site in Google. That block is off, and the pages actively invite search and AI crawlers in.</li>
+  <li><strong>Your editor moved with it.</strong> Same address, same login &mdash; now on balgadesigns.com.au. Save a change there and it&rsquo;s live on the real site a minute or two later.</li>
+  <li><strong>Still to confirm:</strong> the sitemap submitted to Google Search Console, so the new pages are found quickly rather than waiting to be stumbled upon; and a test enquiry through the contact form, to prove email is delivering from your own domain.</li>
+</ul>
+
+<h3>Then, in order of value</h3>
+<ol>
+  <li><strong>Google Business Profile</strong> &mdash; claimed, complete, and matching the site word for word.</li>
+  <li><strong>Directory listings</strong> &mdash; work through the prepared list of 26, using the same wording each time.</li>
+  <li><strong>Reviews</strong> &mdash; ask happy clients. This is the cheapest local-search win there is.</li>
+  <li><strong>Photographs</strong> &mdash; new project photos as you finish gardens; the site is built to take them without any developer involvement.</li>
+  <li><strong>Gallery page</strong> &mdash; once you&rsquo;ve sent a brief and we&rsquo;ve quoted it.</li>
+</ol>
+
+<h3>Looking after it</h3>
+<p>There is no plugin stack to update, no theme to renew and no security patching cycle to keep on top of. The site is static files served from Cloudflare, which is why it is both fast and quiet. Your day-to-day is simply: edit in the Content Manager, save, and the site updates itself.</p>
+
+<h3>Who to ask</h3>
+<div class="tablewrap"><table>
+<thead><tr><th>For</th><th>Who</th><th>How</th></tr></thead>
+<tbody>
+<tr><td>Anything about the project or a change you&rsquo;d like</td><td>Ronnie Ignacio, Project Manager</td><td><a href="mailto:ronnie@jewellprojects.com">ronnie@jewellprojects.com</a> · 1300 197 221</td></tr>
+<tr><td>The website or editor itself</td><td>Rao Waqar Akram, Online Experience Developer</td><td><a href="mailto:rao@jewellprojects.com">rao@jewellprojects.com</a> · 1300 197 221</td></tr>
+<tr><td>Anything commercial</td><td>Clent Jewell, General Manager</td><td><a href="mailto:clent@jewellprojects.com">clent@jewellprojects.com</a> · +61 407 799 229</td></tr>
+</tbody>
+</table></div>
+
+<div class="note">Your editor: <code>/admin/</code> on the site. If you ever lose the password, use the reset link on that page or email Rao &mdash; never send a password back to us by email.</div>
+
+<p class="foot">Prepared by Jewell Projects for Balga Designs · 21 August 2026 · This page is not indexed by search engines.</p>
+</div>
+</section>
+
+</main>
+
+<script>
+(function(){
+  document.documentElement.classList.add("js");
+  // Wrap any table that isn't already wrapped, so wide ones scroll instead of
+  // pushing the page sideways on a phone.
+  [].slice.call(document.querySelectorAll(".doc table")).forEach(function(t){
+    if(t.parentNode && t.parentNode.classList && t.parentNode.classList.contains("tablewrap")) return;
+    var w=document.createElement("div"); w.className="tablewrap";
+    t.parentNode.insertBefore(w,t); w.appendChild(t);
+  });
+  var tabs=[].slice.call(document.querySelectorAll(".tab"));
+  var panels=[].slice.call(document.querySelectorAll(".panel"));
+  function select(id){
+    tabs.forEach(function(t){t.setAttribute("aria-selected", t.dataset.target===id ? "true":"false");});
+    panels.forEach(function(p){ p.hidden = p.id!=="panel-"+id; });
+    try{ window.scrollTo({top:0,behavior:"instant"}); }catch(e){ window.scrollTo(0,0); }
+  }
+  tabs.forEach(function(t,i){
+    t.addEventListener("click",function(){select(t.dataset.target);});
+    t.addEventListener("keydown",function(e){
+      if(e.key==="ArrowRight"||e.key==="ArrowLeft"){
+        e.preventDefault();
+        var n=(i+(e.key==="ArrowRight"?1:-1)+tabs.length)%tabs.length;
+        tabs[n].focus(); select(tabs[n].dataset.target);
+      }
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
