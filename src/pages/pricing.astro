@@ -10,6 +10,7 @@ import VideoModal from "../components/VideoModal.astro";
 import { packages } from "../data/pricing";
 import { faqsByCategory } from "../data/faqs";
 import page from "../data/content/pricing.json";
+import { jsonLd } from "../data/html";
 
 const siteUrl = Astro.site?.toString().replace(/\/$/, "") ?? "";
 const priceNum = (s: string) => s.replace(/[^0-9.]/g, "");
@@ -32,7 +33,7 @@ const offerSchema = {
 ---
 <BaseLayout title="Garden Design Pricing & Packages" description="Transparent pricing from Balga Designs — four native garden design packages, from Small NativeScapes to the Complete Design Package. Find your plan." preloadImage={page.heroImage}>
   <PageHero title={page.heroTitle} image={page.heroImage} crumbs={[{ label: "Home", href: "/" }, { label: "Pricing" }]} />
-  <script type="application/ld+json" set:html={JSON.stringify(offerSchema)} is:inline />
+  <script type="application/ld+json" set:html={jsonLd(offerSchema)} is:inline />
 
   <section class="section section--white">
     <div class="container">

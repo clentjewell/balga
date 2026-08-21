@@ -4,12 +4,13 @@ import PageHero from "../components/PageHero.astro";
 import CTASection from "../components/CTASection.astro";
 import { faqs, faqCategories } from "../data/faqs";
 import page from "../data/content/faqs.json";
+import { jsonLd, richText } from "../data/html";
 
 const groups = faqCategories
   .map((cat) => ({ cat, items: faqs.filter((f) => f.category === cat) }))
   .filter((g) => g.items.length);
 
-const jsonLd = {
+const faqPageSchema = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
   mainEntity: faqs.map((f) => ({
@@ -25,11 +26,11 @@ const jsonLd = {
   preloadImage={page.heroImage}
 >
   <PageHero title={page.heroTitle} image={page.heroImage} crumbs={[{ label: "Home", href: "/" }, { label: "FAQs" }]} />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
+  <script type="application/ld+json" set:html={jsonLd(faqPageSchema)} is:inline />
 
   <section class="section section--white">
     <div class="container container-narrow">
-      <p class="faqp__intro reveal" set:html={page.intro} />
+      <p class="faqp__intro reveal" set:html={richText(page.intro)} />
 
       {groups.map((g) => (
         <div class="faqp__group reveal">
