@@ -1,9 +1,11 @@
 ---
+import { jsonLd } from "../data/html";
+
 export interface Crumb { label: string; href?: string; }
 export interface Props { items: Crumb[]; light?: boolean; }
 const { items, light = true } = Astro.props;
 const siteUrl = Astro.site?.toString().replace(/\/$/, "") ?? "";
-const jsonLd = {
+const breadcrumbSchema = {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   itemListElement: items.map((c, i) => ({
@@ -24,7 +26,7 @@ const jsonLd = {
     ))}
   </ol>
 </nav>
-<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
+<script type="application/ld+json" set:html={jsonLd(breadcrumbSchema)} is:inline />
 
 <style>
   .breadcrumbs ol { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.12em; }

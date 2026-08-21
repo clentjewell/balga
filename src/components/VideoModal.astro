@@ -1,5 +1,6 @@
 ---
 import { site } from "../data/site";
+import { jsonLd } from "../data/html";
 const videoSchema = {
   "@context": "https://schema.org",
   "@type": "VideoObject",
@@ -13,7 +14,7 @@ const videoSchema = {
   publisher: { "@type": "Organization", name: "Balga Designs" },
 };
 ---
-<script type="application/ld+json" set:html={JSON.stringify(videoSchema)} is:inline />
+<script type="application/ld+json" set:html={jsonLd(videoSchema)} is:inline />
 <div class="video-modal" data-video-modal hidden>
   <div class="video-modal__backdrop" data-video-close></div>
   <div class="video-modal__inner" role="dialog" aria-modal="true" aria-label="Balga Designs video">

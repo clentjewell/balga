@@ -427,6 +427,8 @@ async function ghCommits(env, limit = 20) {
  */
 const MEDIA_ROOT = "public/assets/";
 const IMAGE_EXT = /\.(jpe?g|png|webp|gif|svg|avif)$/i;
+// ~10 MB once base64 is decoded. Photos straight off a phone are well under it.
+const MAX_UPLOAD_B64 = 14 * 1024 * 1024;
 // Title / alt / caption / description per image, keyed by public URL.
 const MEDIA_META_PATH = "src/data/media.json";
 const MIME = { jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png", webp: "image/webp",
@@ -832,8 +834,20 @@ export async function handleCms(request, env) {
     const body = await request.json().catch(() => ({}));
     // body: { folder, filename, dataBase64 }  (dataBase64 = raw base64, no data: prefix)
     if (!body.folder || !body.filename || !body.dataBase64) return json({ error: "Missing upload fields." }, 400);
-    const safe = body.filename.toLowerCase().replace(/[^a-z0-9._-]+/g, "-").replace(/^-+|-+$/g, "");
-    const target = `${body.folder.replace(/\/+$/, "")}/${safe}`;
+    const safe = String(body.filename).toLowerCase().replace(/[^a-z0-9._-]+/g, "-").replace(/^-+|-+$/g, "");
+    // The media library is for pictures, and pictures live under public/assets/.
+    // Without these three checks the "upload an image" button will store any
+    // file, of any type, anywhere in the repository — including a script that
+    // would then be served from this site's own origin, which the CSP trusts.
+    if (!IMAGE_EXT.test(safe)) return json({ error: "Only image files can be uploaded." }, 400);
+    const folder = String(body.folder).replace(/\/+$/, "");
+    if (!`${folder}/`.startsWith(MEDIA_ROOT) || folder.includes("..")) {
+      return json({ error: "Images can only be saved to the media library." }, 400);
+    }
+    if (String(body.dataBase64).length > MAX_UPLOAD_B64) {
+      return json({ error: "That image is too large — please keep uploads under 10 MB." }, 413);
+    }
+    const target = `${folder}/${safe}`;
     // don't clobber: if it exists, suffix a short timestamp-free counter via sha check
     let sha;
     const existing = await ghFetch(env, "GET", `${ghBase(env)}/${encodeURI(target)}?ref=${branch(env)}`);

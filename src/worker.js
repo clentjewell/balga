@@ -87,17 +87,26 @@ function isValidEmail(v) {
 
 async function handleContact(request, env) {
   if (request.method !== "POST") return json({ status: "error", message: "Method not allowed." }, 405);
+  // Refuse an oversized body before reading it, so a huge payload never gets
+  // parsed into memory in the first place.
+  if (Number(request.headers.get("Content-Length") || 0) > 32 * 1024) {
+    return json({ status: "error", message: "That message is too long. Please shorten it and try again." }, 413);
+  }
   let body;
   try {
     body = await request.json();
   } catch {
     return json({ status: "error", message: "Invalid request." }, 400);
   }
-  const firstName = (body.firstName || "").toString().trim();
-  const lastName = (body.lastName || "").toString().trim();
-  const email = (body.email || "").toString().trim();
-  const message = (body.message || "").toString().trim();
-  const honeypot = (body.company || "").toString().trim();
+  // Cap every field. Nothing here is unbounded on the way in, so without this a
+  // single request can push megabytes into the enquiry store and the
+  // notification email. The limits are far above any real enquiry.
+  const field = (v, max) => (v || "").toString().trim().slice(0, max);
+  const firstName = field(body.firstName, 100);
+  const lastName = field(body.lastName, 100);
+  const email = field(body.email, 254); // RFC 5321 maximum
+  const message = field(body.message, 5000);
+  const honeypot = field(body.company, 100);
 
   // Honeypot: silently accept to waste bot effort.
   if (honeypot) return json({ status: "sent", message: "Thanks! Your message has been sent." });

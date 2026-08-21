@@ -1,5 +1,6 @@
 ---
 import { faqs as allFaqs, type FAQ } from "../data/faqs";
+import { jsonLd } from "../data/html";
 export interface Props {
   id?: string;
   title?: string;
@@ -19,7 +20,7 @@ const {
   viewAllHref,
 } = Astro.props;
 const faqs = items ?? allFaqs;
-const jsonLd = {
+const faqSchema = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
   mainEntity: faqs.map((f) => ({
@@ -62,7 +63,7 @@ const jsonLd = {
     </div>
   </div>
 </section>
-{schema && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />}
+{schema && <script type="application/ld+json" set:html={jsonLd(faqSchema)} is:inline />}
 
 <style>
   .faq__wrap { max-width: calc(var(--container-narrow) + var(--gutter) * 2); margin-inline: auto; }

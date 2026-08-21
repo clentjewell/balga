@@ -7,6 +7,7 @@ import WhyChooseUs from "../components/WhyChooseUs.astro";
 import TestimonialSlider from "../components/TestimonialSlider.astro";
 import { services } from "../data/services";
 import page from "../data/content/services.json";
+import { jsonLd } from "../data/html";
 
 const siteUrl = Astro.site?.toString().replace(/\/$/, "") ?? "";
 const serviceSchema = {
@@ -28,7 +29,7 @@ const serviceSchema = {
 ---
 <BaseLayout title="Garden & Landscaping Services" description="Total care for your garden: native landscape design, garden facelifts, planting, pest and weed management and horticulture advice across the Northern Rivers." preloadImage={page.heroImage}>
   <PageHero title={page.heroTitle} image={page.heroImage} crumbs={[{ label: "Home", href: "/" }, { label: "Services" }]} />
-  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} is:inline />
+  <script type="application/ld+json" set:html={jsonLd(serviceSchema)} is:inline />
 
   <section class="section section--white">
     <div class="container">

@@ -3,13 +3,14 @@ import BaseLayout from "./BaseLayout.astro";
 import Breadcrumbs from "../components/Breadcrumbs.astro";
 import CTASection from "../components/CTASection.astro";
 import type { CollectionEntry } from "astro:content";
+import { jsonLd } from "../data/html";
 
 export interface Props { post: CollectionEntry<"blog">; }
 const { post } = Astro.props;
 const { data } = post;
 const siteUrl = Astro.site?.toString().replace(/\/$/, "") ?? "";
 const wordCount = (post.body.replace(/[#>*_`\-\[\]()!]/g, " ").match(/\b\w+\b/g) || []).length;
-const jsonLd = {
+const articleSchema = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
   headline: data.title,
@@ -56,7 +57,7 @@ const jsonLd = {
       { label: "Pricing List", href: "/pricing/", variant: "btn--outline-light" },
     ]}
   />
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
+  <script type="application/ld+json" set:html={jsonLd(articleSchema)} is:inline />
 </BaseLayout>
 
 <style>

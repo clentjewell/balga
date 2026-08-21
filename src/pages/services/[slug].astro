@@ -7,6 +7,7 @@ import BeforeAfterSlider from "../../components/BeforeAfterSlider.astro";
 import { services } from "../../data/services";
 import { projectsForService } from "../../data/projects";
 import { site } from "../../data/site";
+import { jsonLd } from "../../data/html";
 
 export function getStaticPaths() {
   return services.map((s) => ({ params: { slug: s.slug }, props: { service: s } }));
@@ -49,7 +50,7 @@ const serviceSchema = {
     image={service.image}
     crumbs={[{ label: "Home", href: "/" }, { label: "Services", href: "/services/" }, { label: service.title }]}
   />
-  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} is:inline />
+  <script type="application/ld+json" set:html={jsonLd(serviceSchema)} is:inline />
 
   <section class="section section--white">
     <div class="container">
