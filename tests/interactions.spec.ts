@@ -68,6 +68,30 @@ test.describe("interactions", () => {
     await expect(page.locator("[data-status]")).toContainText(/Preview mode/i);
   });
 
+  test("handoff document loads, is noindex, and switches tabs", async ({ page }) => {
+    const errors: string[] = [];
+    page.on("console", (m) => { if (m.type() === "error") errors.push(m.text()); });
+    page.on("pageerror", (e) => errors.push(e.message));
+
+    const resp = await page.goto("/handoff/", { waitUntil: "load" });
+    expect(resp?.status()).toBe(200);
+    await expect(page).toHaveTitle(/Website Handoff/);
+    await expect(page.locator("h1")).toHaveCount(1);
+    // An internal client document must never be indexable, on any deployment.
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+
+    // The requested-updates tab is the point of the page — it must be reachable.
+    await expect(page.locator("#panel-updates")).toBeHidden();
+    await page.locator("#tab-updates").click();
+    await expect(page.locator("#panel-updates")).toBeVisible();
+    await expect(page.locator("#panel-changed")).toBeHidden();
+    await expect(page.locator("#panel-updates")).toContainText(/Relevant services/);
+
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    expect(overflow, "horizontal overflow on /handoff/").toBeLessThanOrEqual(2);
+    expect(errors, "console errors on /handoff/").toEqual([]);
+  });
+
   test("video modal opens and closes", async ({ page }) => {
     await page.goto("/");
     await page.locator("[data-video-open]").first().click();
